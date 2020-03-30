@@ -575,7 +575,6 @@ ul.social-icon.list-inline{
 }
 
 #about:before,
-#condomContent:before,
 .services:before,
 #condomMainBottom:before,
 #condomMainTop:before,
@@ -591,9 +590,7 @@ ul.social-icon.list-inline{
     height: 10px;
     background: url(../img/afterBack2.svg)
 }
-#condomContent:before{
-    bottom: -10px;
-}
+
 
 #about:before,
 #condomMainBottom:before,
@@ -1153,6 +1150,7 @@ bottom: -200px; left: 50%; transform: translate(-50%, 0); }
 
 
 /*---------contact section----------*/
+#brands{background-color: #1c1c1d;}
 #contact{
     background-color: #1c1c1d;
     padding-top: 30px;
