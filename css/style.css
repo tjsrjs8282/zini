@@ -13,6 +13,9 @@ a:hover{text-decoration: none;}
 span{display: block;}
 
 .jumbotron {padding: 4rem 0 !important;}
+.orange{color: #f47320;}
+.bg-orange{background:#f47320; }
+.bg-yellow{background:#ffa800; }
 /*--------------------main nav----------------*/
 .header{
     position: relative;
@@ -543,6 +546,8 @@ ul.social-icon.list-inline{
     position: relative;
     z-index: 1;
 }
+
+#about:after,
 #footer:after,
 #condomMainBottom:after,
 #footerContent:after,
@@ -563,10 +568,13 @@ ul.social-icon.list-inline{
 .condomCharter:after{
     background: url(../img/afterBack3.svg);
 }
+
+#about:after,
 #condomMainBottom:after{
     background: url(../img/afterBack6.svg);
 }
 
+#about:before,
 #condomContent:before,
 .services:before,
 #condomMainBottom:before,
@@ -586,6 +594,8 @@ ul.social-icon.list-inline{
 #condomContent:before{
     bottom: -10px;
 }
+
+#about:before,
 #condomMainBottom:before,
 #condomMainTop:before{
     background: url(../img/afterBack5.svg)}
@@ -1027,7 +1037,9 @@ font-size: .8rem; }
 
 
 
-
+/*-------------about------------*/
+#about{position:relative;}
+/*-------------about------------*/
 
 /*-------------condom------------*/
 #condomMainTop{
