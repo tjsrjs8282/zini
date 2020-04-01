@@ -387,6 +387,8 @@ ul.social-icons.list-inline{
 .navWrap.sticky:after{
     display: none;
 }
+
+.m-logo{width: 120px;}
 /*--------------------main nav----------------*/
 
 
