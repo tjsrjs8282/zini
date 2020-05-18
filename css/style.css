@@ -53,7 +53,7 @@ span {display: block;}
 .nav-icon:hover span:nth-child(1),
 .nav-icon:hover span:nth-child(3){width: 30px;}
 .full-nav{ background: #fdb813; color: #18191d; position: fixed; left: 0; top: 0; height: 100%; width: 100%; padding: 3.75rem; z-index: 99; overflow-x: hidden; visibility: hidden; opacity: 0; transform: translateY(-100px); transition: all 0.4s ease-in-out;}
-.full-nav.open{ opacity: 1; visibility: visible; transform: translateY(0); transition: all 0.4s ease-in-out; height: 101vh; z-index: 99;}
+.full-nav.open{ opacity: 1; visibility: visible; transform: translateY(0); transition: all 0.4s ease-in-out; height: 101vh;}
 .full-nav .logo{ display: flex; justify-content: center; padding:4rem;}
 @keyframes eye-ani {
           28% { transform: scaleY(1); }  
@@ -109,8 +109,9 @@ ul.social-icons.list-inline{ text-align: center;margin-top: 22px;}
 .bx-wrapper .social-icons a{ color: white; border: 1px solid white; width: 40px; height: 40px; font-size: 20px; display: inherit; text-align: center; padding-top: 5px; transition: all ease 1s; background: #000; border-radius: 0px;}
 .bx-wrapper .social-icons a i{ position: relative; bottom: 7px;}
 .sliderContent{ position: absolute; top: 290px; color: #f1f1f1; width: 1000px; padding: 10px; text-align: left;}
-.sliderContent h1{ font-family: 'Noto Sans KR', sans-serif; font-size: 5em; font-weight: bold; color: white; text-transform: uppercase; letter-spacing: 2px;}
+.sliderContent h1{ font-family: 'Noto Sans KR', sans-serif; font-size: 4em; font-weight: bold; color: white; text-transform: uppercase; letter-spacing: 2px;}
 .icon_bg_black h1{color: black;}
+.icon_bg_black p{color: black;}
 #Btn{ display: inline-block; font-size: 16px; padding: 15px 35px; border: none; background: white; color: #333; cursor: pointer; margin-top: 18px; font-weight: bold; border-radius: 50px; animation: shadow-pulse 2s infinite; text-transform:uppercase; transition:.4s;}
 #Btn:hover{padding: 15px 40px;}
 @keyframes shadow-pulse{
