@@ -37,13 +37,13 @@ $(document).ready(function(){
 });
 
 $(".bxslider").bxSlider({
-        mode:'horizontal',
+        mode:'fade',
         moveSlides:1,
         slideMargin:40,
         infiniteLoop:true,
         minSlides:1,
         maxSlides:1,
-        speed:1000,
+        speed:800,
          auto: true
     });
 

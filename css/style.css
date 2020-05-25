@@ -27,7 +27,7 @@ span {display: block;}
 .nav{ display: flex; justify-content:center; z-index: 9; width: 100%;}
 .nav ul{ height: 100%; display: flex; justify-content: center; flex-wrap: wrap;}
 .nav ul li{ height: 100%; display: flex; height: 70px; justify-content: center; align-items: center; cursor: pointer;}
-.nav ul li a{ font-size: 1.1em; color:#333; height: 100%; line-height: 70px; padding: 0 2.5rem; font-weight: bold; text-transform: uppercase; position: relative; transition:all 0.4s ease;}
+.nav ul li a{ font-size: 1em; color:#333; height: 100%; line-height: 70px; padding: 0 2.5rem; font-weight: bold; text-transform: uppercase; position: relative; transition:all 0.4s ease;}
 .nav ul li a .navHover{position: absolute; z-index: -1; top: 10px; left:10px;}
 .nav ul li a.active,
 .nav ul li:hover a{color: #fff;}
@@ -45,7 +45,7 @@ span {display: block;}
 .nav ul li.logo svg{height: 70px;}
 .nav ul li.logo img{width: 100px;}
 .nav ul li.logo a{margin: 10px 0rem;}
-.nav-icon{ position: absolute; top: 23px; right: 30px; padding: 5px; width: 40px; z-index: 1; cursor: pointer;}
+.nav-icon{ position: absolute; top: 22px; right: 25px; padding: 5px; width: 40px; z-index: 1; cursor: pointer;}
 .nav-icon span{ background: #333; width: 30px; height: 2px; display: block; transition: 0.3s linear all;}
 .nav-icon span:nth-child(1),
 .nav-icon span:nth-child(3){width: 20px;margin: 0 auto;}
@@ -109,10 +109,10 @@ ul.social-icons.list-inline{ text-align: center;margin-top: 22px;}
 .bx-wrapper .social-icons a{ color: white; border: 1px solid white; width: 40px; height: 40px; font-size: 20px; display: inherit; text-align: center; padding-top: 5px; transition: all ease 1s; background: #000; border-radius: 0px;}
 .bx-wrapper .social-icons a i{ position: relative; bottom: 7px;}
 .sliderContent{ position: absolute; top: 290px; color: #f1f1f1; width: 1000px; padding: 10px; text-align: left;}
-.sliderContent h1{ font-family: 'Noto Sans KR', sans-serif; font-size: 4em; font-weight: bold; color: white; text-transform: uppercase; letter-spacing: 2px;}
+.sliderContent h1{ font-family: 'Noto Sans KR', sans-serif; font-size: 3em; font-weight: bold; color: white; text-transform: uppercase; letter-spacing: 2px;}
 .icon_bg_black h1{color: black;}
 .icon_bg_black p{color: black;}
-#Btn{ display: inline-block; font-size: 16px; padding: 15px 35px; border: none; background: white; color: #333; cursor: pointer; margin-top: 18px; font-weight: bold; border-radius: 50px; animation: shadow-pulse 2s infinite; text-transform:uppercase; transition:.4s;}
+#Btn{ display: inline-block; font-size: 16px; padding: 15px 35px; border: none; background: white; color: #333; cursor: pointer; margin-top: 10px; font-weight: bold; border-radius: 50px; animation: shadow-pulse 2s infinite; text-transform:uppercase; transition:.4s;}
 #Btn:hover{padding: 15px 40px;}
 @keyframes shadow-pulse{
     0%{
@@ -129,11 +129,12 @@ ul.social-icon.list-inline{ text-align: center; margin-top: 22px;}
 
 /*------------------main content condom slider*/
 #condom{ text-align: center; color:#535353; background-color: #e9ecef; padding-bottom: 50px;}
-#condom h2{ font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; color:#ff1737; text-transform: uppercase; letter-spacing: 1px;}
-#condom h5{ font-size: 2.5rem; text-transform: uppercase; color: gray; font-weight: bold; line-height:1.2; max-width:650px; margin:0 auto 1.5rem;}
+#condom h2{ font-size: 1.2rem; font-weight: bold; margin-bottom: 1.5rem; color:#ff1737; text-transform: uppercase; letter-spacing: 1px;}
+#condom h5{ font-size: 2rem; text-transform: uppercase; color: gray; font-weight: bold; line-height:1.2; max-width:650px; margin:0 auto 4.5rem;}
 .chsJump{position: relative; height: 180px;}
 .chsJump img{position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);}
 .chsJump img{animation:chJump 9s 1s infinite;}
+.chsAni{margin-bottom: 50px;}
 .chsAni .chsJump:nth-child(2) img{animation-delay: 3s;}
 .chsAni .chsJump:nth-child(3) img{animation-delay: 6s;}
 .chsAni .chsJump:nth-child(4) img{animation-delay: 4s;}
@@ -176,7 +177,7 @@ ul.social-icon.list-inline{ text-align: center; margin-top: 22px;}
 .condom-social li a:hover{color: #d62f36;}
 .condom-img{position:relative;}
 .condom-social.white-bg{background-color: white;}
-.condom-coverflow{ overflow: hidden; position: relative; padding: 20px; padding-bottom: 0; width: 100%; max-width: 300px; margin-left: -25px; background-color: white; margin: 0 auto;}
+.condom-coverflow{ overflow: hidden; position: relative; padding: 20px; padding-bottom: 0; width: 100%; max-width: 230px; margin-left: -25px; background-color: white; margin: 0 auto;}
 .condom-coverflow .condom-text{ text-align: center; font-size: 14px; padding:1rem 0 0 0;}
 .condom-coverflow .condom-text h4{font-size: 1.7rem;}
 .swiper-slider-active .condom-coverflowL:hover .condom-box-content{ opacity: 1; visibility: visible; border-radius: 0; bottom: 0;}
@@ -203,13 +204,13 @@ ul.social-icon.list-inline{ text-align: center; margin-top: 22px;}
 #condomProduct:before{ content:""; display: block; position: absolute; bottom: 0px; width: 100%; height: 10px; background: url(../img/afterBack3.svg);}
 #condomProduct .product{display: inline-block;}
 #condomProduct .product img{width: 200px;}
-#condomProduct h2{ text-transform: uppercase; font-size: 36px; font-weight: bold; color: #6c757d !important;}
+#condomProduct h2{ text-transform: uppercase; font-size: 32px; font-weight: bold; color: #6c757d !important;}
 .services{ background-image: url(../img/back.jpg); background-size: cover; background-repeat: no-repeat; padding-top: 150px; padding-bottom: 150px; background-attachment: fixed; position: relative;}
 .services h2{ font-size: 2em; font-weight: bold; color: white; letter-spacing: }
 .services p{ font-size: 1em; color: white; letter-spacing: 2px;}
 #gelProduct{position: relative;}
 .gelProduct img{width: 100%; padding-right: 5px;}
-#gelProduct img{ width: 100%;}
+#gelProduct img{width:100%;}
 #footer-product-Silder{ height: 500px; background: url(../img/banana.jpg); background-repeat: no-repeat; background-size: cover; background-position: center; position: relative; z-index: 1;}
 .slider_next,
 .slider_prev{ position: absolute; bottom: 100px; cursor: pointer;}
@@ -222,8 +223,8 @@ ul.social-icon.list-inline{ text-align: center; margin-top: 22px;}
 .ProductBxslider .bxProdutBox{ text-align: center; width: 200px;}
 .product-slider-text{position: absolute; top: 50px;}
 .product{position: relative;}
-.product h2{ text-transform: uppercase; font-size: 36px; font-weight: bold; color: #6c757d !important;}
-.product p{ color: #6c757d; font-size: 1.2rem;}
+.product h2{ text-transform: uppercase; font-size: 32px; font-weight: bold; color: #6c757d !important;}
+.product p{ color: #6c757d; font-size: 1rem;}
 .cdProduct h5,
 .gelProduct h5{ font-size: 0.9rem;}
 .cdProduct span,
@@ -233,7 +234,7 @@ ul.social-icon.list-inline{ text-align: center; margin-top: 22px;}
 .dd{box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);}
 .gelProduct, 
 .cdProduct,
-.cdProduct img{box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3); cursor: pointer; transition: 0.4s;}
+.cdProduct img{width: 180px; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3); cursor: pointer; transition: 0.4s;}
 .cdProduct{cursor: pointer;}
 .cdProduct:hover,
 .gelProduct:hover,
@@ -288,9 +289,9 @@ ul.social-icon.list-inline{ text-align: center; margin-top: 22px;}
 #condomMainTop{padding: 2rem 0 !important; margin: 0 !important;}
 .condomMainCh{ width: 400px; position: absolute; bottom: -200px; left: 50%; transform: translate(-50%, 0); }
 .condomMainCh img{width: 100%;}
-#condomMainMiddle p{font-size: 2rem; font-weight: bold;}
+#condomMainMiddle p{font-size: 1.6rem; font-weight: bold;}
 #condomMainMiddle{ height: 800px; background: url(../img/condom_Back.svg); margin: 0 !important;}
-#condomMainMiddle h3{font-size: 3rem;font-weight: bold;}
+#condomMainMiddle h3{font-size: 2.4rem;font-weight: bold;}
 #condomMainBottom .container{position: relative;}
 #condomMainBottom{background: #ffa800;position: relative;}
 .mbTextBox{position: absolute; right: 100px;top: 100px;}
@@ -308,8 +309,8 @@ ul.social-icon.list-inline{ text-align: center; margin-top: 22px;}
 .row.no-gutters [class*=col-]{ padding-left: 0; padding-right: 0;}
 .container-fluid{ padding-left: 0; padding-right:0;}
 .text-box{position: absolute; top: 50%; left:80%; transform: translate(-50%,-50%);}
-.text-box h5{ font-size: 1.5rem; color: #333; font-weight: bold;}
-.text-box h2{ font-size: 3rem; color: #333; font-weight: bold;}
+.text-box h5{ font-size: 1.4rem; color: #333; font-weight: bold;}
+.text-box h2{ font-size: 2.4rem; color: #333; font-weight: bold;}
 
 #brands{background-color: #1c1c1d;}
 #contact{ background-color: #1c1c1d; padding-top: 30px; border-top: 5px solid rgba(0,0,0,0.1);}
@@ -404,3 +405,5 @@ ul.social-list li a:hover{color: #333 !important;}
      .text-box h5{font-size: 1rem;}
 }
 /*---------media query--------*/
+
+.gg img{width: 350px !important; }
