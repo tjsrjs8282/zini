@@ -1,4 +1,4 @@
-// 갤러리 페이지 섹션 — colClass는 원본 레이아웃의 Bootstrap 열 클래스입니다.
+// 갤러리 페이지 섹션 — colClass는 사진 칸의 Bootstrap 열 클래스입니다.
 
 export interface GallerySection {
   id: string;

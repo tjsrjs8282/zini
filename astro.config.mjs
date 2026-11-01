@@ -10,9 +10,9 @@ const base = process.env.BASE_PATH ?? '/zini';
 export default defineConfig({
   site,
   base,
-  // about.html, condom.html … 형태의 기존 주소를 그대로 유지합니다.
+  // 페이지를 about.html, condom.html … 형태의 파일로 출력합니다.
   build: { format: 'file' },
-  // 컴포넌트 스타일이 원본 CSS와 같은 우선순위(specificity)를 갖도록 :where()로 스코프합니다.
+  // 컴포넌트 스타일에 우선순위(specificity)를 더하지 않도록 :where()로 스코프합니다.
   scopedStyleStrategy: 'where',
   integrations: [
     sitemap({
@@ -21,7 +21,7 @@ export default defineConfig({
     }),
   ],
   image: {
-    // 레이아웃은 기존 CSS가 담당하므로 Astro의 반응형 기본 스타일은 끕니다.
+    // 이미지 레이아웃은 컴포넌트 CSS가 담당하므로 Astro의 반응형 기본 스타일은 끕니다.
     responsiveStyles: false,
   },
 });

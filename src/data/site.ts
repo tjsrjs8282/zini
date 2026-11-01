@@ -4,7 +4,7 @@ export const site = {
   name: 'ZINI',
   description:
     '안전하고 유쾌한 캐릭터 콘돔과 러브젤, 마사지젤을 만드는 성인용품 브랜드 ZINI(지니)의 공식 소개 사이트입니다.',
-  /** 쇼핑몰(부르르닷컴). 2026년 현재 모든 경로가 성인인증 페이지로 이동하므로 링크 점검이 필요합니다. */
+  /** 쇼핑몰(부르르닷컴). 모든 경로가 성인인증 페이지로 이동하므로 실제 연결 주소 점검이 필요합니다. */
   shopUrl: 'https://www.bururu.com/',
   loginUrl: 'https://www.bururu.com/',
   joinUrl: 'https://www.bururu.com/',

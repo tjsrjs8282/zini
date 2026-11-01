@@ -99,7 +99,7 @@ const { tight = false } = Astro.props;
       loop: true,
       grabCursor: true,
       slideToClickedSlide: true,
-      // 기존 사이트가 실제로 보여 주던 값(Swiper 기본값). 가운데·양옆 카드 모양은 CSS가 덮어씁니다.
+      // Swiper 기본 커버플로우 값. 가운데·양옆 카드 모양은 아래 CSS가 덮어씁니다.
       coverflowEffect: { rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true },
       navigation: {
         nextEl: el.querySelector<HTMLElement>('.slider-arrow--next'),

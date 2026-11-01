@@ -28,7 +28,7 @@
   --bs-link-hover-color-rgb: 0, 0, 0;
 }
 
-/* ---------- 리셋 (기존 reset.css) ---------- */
+/* ---------- 리셋 ---------- */
 * {
   margin: 0;
   padding: 0;
@@ -47,7 +47,7 @@ li {
 a {
   text-decoration: none;
 }
-/* 기존 디자인은 span을 줄바꿈 용도로 사용합니다. 인라인이 필요하면 .d-inline / .hl을 씁니다. */
+/* 디자인에서 span을 줄바꿈 용도로 사용합니다. 인라인이 필요하면 .d-inline / .hl을 씁니다. */
 span {
   display: block;
 }
@@ -59,7 +59,7 @@ button {
   cursor: pointer;
 }
 
-/* Bootstrap 5는 h1~h4 크기를 화면 폭에 따라 줄이지만, 기존(Bootstrap 4) 디자인은 고정 크기입니다. */
+/* 제목 크기는 화면 폭과 관계없이 고정합니다(Bootstrap의 반응형 글자 크기를 덮어씀). */
 h1 {
   font-size: 2.5rem;
 }
@@ -73,7 +73,7 @@ h4 {
   font-size: 1.5rem;
 }
 
-/* ---------- Bootstrap 4 → 5 레이아웃 보정 ---------- */
+/* ---------- 레이아웃: 30px 거터, 최대 1140px 컨테이너 ---------- */
 .container,
 .container-fluid,
 .row {
@@ -92,7 +92,7 @@ h4 {
   }
 }
 
-/* 기존 .jumbotron(부트스트랩 5에서 제거됨)을 대신하는 가로 띠 섹션 */
+/* 가로 띠 섹션 */
 .band {
   padding: 4rem 0;
   margin-bottom: 2rem;
@@ -110,7 +110,7 @@ h4 {
 .bg-yellow {
   background: var(--c-amber);
 }
-/* 문장 속 강조(기존 inline-block 오렌지 굵은 글씨) */
+/* 문장 속 강조(오렌지 굵은 글씨) */
 .hl {
   display: inline-block;
   font-style: normal;
@@ -126,7 +126,7 @@ h4 {
   }
 }
 
-/* ---------- 섹션 제목 (기존 .product) ---------- */
+/* ---------- 섹션 제목 ---------- */
 .product {
   position: relative;
 }
@@ -141,7 +141,7 @@ h4 {
   font-size: 1rem;
 }
 
-/* ---------- 알약 모양 버튼 (기존 #Btn) ---------- */
+/* ---------- 알약 모양 버튼 ---------- */
 .btn-pill {
   display: inline-block;
   font-size: 16px;
@@ -177,7 +177,7 @@ h4 {
   }
 }
 
-/* ---------- 지그재그 경계 (기존 afterBack*.svg 6종) ---------- */
+/* ---------- 지그재그(톱니) 경계 ---------- */
 .zigzag {
   position: absolute;
   left: 0;
@@ -195,7 +195,7 @@ h4 {
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpolygon points='0,10 10,0 20,10'/%3E%3C/svg%3E");
 }
 
-/* ---------- 슬라이더 공통 페이지네이션 (기존 bxSlider 사각 점) ---------- */
+/* ---------- 슬라이더 공통 페이지네이션(사각 점) ---------- */
 .swiper-pagination.pager-squares {
   display: flex;
   justify-content: center;

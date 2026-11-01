@@ -3,8 +3,7 @@ import { Image } from 'astro:assets';
 import { img } from '../../lib/images';
 import { url } from '../../lib/url';
 
-// 사업분야 이미지(999×822)의 원 위치. 예전 <map>은 화면이 줄어들면 좌표가 어긋났기 때문에
-// 백분율로 배치한 링크로 바꿔 이미지 크기에 맞춰 함께 줄어들게 했습니다.
+// 사업분야 이미지(999×822) 속 원의 위치. 링크를 백분율로 배치해 이미지 크기에 맞춰 함께 줄어듭니다.
 const IMAGE_W = 999;
 const IMAGE_H = 822;
 const areas = [
