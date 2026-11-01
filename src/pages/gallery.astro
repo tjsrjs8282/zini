@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GalleryGrid from '../components/sections/GalleryGrid.astro';
+import { gallerySections } from '../data/gallery';
+---
+
+<BaseLayout
+  current="gallery"
+  title="갤러리"
+  theme="white"
+  description="ZINI 캐릭터와 케이스 디자인, 베를린·라스베가스·홍콩·상해 성인용품 박람회 참가 사진을 모았습니다."
+>
+  <h1 class="visually-hidden">갤러리</h1>
+  {gallerySections.map((section) => (
+    <GalleryGrid section={section} />
+  ))}
+</BaseLayout>

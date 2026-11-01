@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ZiniFace from '../components/ui/ZiniFace.astro';
+import { url } from '../lib/url';
+---
+
+<BaseLayout current="home" title="페이지를 찾을 수 없어요">
+  <section class="not-found">
+    <ZiniFace width={180} height={120} />
+    <h1>페이지를 찾을 수 없어요</h1>
+    <p>주소가 바뀌었거나 삭제된 페이지입니다.</p>
+    <a href={url()} class="btn-pill">
+      홈으로 가기
+    </a>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding: 6rem 1rem;
+    text-align: center;
+  }
+  h1 {
+    margin: 2rem 0 0.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--c-muted);
+  }
+  p {
+    margin-bottom: 1.5rem;
+    color: var(--c-muted);
+  }
+</style>

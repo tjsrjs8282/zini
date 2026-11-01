@@ -1,0 +1,369 @@
+---
+import { Image } from 'astro:assets';
+import ZiniFace from '../ui/ZiniFace.astro';
+import Zigzag from '../ui/Zigzag.astro';
+import { navItems, site } from '../../data/site';
+import type { NavId } from '../../data/site';
+import { img } from '../../lib/images';
+import { url } from '../../lib/url';
+
+interface Props {
+  current: NavId;
+}
+
+const { current } = Astro.props;
+const left = navItems.slice(0, 3);
+const right = navItems.slice(3);
+
+// 메뉴 글자 뒤 연필 모양: 페이지가 열리면 글자 길이(pencilEnd)만큼 늘어납니다.
+const pencilFrom =
+  'M8.942,7.376H13c5.898,2.479,10.292,7.85,11.41,14.364c2.527,0.003,4.573,1.461,4.573,3.259c0,1.799-2.046,3.26-4.573,3.262C23.292,34.773,18.898,40.148,13,42.627H8.942';
+const pencilTo = (end: number) =>
+  `M8.942,7.376H${end}c5.898,2.479,10.292,7.85,11.41,14.364c2.527,0.003,4.573,1.461,4.573,3.259c0,1.799-2.046,3.26-4.573,3.262c-1.118,6.512-5.512,11.887-11.41,14.365H8.942`;
+const pencilCap =
+  'M5.49,1.697c-1.906,0-3.453,2.082-3.453,4.65v1.296v34.715v1.297c0,2.57,1.547,4.648,3.453,4.648s3.452-2.078,3.452-4.648v-2.336V8.684V6.347C8.942,3.778,7.396,1.697,5.49,1.697z';
+---
+
+<header class="header">
+  <div class="topNavWrap">
+    <a href={site.shopUrl} class="comLogo" target="_blank" rel="noopener noreferrer">
+      <Image src={img('bururuCom.png')} alt="부르르닷컴" width={155} densities={[1, 2]} />
+    </a>
+    <ul class="loginNav">
+      <li>
+        <a href={site.loginUrl} target="_blank" rel="noopener noreferrer">
+          로그인
+        </a>
+      </li>
+      <li>
+        <a href={site.joinUrl} target="_blank" rel="noopener noreferrer">
+          회원가입
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="navWrap-holder">
+    <div class="navWrap" data-sticky-nav>
+      <a href={url()} class="m-logo" aria-label="ZINI 홈">
+        <ZiniFace width={100} height={70} />
+      </a>
+      <nav class="nav container" aria-label="주 메뉴">
+        <ul>
+          {[...left, null, ...right].map((item) =>
+            item ? (
+              <li class="navList">
+                <a
+                  href={url(item.href)}
+                  class:list={[{ active: item.id === current }]}
+                  aria-current={item.id === current ? 'page' : undefined}
+                >
+                  <svg
+                    class="navHover"
+                    width="200"
+                    height="50"
+                    viewBox="0 0 200 50"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path class="svgHoverW" d={pencilCap} />
+                    <path class="svgHoverB" d={pencilFrom}>
+                      <animate
+                        attributeName="d"
+                        dur="1.2s"
+                        fill="freeze"
+                        to={pencilTo(item.pencilEnd)}
+                      />
+                    </path>
+                  </svg>
+                  {item.label}
+                </a>
+              </li>
+            ) : (
+              <li class="logo">
+                <a href={url()} aria-label="ZINI 홈">
+                  <ZiniFace class="white" width={120} height={100} />
+                  <Image
+                    class="black"
+                    src={img('logo.png')}
+                    alt=""
+                    width={100}
+                    densities={[1, 2]}
+                  />
+                </a>
+              </li>
+            ),
+          )}
+        </ul>
+      </nav>
+      <button
+        type="button"
+        class="nav-icon"
+        aria-label="전체 메뉴 열기"
+        aria-haspopup="dialog"
+        aria-controls="full-nav"
+        aria-expanded="false"
+        data-nav-open
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <Zigzag edge="bottom" point="down" color="var(--c-yellow)" class="nav-zigzag" />
+    </div>
+  </div>
+
+  <slot />
+</header>
+
+<script>
+  // 스크롤 100px을 넘으면 메뉴바를 상단에 고정합니다.
+  const nav = document.querySelector<HTMLElement>('[data-sticky-nav]');
+  if (nav) {
+    let ticking = false;
+    const update = () => {
+      nav.classList.toggle('sticky', window.scrollY > 100);
+      ticking = false;
+    };
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
+  }
+</script>
+
+<style>
+  .header {
+    position: relative;
+    width: 100%;
+  }
+
+  /* ---------- 상단 빨간 띠 ---------- */
+  .topNavWrap {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 40px;
+    background-color: var(--c-red);
+  }
+  .comLogo {
+    width: 180px;
+    margin: auto;
+  }
+  .comLogo img {
+    width: 100%;
+    height: auto;
+    padding-right: 25px;
+    transition: 0.3s ease;
+  }
+  .comLogo:hover img {
+    opacity: 0.8;
+  }
+  .loginNav {
+    position: absolute;
+    top: 9px;
+    right: 30px;
+    display: flex;
+  }
+  .loginNav li {
+    width: 70px;
+    text-align: center;
+  }
+  .loginNav a {
+    display: block;
+    font-size: 0.9rem;
+    color: #fff;
+    transition: 0.3s ease;
+  }
+  .loginNav a:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* ---------- 노란 메뉴바 ---------- */
+  /* 메뉴바가 fixed로 바뀌어도 아래 콘텐츠가 튀지 않도록 자리를 잡아 둡니다. */
+  .navWrap-holder {
+    position: relative;
+    z-index: 100;
+    height: 70px;
+  }
+  .navWrap {
+    position: relative;
+    z-index: 9;
+    width: 100%;
+    height: 70px;
+    background-color: var(--c-yellow);
+    transition: all 0.3s;
+  }
+  .nav {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  .nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 100%;
+  }
+  .nav li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+  }
+  .nav li a {
+    position: relative;
+    height: 100%;
+    padding: 0 2.5rem;
+    font-size: 1em;
+    font-weight: 700;
+    line-height: 70px;
+    color: var(--c-text);
+    text-transform: uppercase;
+    transition: all 0.4s ease;
+  }
+  .navHover {
+    position: absolute;
+    z-index: -1;
+    top: 10px;
+    left: 10px;
+  }
+  .navHover path {
+    fill: none;
+    stroke: #010101;
+    stroke-width: 1.3917;
+    stroke-miterlimit: 10;
+  }
+  .nav li a.active,
+  .nav li:hover a {
+    color: #fff;
+  }
+  .nav li a.active .svgHoverB,
+  .nav li:hover a .svgHoverB {
+    fill: var(--c-orange);
+  }
+  .nav li a.active .svgHoverW,
+  .nav li:hover a .svgHoverW {
+    fill: #444;
+  }
+  .nav li.logo a {
+    margin: 10px 0;
+    padding: 0 2.5rem;
+  }
+  .nav li.logo .black {
+    display: none;
+    width: 100px;
+    height: auto;
+  }
+  .m-logo {
+    display: none;
+    width: 120px;
+    margin-left: 20px;
+  }
+
+  /* 햄버거 버튼 */
+  .nav-icon {
+    position: absolute;
+    top: 22px;
+    right: 25px;
+    z-index: 1;
+    width: 40px;
+    padding: 5px;
+  }
+  .nav-icon span {
+    display: block;
+    width: 30px;
+    height: 2px;
+    background: var(--c-text);
+    transition: 0.3s linear all;
+  }
+  .nav-icon span:nth-child(1),
+  .nav-icon span:nth-child(3) {
+    width: 20px;
+    margin: 0 auto;
+  }
+  .nav-icon span:nth-child(2) {
+    width: 32px;
+    margin: 5px 0;
+  }
+  .nav-icon:hover span:nth-child(1),
+  .nav-icon:hover span:nth-child(3) {
+    width: 30px;
+  }
+
+  /* ---------- 스크롤 시 고정 ---------- */
+  .navWrap.sticky {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.35);
+    animation: nav-drop 0.3s both;
+  }
+  @keyframes nav-drop {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -100%, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .navWrap.sticky a {
+    color: var(--c-ink);
+  }
+  .navWrap.sticky .nav li a.active,
+  .navWrap.sticky .nav li:hover a {
+    color: #fff;
+  }
+  .navWrap.sticky .nav li a.active .svgHoverB,
+  .navWrap.sticky .nav li:hover a .svgHoverB {
+    fill: #000;
+  }
+  .navWrap.sticky .nav li a.active .svgHoverW,
+  .navWrap.sticky .nav li:hover a .svgHoverW {
+    fill: #fff;
+  }
+  .navWrap.sticky li.logo .white {
+    display: none;
+  }
+  .navWrap.sticky li.logo .black {
+    display: inline-block;
+  }
+  .navWrap.sticky .nav-icon span {
+    background: var(--c-ink);
+  }
+  .navWrap.sticky .nav-zigzag {
+    display: none;
+  }
+
+  /* ---------- 반응형 ---------- */
+  @media (max-width: 1330px) {
+    .nav li.logo {
+      display: none;
+    }
+  }
+  @media (max-width: 1000px) {
+    .navList {
+      display: none !important;
+    }
+    .m-logo {
+      display: block;
+    }
+    .comLogo {
+      margin: 5px 0 0;
+    }
+  }
+  @media (max-width: 550px) {
+    .nav li a {
+      font-size: 0.9em;
+    }
+  }
+</style>

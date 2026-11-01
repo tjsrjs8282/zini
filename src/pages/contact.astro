@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BrandMap from '../components/sections/BrandMap.astro';
+import CompanyInfo from '../components/layout/CompanyInfo.astro';
+import ContactForm from '../components/sections/ContactForm.astro';
+import SocialLinks from '../components/ui/SocialLinks.astro';
+import worldMap from '../assets/images/world-map.png';
+---
+
+<BaseLayout
+  current="contact"
+  title="문의하기"
+  theme="dark"
+  footer={false}
+  description="케어앤셰어 사업분야와 연락처 — 제품·제휴 문의를 남겨 주세요."
+>
+  <h1 class="visually-hidden">문의하기</h1>
+  <BrandMap />
+
+  <section class="contact" aria-labelledby="contact-title">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 pt-4">
+          <div class="contact-info" style={`--map: url(${worldMap.src})`}>
+            <CompanyInfo>
+              <SocialLinks variant="contact" />
+            </CompanyInfo>
+          </div>
+        </div>
+        <div class="col-md-6 pt-4 pb-5">
+          <h2 id="contact-title" class="contact-title">
+            Contact us
+          </h2>
+          <ContactForm />
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    padding-top: 30px;
+    background-color: var(--c-dark);
+    border-top: 5px solid rgba(0, 0, 0, 0.1);
+  }
+  .contact-info {
+    --company-bg: var(--c-dark);
+    background: var(--map) no-repeat;
+    background-size: contain;
+  }
+  .contact-title {
+    margin-bottom: 2rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+  }
+</style>

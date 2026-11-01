@@ -1,0 +1,335 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Zigzag from '../components/ui/Zigzag.astro';
+import { img } from '../lib/images';
+
+const strengths = [
+  { icon: 'icon1.png', html: '<span><em class="hl">18년간</em>의 도/소매</span> 유통 노하우' },
+  { icon: 'icon2.png', html: '<span><em class="hl">대한민국 최초</em></span>성인용품 정식 수입' },
+  {
+    icon: 'icon3.png',
+    html: '<span>유통 일원화로</span><em class="hl">국내 최저가</em> 공급 보장',
+  },
+  {
+    icon: 'icon4.png',
+    html: '<span>해외 수입 브랜드</span><em class="hl">100% 합법 정식</em> 수입',
+  },
+  {
+    icon: 'icon5.png',
+    html: '<span>자체 성인용품</span><span>브랜드 <em class="hl">ZINI,</em></span><em class="hl">S-Solution</em> 보유',
+  },
+  {
+    icon: 'icon6.png',
+    html: '<span>저가부터 고가까지</span><span>다양한 상품보유</span><em class="hl">(국내 최대)</em>',
+  },
+  { icon: 'icon7.png', html: '<span>재고 부담없는</span><em class="hl">대리배송</em>시스템' },
+  { icon: 'icon8.png', html: '<span>제품<em class="hl">마케팅</em></span>자료 및 컨텐츠 제공' },
+];
+
+const lawsuits = [
+  ['2019.06', '리얼돌 (여성 신체형상 본뜬 성기구) 수입통관보류처분취소 대법원 승소판결'],
+  ['2010.11', '남성자위기구 수입통관보류처분취소 대법원 승소판결'],
+  ['2009.06', '여성자위기구 수입통관보류처분취소 대법원 승소판결'],
+];
+
+const sites = [
+  {
+    image: 'site1.jpg',
+    name: 'www.mshb2b.com',
+    html: '<span>대한민국 최대 규모의 성인용품 도/소매 전문</span> B2B 유통채널 구축',
+  },
+  {
+    image: 'site2.jpg',
+    name: 'www.bururu.com',
+    html: '<span>대한민국 최고의 컨셉형 성인용품 전문</span> 쇼핑몰 부르르닷컴(구 딴지몰) 운영',
+  },
+  {
+    image: 'site3.jpg',
+    name: 'www.msharmony/bururufc',
+    html: '<span>대한민국 최초 밝은 분위기의 개방형</span> 성인용품 전문 오프라인 매장 운영',
+  },
+];
+
+const productPower = [
+  {
+    title: '독창적인 상품력',
+    html: '<span>√ 전문적인 지식을 갖춘 해외 브랜드 소싱전문 인력</span>√ 타 업체에서는 찾아보기 어려운 독창적인 제품구성',
+  },
+  {
+    title: '품질보증',
+    html: '<span>√ 확실한 품질의 제품만을 취급, 고객님의 신뢰확보</span>√ 제품별 철저한 A/S 정책',
+  },
+  {
+    title: '매출 포트폴리오',
+    html: '√ 저가와 고가 상품의 적절한 믹스 매출액과 수량의 하모니 추구',
+  },
+  {
+    title: '깔끔한 디자인',
+    html: '<span>√ 노골적이지 않은 디자인으로, 고객님의 호기심 유발, 구매욕구 자극</span>√ 세계 유명 디자인상 수상 및 해외 유명 디자이너 콜라보 제품 다량 보유',
+  },
+];
+
+const dropShipping = [
+  '사업장이나 물류 창고가 없어도 운영이 가능합니다.',
+  '재고를 쌓아두지 않아도 운영이 가능합니다.',
+  '포장 및 배송 인력 소모가 없습니다.',
+  '포장비닐 및 포장박스에 대한 비용 부담이 없습니다.',
+  '안심포장으로 받으시는 분께 노출 부담이 없습니다.',
+  '택배 및 운송 업체와 별도 계약이 필요하지 않습니다.',
+];
+
+const goneList = [
+  {
+    title: '<span>적나라하고 민망한 살색</span> 성인용품은 가라!',
+    lines: ['<span>√ 국내 인기제품을 비롯, 전 세계</span> 40,000여종의 하이퀄리티 성인용품 보유'],
+  },
+  {
+    title: '<span>거품 낀 가격의 검증 안된</span> 성인용품은 가라!',
+    lines: [
+      '<span>√ 불법적인 루트의 해외제품 수입과 복잡한</span> 유통과정으로 인한 가격 거품에 대한 고민X',
+      '<span>√ 해외 브랜드와 직접 거래를 하여 본사</span> 산하 물류 센터와 각 매장이 일원화 된 시스템으로 효율적으로 관리',
+    ],
+  },
+  {
+    title: '<span>출처가 의심스러운</span> 정체불명의 성인용품은 가라!',
+    lines: [
+      '<span>√ 유명 해외 브랜드 제품의 국내 공식</span> <span>수입원으로 정상적인 통관 절차를 거쳐</span> 직수입한 제품만 판매',
+    ],
+  },
+];
+
+const brands = [
+  ['ave', 'AVE'],
+  ['bijoux', 'Bijoux Indiscrets'],
+  ['blueline', 'Blue Line'],
+  ['btt', 'Big Teaze Toys'],
+  ['feelz', 'Feelztoys'],
+  ['ff', 'Fun Factory'],
+  ['fl', 'Fleshlight'],
+  ['fsg', 'Fifty Shades of Grey'],
+  ['glas', 'Gläs'],
+  ['hustler', 'Hustler'],
+  ['iroha', 'iroha'],
+  ['jejoue', 'Je Joue'],
+  ['kawaii', 'Kawaii'],
+  ['laid', 'Laid'],
+  ['liberator', 'Liberator'],
+  ['lux', 'Lux Fetish'],
+  ['nomitang', 'Nomi Tang'],
+  ['npg', 'NPG'],
+  ['omb', 'OhMiBod'],
+  ['ondo', 'ONDO!'],
+  ['pipedream', 'Pipedream'],
+  ['rends', 'Rends'],
+  ['riannes', 'Rianne S'],
+  ['satisfyer', 'Satisfyer'],
+  ['so', 'Screaming O'],
+  ['sportsheet', 'Sportsheets'],
+  ['sqweel', 'Sqweel'],
+  ['svakom', 'SVAKOM'],
+  ['swan', 'Swan'],
+  ['tenga', 'TENGA'],
+  ['tickler', 'Tickler'],
+  ['tokyod', 'Tokyo Design'],
+  ['toysh', 'Toys Heart'],
+  ['womanizer', 'Womanizer'],
+];
+---
+
+<BaseLayout
+  current="about"
+  title="회사소개"
+  description="18년간의 성인용품 도·소매 유통 노하우와 대한민국 최초 정식 수입, 자체 브랜드 ZINI를 가진 케어앤셰어를 소개합니다."
+>
+  <h1 class="visually-hidden">회사소개</h1>
+
+  <section class="strengths mb-5" aria-label="한눈에 보는 강점">
+    <div class="container bg-white text-center my-5 shadow-card">
+      <ul class="row pt-3 mb-0">
+        {strengths.map((s) => (
+          <li class="col-6 col-md-3 mb-3">
+            <Image class="mb-2" src={img(s.icon)} alt="" width={148} />
+            <p set:html={s.html} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="band bg-yellow mb-0 about-strength">
+    <Zigzag edge="top" point="up" color="var(--c-amber)" />
+    <div class="container text-center bg-white shadow-card">
+      <div class="row mb-5 pt-3 shadow-card">
+        <div class="col-12 product mb-3">
+          <h2 class="my-3">사업경쟁력</h2>
+          <p class="fw-bold">
+            01. 대한민국 최초 성인용품 정식 수입통관, 대한민국 성인용품 정식수입의 문을 열다!
+          </p>
+          <ul>
+            {lawsuits.map(([date, text]) => (
+              <li class="mb-3">
+                <span class="date">{date}</span> {text}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div class="row my-5 pt-3 shadow-card">
+        <div class="col-12 product">
+          <p class="fw-bold">02. 18년간의 도/소매 유통 및 매장 오픈, 운영 노하우</p>
+        </div>
+        {sites.map((s) => (
+          <div class="col-12 col-md-4 p-3">
+            <Image
+              class="w-100 h-auto"
+              src={img(s.image)}
+              alt={`${s.name} 화면`}
+              widths={[350, 500]}
+              sizes="(min-width: 768px) 350px, 100vw"
+            />
+            <h3 class="site-name orange my-2">{s.name}</h3>
+            <p set:html={s.html} />
+          </div>
+        ))}
+      </div>
+
+      <div class="row my-5 pt-3 shadow-card">
+        <div class="col-12 product mb-3">
+          <p class="fw-bold">03. 대한민국 유일 자체 성인용품 TOTAL BRAND, ZINI 보유</p>
+          <ul>
+            <li>2008년 제조를 시작으로 현재 전 세계 33개국에 수출, 연간 200만 불 수출 달성</li>
+            <li>세계 3대 디자인 어워드 레드닷(red dot), 이프(iF), 한국 우수디자인 (GD) 수상</li>
+            <li>
+              케어앤셰어만의 독창적인 상상력과 기술력으로 제작된 심미적인 디자인과 다양한 컨셉의
+              제품
+            </li>
+          </ul>
+          <Image
+            class="w-100 h-auto"
+            src={img('selling.jpg')}
+            alt="ZINI 제품이 소개된 매거진"
+            widths={[600, 990]}
+            sizes="(min-width: 1200px) 1080px, 100vw"
+          />
+        </div>
+      </div>
+
+      <div class="row my-5 pt-3 shadow-card">
+        <div class="col-12 product mb-3">
+          <p class="fw-bold mb-5">
+            04. 18년간의 운영 노하우와 해외 인프라를 통한 케어앤셰어만의 상품 파워!
+          </p>
+          <ul>
+            {productPower.map((item) => (
+              <li class="mb-5">
+                <p class="text-black fw-bold">{item.title}</p>
+                <Fragment set:html={item.html} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div class="row my-5 pt-3 shadow-card">
+        <div class="col-12 product mb-3">
+          <p class="fw-bold">05. 재고 부담 없고 믿을 수 있는 대리배송 시스템</p>
+          <ul>
+            {dropShipping.map((line) => (
+              <li>√ {line}</li>
+            ))}
+          </ul>
+          <Image
+            class="d-none d-md-block w-100 h-auto p-5"
+            src={img('selling2.jpg')}
+            alt="대리배송 시스템 흐름도"
+            widths={[990]}
+            sizes="(min-width: 1200px) 1080px, 100vw"
+          />
+        </div>
+      </div>
+    </div>
+    <Zigzag edge="bottom" point="down" color="var(--c-amber)" />
+  </section>
+
+  <section class="band bg-orange mb-0">
+    <div class="container text-center bg-white shadow-card">
+      <div class="row mb-5 pt-3 shadow-card">
+        <div class="col-12 product mb-3">
+          <h2 class="my-3">보유상품</h2>
+          <p class="fw-bold">
+            01. 안 팔리는 상품은 취급하지 않습니다! 오직! 합법적으로 정식 수입된 정품만을
+            취급합니다!
+          </p>
+        </div>
+        {goneList.map((item) => (
+          <div class="col-12 col-md-4">
+            <h3 class="gone-title orange" set:html={item.title} />
+            {item.lines.map((line) => (
+              <p set:html={line} />
+            ))}
+          </div>
+        ))}
+      </div>
+
+      <div class="row my-5 pt-4 shadow-card">
+        <div class="col-12 product mb-3">
+          <p class="fw-bold">
+            02. 해외 성인용품 수입 노하우를 기반으로 국내 최초 대한민국 세관을 통한 정식수입 절차를
+            거친 100% 정품만 판매합니다!
+          </p>
+        </div>
+        {['pass01.jpg', 'pass02.jpg'].map((src, i) => (
+          <div class:list={['col-12', 'col-md-6', { 'mb-3': i === 1 }]}>
+            <Image
+              class="w-100 h-auto p-2"
+              src={img(src)}
+              alt={`정식 수입 통관 증빙 ${i + 1}`}
+              widths={[500]}
+              sizes="(min-width: 768px) 500px, 100vw"
+            />
+          </div>
+        ))}
+      </div>
+
+      <div class="row my-5 pt-4 shadow-card">
+        <div class="col-12 product mb-3">
+          <h2 class="visually-hidden">주요 취급 해외 브랜드</h2>
+          <p class="fw-bold">03. PARTNER | 주요 취급 해외 브랜드</p>
+        </div>
+        <ul class="col brand-logos mb-0">
+          {brands.map(([file, name]) => (
+            <li>
+              <Image src={img(`${file}.jpg`)} alt={name} width={140} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-strength {
+    position: relative;
+  }
+  .date {
+    font-size: 1.3rem;
+  }
+  .site-name {
+    font-size: 1.5rem;
+  }
+  .gone-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+  .brand-logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .brand-logos li {
+    padding: 1rem;
+  }
+</style>

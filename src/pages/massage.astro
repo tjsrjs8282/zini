@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DetailImages from '../components/sections/DetailImages.astro';
+import ProductSection from '../components/sections/ProductSection.astro';
+import ProductCarousel from '../components/sections/ProductCarousel.astro';
+import Recommend from '../components/sections/Recommend.astro';
+---
+
+<BaseLayout
+  current="gel"
+  title="마사지젤"
+  description="오리지널, 네츄럴, 워밍 — 전신에 사용할 수 있는 ZINI 마사지젤 라인업."
+>
+  <h1 class="visually-hidden">ZINI 마사지젤</h1>
+  <DetailImages
+    title="ZINI GEL APPEAL"
+    images={[
+      { src: 'massage1.jpg', alt: '마사지젤 상세 설명 1' },
+      { src: 'massage2.jpg', alt: '마사지젤 상세 설명 2' },
+    ]}
+  />
+  <ProductSection
+    class="mt-5 mb-5"
+    title="ZINI MASSAGE GEL"
+    groups={[{ subtitle: '- MASSAGE GEL LINE UP -', line: 'massage' }]}
+    currentLine="massage"
+  />
+  <ProductSection
+    class="mt-5"
+    title="ZINI LOVE GEL"
+    groups={[
+      { subtitle: 'SENSUAL LINE UP', line: 'sensual' },
+      { subtitle: 'PREMIUM LINE UP', line: 'premium' },
+    ]}
+  />
+  <ProductCarousel />
+  <Recommend />
+</BaseLayout>

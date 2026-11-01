@@ -1,0 +1,20 @@
+# PR과 작업 브랜치에서 포맷·타입 검사와 빌드가 통과하는지 확인합니다.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run build

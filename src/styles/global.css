@@ -1,0 +1,246 @@
+/* ==========================================================================
+   ZINI 전역 스타일 — 토큰, 리셋, Bootstrap 5 보정, 여러 컴포넌트가 함께 쓰는 패턴
+   컴포넌트 전용 스타일은 각 .astro 파일의 <style> 블록에 있습니다.
+   ========================================================================== */
+
+:root {
+  --c-red: #d62f36;
+  --c-yellow: #fdb813;
+  --c-amber: #ffa800;
+  --c-orange: #f47320;
+  --c-gold: #f1c30f;
+  --c-teal: #0b5568;
+  --c-bg: #e9ecef;
+  --c-ink: #18191d;
+  --c-text: #333;
+  --c-muted: #6c757d;
+  --c-dark: #1c1c1d;
+  --font-sans:
+    'Noto Sans KR Variable', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui,
+    sans-serif;
+
+  /* Bootstrap 변수 */
+  --bs-body-font-family: var(--font-sans);
+  --bs-body-bg: var(--c-bg);
+  --bs-link-color: #000;
+  --bs-link-color-rgb: 0, 0, 0;
+  --bs-link-hover-color: #000;
+  --bs-link-hover-color-rgb: 0, 0, 0;
+}
+
+/* ---------- 리셋 ---------- */
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+ul,
+ol {
+  padding-left: 0;
+}
+li {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+}
+/* 디자인에서 span을 줄바꿈 용도로 사용합니다. 인라인이 필요하면 .d-inline / .hl을 씁니다. */
+span {
+  display: block;
+}
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* 제목 크기는 화면 폭과 관계없이 고정합니다(Bootstrap의 반응형 글자 크기를 덮어씀). */
+h1 {
+  font-size: 2.5rem;
+}
+h2 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.75rem;
+}
+h4 {
+  font-size: 1.5rem;
+}
+
+/* ---------- 레이아웃: 30px 거터, 최대 1140px 컨테이너 ---------- */
+.container,
+.container-fluid,
+.row {
+  --bs-gutter-x: 30px;
+}
+.row.g-0 {
+  --bs-gutter-x: 0;
+}
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+}
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+/* 가로 띠 섹션 */
+.band {
+  padding: 4rem 0;
+  margin-bottom: 2rem;
+  background-color: var(--c-bg);
+  border-radius: 0.3rem;
+}
+
+/* ---------- 색 · 보조 유틸리티 ---------- */
+.orange {
+  color: var(--c-orange);
+}
+.bg-orange {
+  background: var(--c-orange);
+}
+.bg-yellow {
+  background: var(--c-amber);
+}
+/* 문장 속 강조(오렌지 굵은 글씨) */
+.hl {
+  display: inline-block;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--c-orange);
+}
+.shadow-card {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+}
+@media (max-width: 1100px) {
+  .m-db {
+    display: block !important;
+  }
+}
+
+/* ---------- 섹션 제목 ---------- */
+.product {
+  position: relative;
+}
+.product h2 {
+  text-transform: uppercase;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--c-muted);
+}
+.product p {
+  color: var(--c-muted);
+  font-size: 1rem;
+}
+
+/* ---------- 알약 모양 버튼 ---------- */
+.btn-pill {
+  display: inline-block;
+  font-size: 16px;
+  padding: 15px 35px;
+  border: none;
+  background: #fff;
+  color: var(--c-text);
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: 700;
+  border-radius: 50px;
+  text-transform: uppercase;
+  animation: shadow-pulse 2s infinite;
+  transition: padding 0.4s;
+}
+.btn-pill:hover,
+.btn-pill:focus-visible {
+  padding: 15px 40px;
+  color: var(--c-text);
+}
+@keyframes shadow-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+  }
+}
+@media (max-width: 550px) {
+  .btn-pill,
+  .btn-pill:hover {
+    padding: 10px 25px;
+  }
+}
+
+/* ---------- 지그재그(톱니) 경계 ---------- */
+.zigzag {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  pointer-events: none;
+  background-color: var(--zigzag-color, var(--c-bg));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpolygon points='0,0 20,0 10,10'/%3E%3C/svg%3E")
+    0 0 / 20px 10px repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpolygon points='0,0 20,0 10,10'/%3E%3C/svg%3E")
+    0 0 / 20px 10px repeat-x;
+}
+.zigzag--up {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpolygon points='0,10 10,0 20,10'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpolygon points='0,10 10,0 20,10'/%3E%3C/svg%3E");
+}
+
+/* ---------- 슬라이더 공통 페이지네이션(사각 점) ---------- */
+.swiper-pagination.pager-squares {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.pager-squares .swiper-pagination-bullet {
+  width: 11px;
+  height: 11px;
+  margin: 0 !important;
+  border-radius: 0;
+  background: #f3f1f1;
+  opacity: 1;
+}
+.pager-squares .swiper-pagination-bullet:hover,
+.pager-squares .swiper-pagination-bullet-active {
+  background: #000;
+}
+
+/* ---------- 접근성 ---------- */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 1000;
+  padding: 0.5rem 1rem;
+  background: #000;
+  color: #fff;
+  font-weight: 700;
+}
+.skip-link:focus {
+  top: 1rem;
+  color: #fff;
+}
+:focus-visible {
+  outline: 3px solid var(--c-orange);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

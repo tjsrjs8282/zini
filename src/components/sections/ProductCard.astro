@@ -1,0 +1,92 @@
+---
+import { Image } from 'astro:assets';
+import { formatPrice } from '../../data/products';
+import type { Product } from '../../data/products';
+import { img } from '../../lib/images';
+import { url } from '../../lib/url';
+
+/**
+ * 상품 카드. 루트가 그리드 열(col)이며, 열 전체에 그림자가 들어갑니다.
+ */
+interface Props {
+  product: Product;
+  /** 그리드 열 클래스 (예: 'col-12 col-md-4') */
+  class: string;
+  href?: string;
+  /** condom: 180px 패키지 이미지 / gel: 칸 너비에 맞춘 사진 */
+  variant: 'condom' | 'gel';
+  /** 사진 표시 너비(px). 지정하면 칸 너비 대신 이 크기로 고정합니다. */
+  imageWidth?: number;
+  sizes?: string;
+}
+
+const { product, class: colClass, href, variant, imageWidth, sizes } = Astro.props;
+const Wrapper = href ? 'a' : 'div';
+const imageSize =
+  variant === 'condom'
+    ? { width: 180, densities: [1, 2] }
+    : { widths: [300, 450, 600], sizes: sizes ?? '(min-width: 768px) 50vw, 100vw' };
+---
+
+<article class:list={[colClass, 'my-2', 'product-card', `product-card--${variant}`]}>
+  <Wrapper class="product-media" href={href ? url(href) : undefined}>
+    <Image
+      class="product-img"
+      src={img(product.image)}
+      alt={product.name}
+      style={imageWidth ? `width: ${imageWidth}px` : undefined}
+      {...imageSize}
+    />
+  </Wrapper>
+  <h3>
+    <span>{product.name}</span>
+    {product.spec}
+  </h3>
+  <p class="price">{formatPrice(product.price)}</p>
+</article>
+
+<style>
+  .product-card {
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+    transition: 0.4s;
+  }
+  .product-card:hover {
+    box-shadow: 0 5px 5px 5px rgba(0, 0, 0, 0.3);
+  }
+  .product-media {
+    display: block;
+  }
+  .product-img {
+    max-width: 100%;
+    height: auto;
+  }
+  .product-card--condom .product-img {
+    width: 180px;
+    margin: 1.5rem 0;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+    transition: 0.4s;
+  }
+  .product-card--condom:hover .product-img {
+    box-shadow: 0 5px 5px 5px rgba(0, 0, 0, 0.3);
+  }
+  .product-card--gel .product-img {
+    width: 100%;
+    padding-right: 5px;
+  }
+  h3 {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  h3 span {
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--c-orange);
+  }
+</style>

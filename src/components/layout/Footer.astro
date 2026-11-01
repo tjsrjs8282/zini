@@ -1,0 +1,95 @@
+---
+import { Image } from 'astro:assets';
+import CompanyInfo from './CompanyInfo.astro';
+import SocialLinks from '../ui/SocialLinks.astro';
+import Zigzag from '../ui/Zigzag.astro';
+import { familySites, infoLinks } from '../../data/site';
+import { img } from '../../lib/images';
+import { url } from '../../lib/url';
+---
+
+<footer class="site-footer">
+  <Zigzag edge="top" point="up" color="var(--c-teal)" />
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-lg-5">
+        <CompanyInfo />
+      </div>
+      <div class="col-12 col-lg-3 mt-4 mt-lg-0">
+        <h2 class="footer-title">INFORMATION</h2>
+        <ul class="info-links">
+          {infoLinks.map((link) => (
+            <li>
+              {link.href ? <a href={url(link.href)}>{link.label}</a> : <span>{link.label}</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="col-12 col-lg-4 mt-4 mt-lg-0">
+        <h2 class="footer-title">NETWORK</h2>
+        <SocialLinks variant="footer" />
+        <h2 class="footer-title">FAMILY SITE</h2>
+        <ul class="family-sites">
+          {familySites.map((f) => (
+            <li>
+              <a href={f.href} target="_blank" rel="noopener noreferrer">
+                <Image
+                  src={img(f.image)}
+                  alt={f.name}
+                  width={300}
+                  sizes="(min-width: 992px) 180px, 50vw"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    padding: 3rem 0 4rem;
+    background-color: var(--c-teal);
+  }
+  .footer-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+  }
+  .info-links {
+    margin-top: 22px;
+  }
+  .info-links li {
+    margin: 4px 0;
+    font-size: 0.8rem;
+    color: #eee;
+  }
+  .info-links a {
+    display: block;
+    color: #eee;
+  }
+  .info-links a:hover {
+    color: #222;
+    font-weight: 700;
+  }
+  .family-sites {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .family-sites li {
+    flex: 50%;
+    padding: 5px 10px 5px 0;
+  }
+  .family-sites img {
+    width: 100%;
+    height: auto;
+    transition: 0.3s ease;
+  }
+  .family-sites li:hover img {
+    opacity: 0.8;
+  }
+</style>
