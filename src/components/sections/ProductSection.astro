@@ -1,0 +1,61 @@
+---
+import ProductCard from './ProductCard.astro';
+import Zigzag from '../ui/Zigzag.astro';
+import { linePages, products } from '../../data/products';
+import type { ProductLine } from '../../data/products';
+
+/**
+ * 젤 라인업 섹션. 여러 라인업(groups)을 한 카드 안에 이어서 보여줄 수 있습니다.
+ * 현재 페이지가 그 라인업의 상세 페이지면(currentLine) 링크를 걸지 않습니다.
+ */
+interface Props {
+  title?: string;
+  groups: { subtitle: string; line: ProductLine }[];
+  currentLine?: ProductLine;
+  /** 사진을 칸 너비 대신 고정 너비(px)로 표시 — 메인 페이지 러브젤 섹션 */
+  imageWidth?: number;
+  class?: string;
+}
+
+const { title, groups, currentLine, imageWidth, class: className } = Astro.props;
+const twoColumn = (line: ProductLine) => line === 'sensual';
+---
+
+<section class:list={['band', 'bg-white', 'product-section', className]}>
+  <Zigzag edge="top" point="down" inset />
+  <div class="container text-center shadow-card">
+    {groups.map((group, i) => (
+      <>
+        <div class:list={['row', { 'mt-5': i > 0 }]}>
+          <div class:list={['col-12', 'product', { 'mt-2': i === 0 }]}>
+            {i === 0 && title && <h2>{title}</h2>}
+            <p>{group.subtitle}</p>
+          </div>
+        </div>
+        <div class:list={['row', { 'mb-5': i < groups.length - 1 }]}>
+          {products[group.line].map((p) => (
+            <ProductCard
+              class={twoColumn(group.line) ? 'col-12 col-md-6' : 'col-12 col-md-4'}
+              product={p}
+              href={group.line === currentLine ? undefined : linePages[group.line]}
+              variant="gel"
+              imageWidth={imageWidth}
+              sizes={
+                twoColumn(group.line)
+                  ? '(min-width: 1200px) 540px, (min-width: 768px) 50vw, 100vw'
+                  : '(min-width: 1200px) 350px, (min-width: 768px) 33vw, 100vw'
+              }
+            />
+          ))}
+        </div>
+      </>
+    ))}
+  </div>
+  <Zigzag edge="bottom" point="up" inset />
+</section>
+
+<style>
+  .product-section {
+    position: relative;
+  }
+</style>

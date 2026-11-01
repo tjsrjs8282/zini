@@ -1,0 +1,314 @@
+---
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/navigation';
+import { Image } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
+import SocialLinks from '../ui/SocialLinks.astro';
+import Zigzag from '../ui/Zigzag.astro';
+import ziniCondoms from '../../assets/svg/ziniCondom.svg';
+import { characterCondoms, characters } from '../../data/products';
+import { img } from '../../lib/images';
+
+interface Props {
+  /** 콘돔 페이지처럼 캐릭터 줄 아래 여백을 좁힙니다. */
+  tight?: boolean;
+}
+
+const { tight = false } = Astro.props;
+---
+
+<section class="character-series" aria-labelledby="character-series-title">
+  <Zigzag edge="top" point="up" />
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <Image src={ziniCondoms} alt="ZINI CONDOMS" />
+        <h2 id="character-series-title">캐릭터 콘돔 시리즈</h2>
+        <p class="lead-copy">자신에게 맞는 콘돔을 선택하세요!</p>
+      </div>
+    </div>
+    <div class:list={['row', 'jumpers', { 'mb-3': tight }]} aria-hidden="true">
+      {characters.map((c) => (
+        <div class="col-4 col-sm-2 jumper">
+          <Image src={img(c)} alt="" width={116} />
+        </div>
+      ))}
+    </div>
+    <div class="swiper condom-slider" data-condom-swiper>
+      <div class="swiper-wrapper">
+        {characterCondoms.map((item) => (
+          <div class="swiper-slide">
+            <div class="condom-card">
+              <div class="condom-img">
+                <Image src={img(item.image)} alt={`${item.code} 콘돔 패키지`} width={220} />
+                <div class="condom-box-content">
+                  <SocialLinks variant="condom" />
+                </div>
+              </div>
+              <div class="condom-text">
+                <h3>{item.code}</h3>
+                <p>{item.tagline}</p>
+              </div>
+              <ul class="condom-progress">
+                {item.stats.map((value) => (
+                  <li>
+                    <p class="progress-label">
+                      Lorem ipsum.
+                      <span>
+                        <b>{value}</b>%
+                      </span>
+                    </p>
+                    <div
+                      class="progress-track"
+                      role="progressbar"
+                      aria-valuenow={value}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                    >
+                      <span class="progress-fill" style={`width: ${value}%`} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+      <button type="button" class="slider-arrow slider-arrow--next" aria-label="다음 콘돔">
+        <Icon name="chevron-right" />
+      </button>
+      <button type="button" class="slider-arrow slider-arrow--prev" aria-label="이전 콘돔">
+        <Icon name="chevron-left" />
+      </button>
+    </div>
+  </div>
+  <Zigzag edge="bottom" point="down" />
+</section>
+
+<script>
+  import { EffectCoverflow, Navigation } from 'swiper/modules';
+  import { createSwiper } from '../../scripts/swiper';
+
+  document.querySelectorAll<HTMLElement>('[data-condom-swiper]').forEach((el) => {
+    createSwiper(el, {
+      modules: [EffectCoverflow, Navigation],
+      effect: 'coverflow',
+      slidesPerView: 3,
+      centeredSlides: true,
+      loop: true,
+      grabCursor: true,
+      slideToClickedSlide: true,
+      // 기존 사이트가 실제로 보여 주던 값(Swiper 기본값). 가운데·양옆 카드 모양은 CSS가 덮어씁니다.
+      coverflowEffect: { rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true },
+      navigation: {
+        nextEl: el.querySelector<HTMLElement>('.slider-arrow--next'),
+        prevEl: el.querySelector<HTMLElement>('.slider-arrow--prev'),
+      },
+    });
+  });
+</script>
+
+<style>
+  .character-series {
+    position: relative;
+    z-index: 1;
+    padding: 72px 0 50px;
+    color: #535353;
+    text-align: center;
+    background-color: var(--c-bg);
+  }
+  h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ff1737;
+    text-transform: uppercase;
+  }
+  .lead-copy {
+    max-width: 650px;
+    margin: 0 auto 4.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: gray;
+    text-transform: uppercase;
+  }
+
+  /* 점프하는 캐릭터 */
+  .jumpers {
+    margin-bottom: 50px;
+  }
+  .jumper {
+    position: relative;
+    height: 180px;
+  }
+  .jumper img {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: jump 9s 1s infinite;
+  }
+  .jumper:nth-child(2) img {
+    animation-delay: 3s;
+  }
+  .jumper:nth-child(3) img {
+    animation-delay: 6s;
+  }
+  .jumper:nth-child(4) img {
+    animation-delay: 4s;
+  }
+  .jumper:nth-child(5) img {
+    animation-delay: 11s;
+  }
+  .jumper:nth-child(6) img {
+    animation-delay: 8s;
+  }
+  @keyframes jump {
+    3% {
+      bottom: 7px;
+    }
+    5% {
+      bottom: 0;
+    }
+  }
+
+  /* 커버플로우 */
+  .condom-slider {
+    padding-bottom: 50px;
+  }
+  .condom-slider .swiper-slide {
+    opacity: 0.6;
+  }
+  .condom-slider :global(.swiper-slide-next) {
+    transform: scale(1.1) translate3d(-25%, 0, -155.962px) rotateY(-3deg) !important;
+    padding: 15px;
+    cursor: pointer;
+  }
+  .condom-slider :global(.swiper-slide-prev) {
+    transform: scale(1.1) translate3d(25%, 0, -155.962px) rotateY(3deg) !important;
+    padding: 15px;
+    cursor: pointer;
+  }
+  .condom-slider :global(.swiper-slide-active) {
+    transform: translateY(7%) !important;
+    opacity: 1 !important;
+    transition: 300ms;
+  }
+
+  .condom-card {
+    position: relative;
+    width: 100%;
+    max-width: 230px;
+    margin: 0 auto;
+    padding: 20px 20px 0;
+    overflow: hidden;
+    background-color: #fff;
+  }
+  .condom-img {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+  .condom-img img {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+  }
+  .condom-box-content {
+    position: absolute;
+    bottom: -100px;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    padding: 20px 0;
+    background-color: var(--c-gold);
+    opacity: 0;
+    visibility: hidden;
+    transition: all linear 0.4s;
+  }
+  .condom-slider :global(.swiper-slide-active) .condom-card:hover .condom-box-content,
+  .condom-slider :global(.swiper-slide-active) .condom-card:focus-within .condom-box-content {
+    bottom: -20px;
+    opacity: 1;
+    visibility: visible;
+  }
+  .condom-text {
+    padding: 1rem 0 0;
+    font-size: 14px;
+    text-align: center;
+  }
+  .condom-text h3 {
+    margin: 0;
+    font-size: 1.7rem;
+    font-weight: 400;
+  }
+  .condom-text p {
+    font-weight: 700;
+  }
+
+  .condom-progress {
+    padding-bottom: 1rem;
+    text-align: left;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .progress-label b {
+    font-weight: 700;
+  }
+  .progress-track {
+    display: flex;
+    height: 1rem;
+    overflow: hidden;
+    background-color: var(--c-bg);
+    border-radius: 0.25rem;
+  }
+  .progress-fill {
+    height: 100%;
+    background-color: var(--c-gold);
+    border-radius: 50px;
+  }
+
+  .slider-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 46px;
+    margin-top: -23px;
+    font-size: 18px;
+    color: #fff;
+    background-color: var(--c-gold);
+    border: 4px solid var(--c-gold);
+    border-radius: 50px;
+    transition: 1s;
+  }
+  .slider-arrow--next {
+    right: 10px;
+  }
+  .slider-arrow--prev {
+    left: 10px;
+  }
+
+  @media (max-width: 550px) {
+    .condom-text h3 {
+      font-size: 1.3rem;
+    }
+    .condom-card {
+      padding: 10px;
+    }
+    .condom-progress {
+      margin-bottom: 0;
+    }
+  }
+</style>

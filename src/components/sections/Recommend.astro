@@ -1,0 +1,260 @@
+---
+import { Image } from 'astro:assets';
+import Zigzag from '../ui/Zigzag.astro';
+import { recommendBottom, recommendTop } from '../../data/banners';
+import type { RecommendItem } from '../../data/banners';
+import { img } from '../../lib/images';
+
+interface Props {
+  /** 메인 페이지는 회색 배경, 서브 페이지는 흰 배경 */
+  tone?: 'gray' | 'white';
+}
+
+const { tone = 'white' } = Astro.props;
+
+// 섹션이 화면에 들어오면 캐릭터·하트·자동차가 튀어나오는 장식 이미지
+const decor: Record<RecommendItem['decor'], { src: string; width: number }[]> = {
+  love: [
+    { src: 'heart.png', width: 210 },
+    { src: 'bubble.png', width: 30 },
+    { src: 'bubble.png', width: 15 },
+    { src: 'bubble.png', width: 35 },
+  ],
+  girl: [{ src: 'girl.png', width: 210 }],
+  boy: [{ src: 'boy.png', width: 210 }],
+  car: [{ src: 'fc4.png', width: 150 }],
+  tong: [{ src: 'fc5.png', width: 250 }],
+};
+
+const rows = [
+  { items: recommendTop, col: 'col-12 col-md-4', sizes: '(min-width: 768px) 33vw, 100vw' },
+  { items: recommendBottom, col: 'col-12 col-md-6', sizes: '(min-width: 768px) 50vw, 100vw' },
+];
+---
+
+<section
+  class:list={['band', 'recommend', tone === 'white' ? 'bg-white mt-5 mb-0' : 'mt-2 mb-2']}
+  data-reveal
+>
+  <Zigzag edge="top" point="down" inset />
+  <div class="container text-center">
+    <div class="row">
+      <div class="col-12 product mb-3">
+        <h2>추천상품</h2>
+      </div>
+    </div>
+    {rows.map((row, r) => (
+      <div class:list={['row', { 'mt-5': r > 0 }]}>
+        {row.items.map((item) => (
+          <div class:list={[row.col, 'fc']}>
+            <a href={item.href} target="_blank" rel="noopener noreferrer">
+              <Image
+                class="fc-img"
+                src={img(item.image)}
+                alt={item.alt}
+                widths={[400, 700, 1000]}
+                sizes={row.sizes}
+              />
+            </a>
+            {item.caption && (
+              <div class="caption" aria-hidden="true">
+                <p class="caption-title">{item.caption.title}</p>
+                <p class="caption-text">{item.caption.text}</p>
+              </div>
+            )}
+            <div class={`decor decor--${item.decor}`} aria-hidden="true">
+              {decor[item.decor].map((d) => (
+                <Image src={img(d.src)} alt="" width={d.width} densities={[1, 2]} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+  <Zigzag edge="bottom" point="down" />
+</section>
+
+<script>
+  // 섹션이 화면에 보이면 .is-active를 붙여 장식 애니메이션을 재생합니다.
+  const sections = document.querySelectorAll<HTMLElement>('[data-reveal]');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('is-active', entry.isIntersecting);
+      }
+    },
+    { threshold: 0.25 },
+  );
+  sections.forEach((section) => observer.observe(section));
+</script>
+
+<style>
+  .recommend {
+    position: relative;
+  }
+  .fc {
+    position: relative;
+    overflow: hidden;
+  }
+  .fc-img {
+    width: 100%;
+    height: auto;
+  }
+  .caption {
+    position: absolute;
+    top: 40px;
+    left: 50px;
+    font-weight: 700;
+    text-align: left;
+    pointer-events: none;
+  }
+  .caption-title {
+    margin-bottom: 0.5rem;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .caption-text {
+    font-size: 15px;
+    color: #585858;
+  }
+
+  .decor {
+    pointer-events: none;
+  }
+  .decor img {
+    position: absolute;
+    height: auto;
+  }
+
+  /* 러브로션: 하트와 물방울 */
+  .decor--love img:nth-child(1) {
+    top: 230px;
+    right: 20px;
+    width: 130px;
+    transition: 0.4s;
+  }
+  .decor--love img:nth-child(2) {
+    top: 300px;
+    right: 80px;
+    width: 30px;
+    transition: 1s 0.2s;
+  }
+  .decor--love img:nth-child(3) {
+    top: 300px;
+    right: 180px;
+    width: 15px;
+    transition: 1s 0.3s;
+  }
+  .decor--love img:nth-child(4) {
+    top: 300px;
+    right: 30px;
+    width: 35px;
+    transition: 1s 0.5s;
+  }
+  .is-active .decor--love img:nth-child(1) {
+    top: 50px;
+    right: 30px;
+    width: 150px;
+    transform: rotate(15deg);
+  }
+  .is-active .decor--love img:nth-child(2) {
+    top: 10px;
+  }
+  .is-active .decor--love img:nth-child(3) {
+    top: 70px;
+  }
+  .is-active .decor--love img:nth-child(4) {
+    top: 140px;
+  }
+
+  /* 여신·딸선생 캐릭터 */
+  .decor--girl img,
+  .decor--boy img {
+    bottom: -300px;
+    left: 15px;
+    width: 150px;
+    transition: 0.5s;
+  }
+  .is-active .decor--girl img,
+  .is-active .decor--boy img {
+    bottom: 0;
+  }
+
+  /* 무지개 배송 자동차, 복주머니 */
+  .decor--car img {
+    bottom: 0;
+    right: -200px;
+    width: 150px;
+    transition: 0.5s;
+  }
+  .decor--tong img {
+    bottom: 20px;
+    right: -230px;
+    width: 250px;
+    transition: 0.5s;
+  }
+  .is-active .decor--car img,
+  .is-active .decor--tong img {
+    right: 15px;
+  }
+
+  @media (max-width: 1100px) {
+    .decor--tong img {
+      width: 130px !important;
+    }
+    .decor--car img,
+    .decor--boy img,
+    .decor--girl img,
+    .decor--love img:nth-child(1) {
+      width: 100px !important;
+    }
+  }
+  @media (max-width: 1000px) {
+    .caption {
+      top: 20px;
+      left: 30px;
+    }
+    .caption-title {
+      font-size: 15px;
+    }
+    .caption-text {
+      font-size: 12px;
+    }
+  }
+  @media (max-width: 767px) {
+    .decor--car img {
+      width: 140px !important;
+    }
+    .decor--tong img,
+    .decor--boy img,
+    .decor--girl img,
+    .decor--love img:nth-child(1) {
+      width: 210px !important;
+    }
+  }
+  @media (max-width: 550px) {
+    .caption {
+      top: 30px;
+      left: 40px;
+    }
+    .caption-title {
+      font-size: 16px;
+    }
+    .caption-text {
+      font-size: 14px;
+    }
+  }
+  @media (max-width: 450px) {
+    .decor--car img {
+      width: 80px !important;
+    }
+    .decor--tong img,
+    .decor--boy img,
+    .decor--girl img,
+    .decor--love img:nth-child(1) {
+      width: 130px !important;
+    }
+  }
+</style>

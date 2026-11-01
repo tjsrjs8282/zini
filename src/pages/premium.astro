@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DetailImages from '../components/sections/DetailImages.astro';
+import ProductSection from '../components/sections/ProductSection.astro';
+import ProductCarousel from '../components/sections/ProductCarousel.astro';
+import Recommend from '../components/sections/Recommend.astro';
+---
+
+<BaseLayout
+  current="gel"
+  title="프리미엄 러브젤"
+  description="리쥬베네이션 포 허, 클라이막스 포 허, 쉐어링솔루션 — ZINI 프리미엄 러브젤 라인업."
+>
+  <h1 class="visually-hidden">ZINI 프리미엄 러브젤</h1>
+  <DetailImages
+    title="ZINI GEL APPEAL"
+    padded
+    images={[
+      { src: 'gel_content1.jpg', alt: '성분의 90%가 물인 젤' },
+      { src: 'premium1.jpg', alt: '프리미엄 러브젤 상세 설명 1' },
+      { src: 'premium2.jpg', alt: '프리미엄 러브젤 상세 설명 2' },
+    ]}
+  />
+  <ProductSection
+    class="mt-5"
+    title="ZINI LOVE GEL"
+    groups={[{ subtitle: 'PREMIUM LINE UP', line: 'premium' }]}
+    currentLine="premium"
+  />
+  <ProductSection class="mt-5" groups={[{ subtitle: 'SENSUAL LINE UP', line: 'sensual' }]} />
+  <ProductSection
+    class="mt-5 mb-5"
+    title="ZINI MASSAGE GEL"
+    groups={[{ subtitle: '- MASSAGE GEL LINE UP -', line: 'massage' }]}
+  />
+  <ProductCarousel />
+  <Recommend />
+</BaseLayout>

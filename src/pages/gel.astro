@@ -1,0 +1,100 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PromoSlider from '../components/sections/PromoSlider.astro';
+import ProductSection from '../components/sections/ProductSection.astro';
+import ProductCarousel from '../components/sections/ProductCarousel.astro';
+import Recommend from '../components/sections/Recommend.astro';
+import { img } from '../lib/images';
+
+const appeal = [
+  {
+    title: 'SAFETY',
+    lines: [
+      '안심하고 사용하세요.',
+      '피부 알러지 테스트 완료! 다양한 점막 테스트 완료.',
+      '피부에 부드러운 약산성, 저자극 수용성 성분으로 <span>내 몸에 꼭 맞는 PH 발란스를 유지, 항상 청결한 느낌을</span> 지속시켜 줍니다.',
+    ],
+    image: 'gel_image3.jpg',
+    alt: '피부 알러지·점막 테스트를 마친 안전한 젤',
+  },
+  {
+    title: 'CLEAN',
+    lines: ['저자극 수용성 제품으로 물에 쉽게 <span>세척이 가능합니다.</span>'],
+    image: 'gel_image2.jpg',
+    alt: '물에 쉽게 씻기는 수용성 젤',
+  },
+  {
+    title: 'EFFECT',
+    lines: [
+      '저자극 수용성 성분으로 민감한 부분은<span>물론 전신에 사용할 수 있으며,</span>수분과 윤기가 오랫동안 지속됩니다.',
+    ],
+    image: 'gel_image1.jpg',
+    alt: '수분과 윤기가 오래 가는 젤',
+  },
+];
+---
+
+<BaseLayout
+  current="gel"
+  title="젤"
+  description="피부 알러지·점막 테스트를 마친 저자극 수용성 ZINI 러브젤과 마사지젤 라인업을 소개합니다."
+>
+  <h1 class="visually-hidden">ZINI 젤</h1>
+  <PromoSlider />
+
+  <section class="gel-appeal band my-5" aria-labelledby="gel-appeal-title">
+    <div class="container bg-white shadow-card">
+      {appeal.map((item, i) => (
+        <div class:list={['col-12', 'product', 'text-center', i === 0 ? 'p-3' : 'py-4']}>
+          {i === 0 && (
+            <h2 id="gel-appeal-title" class="pt-3">
+              GEL APPEAL
+            </h2>
+          )}
+          <h3>{item.title}</h3>
+          {item.lines.map((line) => (
+            <p set:html={line} />
+          ))}
+          <Image
+            class="w-100 h-auto p-4"
+            src={img(item.image)}
+            alt={item.alt}
+            widths={[600, 850]}
+            sizes="(min-width: 1200px) 1080px, 100vw"
+          />
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <ProductSection
+    class="mt-5"
+    title="ZINI LOVE GEL"
+    groups={[
+      { subtitle: 'SENSUAL LINE UP', line: 'sensual' },
+      { subtitle: 'PREMIUM LINE UP', line: 'premium' },
+    ]}
+  />
+  <ProductSection
+    class="mt-5 mb-5"
+    title="ZINI MASSAGE GEL"
+    groups={[{ subtitle: '- MASSAGE GEL LINE UP -', line: 'massage' }]}
+  />
+  <ProductCarousel />
+  <Recommend />
+</BaseLayout>
+
+<style>
+  .gel-appeal {
+    padding: 0;
+  }
+  .gel-appeal h3 {
+    margin-bottom: 1rem;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--c-muted);
+    text-align: center;
+    text-transform: uppercase;
+  }
+</style>

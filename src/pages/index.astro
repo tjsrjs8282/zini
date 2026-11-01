@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSlider from '../components/sections/HeroSlider.astro';
+import CharacterSeries from '../components/sections/CharacterSeries.astro';
+import CondomLineup from '../components/sections/CondomLineup.astro';
+import PromoSlider from '../components/sections/PromoSlider.astro';
+import ProductSection from '../components/sections/ProductSection.astro';
+import ProductCarousel from '../components/sections/ProductCarousel.astro';
+import ServicesBanner from '../components/sections/ServicesBanner.astro';
+import Recommend from '../components/sections/Recommend.astro';
+---
+
+<BaseLayout current="home">
+  <HeroSlider slot="hero" />
+
+  <h1 class="visually-hidden">ZINI 지니 — 캐릭터 콘돔 & 러브젤 브랜드</h1>
+  <CharacterSeries />
+  <CondomLineup />
+  <PromoSlider />
+  <ProductSection
+    class="mt-5"
+    title="ZINI LOVE GEL"
+    groups={[
+      { subtitle: 'SENSUAL LINE UP', line: 'sensual' },
+      { subtitle: 'PREMIUM LINE UP', line: 'premium' },
+    ]}
+    imageWidth={350}
+  />
+  <ProductSection
+    class="mt-5 mb-5"
+    title="ZINI MASSAGE GEL"
+    groups={[{ subtitle: '- MASSAGE GEL LINE UP -', line: 'massage' }]}
+  />
+  <ProductCarousel />
+  <ServicesBanner />
+  <Recommend tone="gray" />
+</BaseLayout>

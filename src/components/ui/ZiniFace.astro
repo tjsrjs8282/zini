@@ -1,0 +1,56 @@
+---
+// ZINI 얼굴 로고 — 오른쪽 눈이 4초마다 윙크합니다.
+interface Props {
+  width: number;
+  height: number;
+  class?: string;
+}
+
+const { width, height, class: className } = Astro.props;
+---
+
+<svg
+  class:list={['zini-face', className]}
+  width={width}
+  height={height}
+  viewBox="0 0 150 100"
+  aria-hidden="true"
+  focusable="false"
+>
+  <circle fill="#010101" cx="13.403" cy="32.272" r="12.627"></circle>
+  <path
+    class="right-eye"
+    fill="#010101"
+    d="M149.224,32.272c0,6.975-5.652,12.627-12.626,12.627c-6.971,0-12.628-5.652-12.628-12.627s5.657-12.627,12.628-12.627C143.571,19.645,149.224,25.297,149.224,32.272z"
+  ></path>
+  <g
+    fill="none"
+    stroke="#010101"
+    stroke-width="5.0508"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-miterlimit="10"
+  >
+    <path d="M61.169,26.817v19.729c0,0,1.159,8.102,8.735,10.891c0,0,5.206,8.893,10.467,0c0,0,7.474-3.633,8.578-10.997v-9.1"></path>
+    <path d="M47.812,71.73c0,0,7.576,13.473,28.832,12.943c0,0,17.47,0.211,24.622-10.734"></path>
+    <path stroke-linejoin="miter" d="M99.51,65.926c0,0-0.262,10.678,10.156,9.943"></path>
+  </g>
+</svg>
+
+<style>
+  .right-eye {
+    transform-origin: 44px 35px;
+    animation: eye-wink 4s infinite;
+  }
+  @keyframes eye-wink {
+    28% {
+      transform: scaleY(1);
+    }
+    38% {
+      transform: scaleY(0.05);
+    }
+    48% {
+      transform: scaleY(1);
+    }
+  }
+</style>
