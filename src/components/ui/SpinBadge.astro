@@ -1,0 +1,64 @@
+---
+/** 원을 따라 글자가 천천히 도는 배지. 가운데에는 슬롯 내용이 들어갑니다. */
+interface Props {
+  text: string;
+  id?: string;
+  class?: string;
+}
+
+const { text, id = 'spin-badge', class: className } = Astro.props;
+---
+
+<div class:list={['spin-badge', className]} aria-hidden="true">
+  <svg class="spin-badge__ring" viewBox="0 0 200 200" width="200" height="200">
+    <defs>
+      <path id={id} d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"></path>
+    </defs>
+    <text>
+      <textPath href={`#${id}`} textLength="474" lengthAdjust="spacing">
+        {text}
+      </textPath>
+    </text>
+  </svg>
+  <span class="spin-badge__core">
+    <slot />
+  </span>
+</div>
+
+<style>
+  .spin-badge {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    color: var(--ink);
+    background: var(--white);
+    border: var(--border);
+    border-radius: 50%;
+    box-shadow: var(--shadow);
+  }
+  .spin-badge__ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    animation: spin 18s linear infinite;
+  }
+  .spin-badge__ring text {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    fill: currentColor;
+  }
+  .spin-badge__core {
+    display: grid;
+    place-items: center;
+    width: 46%;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

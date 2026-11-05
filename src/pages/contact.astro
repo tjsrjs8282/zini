@@ -1,58 +1,275 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import BrandMap from '../components/sections/BrandMap.astro';
-import CompanyInfo from '../components/layout/CompanyInfo.astro';
+import PageHero from '../components/sections/PageHero.astro';
 import ContactForm from '../components/sections/ContactForm.astro';
+import Icon from '../components/ui/Icon.astro';
 import SocialLinks from '../components/ui/SocialLinks.astro';
-import worldMap from '../assets/images/world-map.png';
+import ZiniFace from '../components/ui/ZiniFace.astro';
+import { businessAreas } from '../data/about';
+import { site } from '../data/site';
 ---
 
 <BaseLayout
   current="contact"
   title="문의하기"
-  theme="dark"
-  footer={false}
-  description="케어앤셰어 사업분야와 연락처 — 제품·제휴 문의를 남겨 주세요."
+  description="제휴·입점, 도매, OEM·ODM, 수입·통관 대행, 창업 컨설팅까지 — 케어앤셰어에 문의를 남겨 주세요."
 >
-  <h1 class="visually-hidden">문의하기</h1>
-  <BrandMap />
+  <PageHero
+    eyebrow="Contact"
+    title="무엇이든<br />물어보세요."
+    lead="제조부터 유통, 창업 컨설팅까지 케어앤셰어가 함께해요. 문의를 남겨 주시면 담당자가 연락드릴게요."
+  >
+    <div class="talk" slot="visual">
+      <p class="talk__bubble" aria-hidden="true">
+        제휴 문의
+        <br />
+        환영해요!
+      </p>
+      <ZiniFace class="talk__face" interactive />
+    </div>
+  </PageHero>
 
-  <section class="contact" aria-labelledby="contact-title">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6 pt-4">
-          <div class="contact-info" style={`--map: url(${worldMap.src})`}>
-            <CompanyInfo>
-              <SocialLinks variant="contact" />
-            </CompanyInfo>
-          </div>
+  <section class="section" aria-labelledby="contact-title">
+    <div class="container contact">
+      <div class="contact__side">
+        <h2 class="contact__title" id="business-title">
+          사업 분야
+        </h2>
+        <ol class="areas" aria-labelledby="business-title">
+          {businessAreas.map((a, i) => (
+            <li data-reveal style={`--i: ${i % 4}`}>
+              <span class="areas__no">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <strong>
+                  {a.title}
+                  {a.brand && <em>{a.brand}</em>}
+                </strong>
+                <p>{a.text}</p>
+              </div>
+              {a.href && (
+                <a
+                  class="areas__link"
+                  href={a.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${a.brand} 사이트 (새 창)`}
+                >
+                  <Icon name="arrow-up-right" size="18" />
+                </a>
+              )}
+            </li>
+          ))}
+        </ol>
+
+        <div class="channels-box">
+          <h2 class="contact__title">바로가기</h2>
+          <ul class="quick">
+            <li>
+              <a href={site.shopUrl} target="_blank" rel="noopener noreferrer">
+                <Icon name="store" size="22" />
+                <span>
+                  <strong>공식몰 부르르닷컴</strong>제품 구매·배송 문의
+                </span>
+                <Icon name="arrow-up-right" size="18" />
+              </a>
+            </li>
+            <li>
+              <a href={site.b2bUrl} target="_blank" rel="noopener noreferrer">
+                <Icon name="globe" size="22" />
+                <span>
+                  <strong>B2B 도매몰 엠에스하모니</strong>도매·매장 공급 문의
+                </span>
+                <Icon name="arrow-up-right" size="18" />
+              </a>
+            </li>
+          </ul>
+          <SocialLinks />
         </div>
-        <div class="col-md-6 pt-4 pb-5">
-          <h2 id="contact-title" class="contact-title">
-            Contact us
-          </h2>
-          <ContactForm />
-        </div>
+      </div>
+
+      <div class="contact__form">
+        <h2 class="contact__title" id="contact-title">
+          문의 남기기
+        </h2>
+        <p class="contact__note">* 표시는 꼭 적어 주세요.</p>
+        <ContactForm />
       </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
+  .talk {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(100%, 440px);
+    padding-top: 80px;
+  }
+  .talk :global(.talk__face) {
+    width: 100%;
+    color: var(--ink);
+  }
+  .talk__bubble {
+    position: absolute;
+    top: 0;
+    right: 4%;
+    padding: 14px 20px;
+    font-size: 1.125rem;
+    font-weight: 800;
+    line-height: 1.35;
+    color: var(--ink);
+    background: var(--white);
+    border: var(--border);
+    border-radius: 22px 22px 22px 4px;
+    box-shadow: var(--shadow);
+    rotate: 4deg;
+    animation: bubble 3s ease-in-out infinite;
+  }
+  @keyframes bubble {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
   .contact {
-    padding-top: 30px;
-    background-color: var(--c-dark);
-    border-top: 5px solid rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: clamp(40px, 6vw, 96px);
   }
-  .contact-info {
-    --company-bg: var(--c-dark);
-    background: var(--map) no-repeat;
-    background-size: contain;
+  .contact__title {
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
   }
-  .contact-title {
-    margin-bottom: 2rem;
-    font-size: 1.75rem;
+  .contact__note {
+    margin: 6px 0 24px;
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+
+  .areas {
+    display: grid;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .areas li {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .areas__no {
+    font-family: var(--display);
+    font-size: 0.8125rem;
+    font-weight: 800;
+    color: var(--muted);
+  }
+  .areas strong {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+    color: var(--ink);
+  }
+  .areas em {
+    font-family: var(--display);
+    font-size: 0.75rem;
+    font-style: normal;
     font-weight: 700;
-    color: #fff;
+    letter-spacing: 0.04em;
+    padding: 1px 8px;
+    background: var(--yellow);
+    border-radius: 999px;
+  }
+  .areas p {
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .areas__link {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: var(--border);
+    border-radius: 50%;
+    transition: background-color 0.2s;
+  }
+  .areas__link:hover {
+    background: var(--yellow);
+  }
+
+  .channels-box {
+    display: grid;
+    gap: 16px;
+    margin-top: 48px;
+  }
+  .quick {
+    display: grid;
+    gap: 10px;
+  }
+  .quick a {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--cream);
+    border: var(--border);
+    border-radius: var(--radius-sm);
+    transition:
+      transform 0.25s var(--ease-out),
+      box-shadow 0.25s var(--ease-out);
+  }
+  .quick a:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow);
+  }
+  .quick span {
+    display: grid;
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .quick strong {
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  .contact__form {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+    padding: clamp(24px, 4vw, 44px);
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+  }
+
+  @media (max-width: 959px) {
+    .contact {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .contact__form {
+      position: static;
+      order: -1;
+    }
+  }
+  @media (max-width: 859px) {
+    .talk {
+      width: min(100%, 280px);
+      padding-top: 72px;
+    }
+    .talk__bubble {
+      right: -8%;
+      font-size: 1rem;
+    }
   }
 </style>

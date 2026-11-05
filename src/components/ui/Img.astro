@@ -1,0 +1,65 @@
+---
+/**
+ * src/assets/images 의 이미지를 파일명으로 불러와 AVIF·WebP <picture>로 출력합니다.
+ * - widths + sizes: 화면 폭에 맞춰 고르는 반응형 이미지
+ * - width(+densities): 고정 크기 이미지(아이콘·캐릭터)
+ */
+import { Picture } from 'astro:assets';
+import type { ComponentProps } from 'astro/types';
+import { img } from '../../lib/images';
+
+type PictureProps = ComponentProps<typeof Picture>;
+
+interface Props {
+  name: string;
+  alt: string;
+  widths?: number[];
+  sizes?: string;
+  width?: number;
+  densities?: number[];
+  loading?: 'eager' | 'lazy';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  class?: string;
+  pictureClass?: string;
+  quality?: number;
+}
+
+const {
+  name,
+  alt,
+  widths,
+  sizes,
+  width,
+  densities,
+  loading = 'lazy',
+  fetchpriority,
+  class: className,
+  pictureClass,
+  quality,
+} = Astro.props;
+
+const src = img(name);
+// 원본보다 큰 크기는 만들지 않습니다.
+const safeWidths = widths?.filter((w) => w <= src.width);
+const sizing = safeWidths?.length
+  ? { widths: safeWidths, sizes: sizes ?? '100vw' }
+  : densities
+    ? { densities }
+    : {};
+
+const props = {
+  src,
+  alt,
+  formats: ['avif', 'webp'],
+  ...sizing,
+  ...(width ? { width: Math.min(width, src.width) } : {}),
+  loading,
+  decoding: loading === 'eager' ? 'sync' : 'async',
+  ...(fetchpriority ? { fetchpriority } : {}),
+  ...(quality ? { quality } : {}),
+  class: className,
+  pictureAttributes: pictureClass ? { class: pictureClass } : undefined,
+} as PictureProps;
+---
+
+<Picture {...props} />

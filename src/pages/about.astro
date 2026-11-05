@@ -1,335 +1,850 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/sections/PageHero.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
+import Icon from '../components/ui/Icon.astro';
+import Img from '../components/ui/Img.astro';
+import Lightbox from '../components/ui/Lightbox.astro';
+import Marquee from '../components/ui/Marquee.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
 import Zigzag from '../components/ui/Zigzag.astro';
+import {
+  brandFacts,
+  brands,
+  channels,
+  dropShipping,
+  goneList,
+  lawsuits,
+  productPower,
+  strengths,
+} from '../data/about';
 import { img } from '../lib/images';
 
-const strengths = [
-  { icon: 'icon1.png', html: '<span><em class="hl">18년간</em>의 도/소매</span> 유통 노하우' },
-  { icon: 'icon2.png', html: '<span><em class="hl">대한민국 최초</em></span>성인용품 정식 수입' },
-  {
-    icon: 'icon3.png',
-    html: '<span>유통 일원화로</span><em class="hl">국내 최저가</em> 공급 보장',
-  },
-  {
-    icon: 'icon4.png',
-    html: '<span>해외 수입 브랜드</span><em class="hl">100% 합법 정식</em> 수입',
-  },
-  {
-    icon: 'icon5.png',
-    html: '<span>자체 성인용품</span><span>브랜드 <em class="hl">ZINI,</em></span><em class="hl">S-Solution</em> 보유',
-  },
-  {
-    icon: 'icon6.png',
-    html: '<span>저가부터 고가까지</span><span>다양한 상품보유</span><em class="hl">(국내 최대)</em>',
-  },
-  { icon: 'icon7.png', html: '<span>재고 부담없는</span><em class="hl">대리배송</em>시스템' },
-  { icon: 'icon8.png', html: '<span>제품<em class="hl">마케팅</em></span>자료 및 컨텐츠 제공' },
-];
+const half = Math.ceil(brands.length / 2);
+const brandRows = [brands.slice(0, half), brands.slice(half)];
 
-const lawsuits = [
-  ['2019.06', '리얼돌 (여성 신체형상 본뜬 성기구) 수입통관보류처분취소 대법원 승소판결'],
-  ['2010.11', '남성자위기구 수입통관보류처분취소 대법원 승소판결'],
-  ['2009.06', '여성자위기구 수입통관보류처분취소 대법원 승소판결'],
-];
-
-const sites = [
-  {
-    image: 'site1.jpg',
-    name: 'www.mshb2b.com',
-    html: '<span>대한민국 최대 규모의 성인용품 도/소매 전문</span> B2B 유통채널 구축',
-  },
-  {
-    image: 'site2.jpg',
-    name: 'www.bururu.com',
-    html: '<span>대한민국 최고의 컨셉형 성인용품 전문</span> 쇼핑몰 부르르닷컴(구 딴지몰) 운영',
-  },
-  {
-    image: 'site3.jpg',
-    name: 'www.msharmony/bururufc',
-    html: '<span>대한민국 최초 밝은 분위기의 개방형</span> 성인용품 전문 오프라인 매장 운영',
-  },
-];
-
-const productPower = [
-  {
-    title: '독창적인 상품력',
-    html: '<span>√ 전문적인 지식을 갖춘 해외 브랜드 소싱전문 인력</span>√ 타 업체에서는 찾아보기 어려운 독창적인 제품구성',
-  },
-  {
-    title: '품질보증',
-    html: '<span>√ 확실한 품질의 제품만을 취급, 고객님의 신뢰확보</span>√ 제품별 철저한 A/S 정책',
-  },
-  {
-    title: '매출 포트폴리오',
-    html: '√ 저가와 고가 상품의 적절한 믹스 매출액과 수량의 하모니 추구',
-  },
-  {
-    title: '깔끔한 디자인',
-    html: '<span>√ 노골적이지 않은 디자인으로, 고객님의 호기심 유발, 구매욕구 자극</span>√ 세계 유명 디자인상 수상 및 해외 유명 디자이너 콜라보 제품 다량 보유',
-  },
-];
-
-const dropShipping = [
-  '사업장이나 물류 창고가 없어도 운영이 가능합니다.',
-  '재고를 쌓아두지 않아도 운영이 가능합니다.',
-  '포장 및 배송 인력 소모가 없습니다.',
-  '포장비닐 및 포장박스에 대한 비용 부담이 없습니다.',
-  '안심포장으로 받으시는 분께 노출 부담이 없습니다.',
-  '택배 및 운송 업체와 별도 계약이 필요하지 않습니다.',
-];
-
-const goneList = [
-  {
-    title: '<span>적나라하고 민망한 살색</span> 성인용품은 가라!',
-    lines: ['<span>√ 국내 인기제품을 비롯, 전 세계</span> 40,000여종의 하이퀄리티 성인용품 보유'],
-  },
-  {
-    title: '<span>거품 낀 가격의 검증 안된</span> 성인용품은 가라!',
-    lines: [
-      '<span>√ 불법적인 루트의 해외제품 수입과 복잡한</span> 유통과정으로 인한 가격 거품에 대한 고민X',
-      '<span>√ 해외 브랜드와 직접 거래를 하여 본사</span> 산하 물류 센터와 각 매장이 일원화 된 시스템으로 효율적으로 관리',
-    ],
-  },
-  {
-    title: '<span>출처가 의심스러운</span> 정체불명의 성인용품은 가라!',
-    lines: [
-      '<span>√ 유명 해외 브랜드 제품의 국내 공식</span> <span>수입원으로 정상적인 통관 절차를 거쳐</span> 직수입한 제품만 판매',
-    ],
-  },
-];
-
-const brands = [
-  ['ave', 'AVE'],
-  ['bijoux', 'Bijoux Indiscrets'],
-  ['blueline', 'Blue Line'],
-  ['btt', 'Big Teaze Toys'],
-  ['feelz', 'Feelztoys'],
-  ['ff', 'Fun Factory'],
-  ['fl', 'Fleshlight'],
-  ['fsg', 'Fifty Shades of Grey'],
-  ['glas', 'Gläs'],
-  ['hustler', 'Hustler'],
-  ['iroha', 'iroha'],
-  ['jejoue', 'Je Joue'],
-  ['kawaii', 'Kawaii'],
-  ['laid', 'Laid'],
-  ['liberator', 'Liberator'],
-  ['lux', 'Lux Fetish'],
-  ['nomitang', 'Nomi Tang'],
-  ['npg', 'NPG'],
-  ['omb', 'OhMiBod'],
-  ['ondo', 'ONDO!'],
-  ['pipedream', 'Pipedream'],
-  ['rends', 'Rends'],
-  ['riannes', 'Rianne S'],
-  ['satisfyer', 'Satisfyer'],
-  ['so', 'Screaming O'],
-  ['sportsheet', 'Sportsheets'],
-  ['sqweel', 'Sqweel'],
-  ['svakom', 'SVAKOM'],
-  ['swan', 'Swan'],
-  ['tenga', 'TENGA'],
-  ['tickler', 'Tickler'],
-  ['tokyod', 'Tokyo Design'],
-  ['toysh', 'Toys Heart'],
-  ['womanizer', 'Womanizer'],
-];
+// 정식 수입 통관 증빙 — 눌러서 크게 보기
+const proofs = await Promise.all(
+  ['pass01.jpg', 'pass02.jpg'].map(async (name, i) => ({
+    name,
+    alt: `정식 수입 신고필증 ${i + 1}`,
+    large: await getImage({ src: img(name), format: 'webp' }),
+  })),
+);
 ---
 
 <BaseLayout
   current="about"
   title="회사소개"
-  description="18년간의 성인용품 도·소매 유통 노하우와 대한민국 최초 정식 수입, 자체 브랜드 ZINI를 가진 케어앤셰어를 소개합니다."
+  themeColor="#fff1cc"
+  description="18년간의 성인용품 도·소매 유통 노하우와 대한민국 최초 정식 수입, 자체 브랜드 ZINI·S-SOLUTION을 가진 케어앤셰어를 소개합니다."
 >
-  <h1 class="visually-hidden">회사소개</h1>
+  <PageHero
+    eyebrow="About Care & Share"
+    title="대한민국 성인용품의<br />문을 열었어요."
+    lead="18년간 쌓은 도·소매 유통 노하우, 국내 최초 정식 수입 통관, 그리고 자체 브랜드 ZINI와 S-SOLUTION까지. ZINI를 만든 케어앤셰어를 소개해요."
+    tone="var(--cream)"
+  >
+    <div class="photo-stack" slot="visual" aria-hidden="true">
+      <Img
+        name="site3.jpg"
+        alt=""
+        widths={[300, 500]}
+        sizes="260px"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <Img name="13-00.jpg" alt="" widths={[300, 540]} sizes="260px" />
+      <Img name="gallery_cd1.jpg" alt="" widths={[300, 450]} sizes="220px" />
+    </div>
+  </PageHero>
 
-  <section class="strengths mb-5" aria-label="한눈에 보는 강점">
-    <div class="container bg-white text-center my-5 shadow-card">
-      <ul class="row pt-3 mb-0">
-        {strengths.map((s) => (
-          <li class="col-6 col-md-3 mb-3">
-            <Image class="mb-2" src={img(s.icon)} alt="" width={148} />
-            <p set:html={s.html} />
+  <!-- 한눈에 보는 강점 -->
+  <section class="section" aria-labelledby="strength-title">
+    <div class="container">
+      <SectionHead
+        eyebrow="At a Glance"
+        id="strength-title"
+        title="한눈에 보는 케어앤셰어"
+        align="center"
+      />
+      <ul class="strengths">
+        {strengths.map((s, i) => (
+          <li data-reveal style={`--i: ${i % 4}`}>
+            <Img name={s.icon} alt="" width={148} />
+            <p>
+              <strong>{s.hl}</strong>
+              {s.text}
+            </p>
           </li>
         ))}
       </ul>
     </div>
   </section>
 
-  <section class="band bg-yellow mb-0 about-strength">
-    <Zigzag edge="top" point="up" color="var(--c-amber)" />
-    <div class="container text-center bg-white shadow-card">
-      <div class="row mb-5 pt-3 shadow-card">
-        <div class="col-12 product mb-3">
-          <h2 class="my-3">사업경쟁력</h2>
-          <p class="fw-bold">
-            01. 대한민국 최초 성인용품 정식 수입통관, 대한민국 성인용품 정식수입의 문을 열다!
-          </p>
-          <ul>
-            {lawsuits.map(([date, text]) => (
-              <li class="mb-3">
-                <span class="date">{date}</span> {text}
-              </li>
-            ))}
-          </ul>
-        </div>
+  <!-- 01 정식 수입 -->
+  <section class="chapter section on-dark" aria-labelledby="ch1-title">
+    <Zigzag edge="top" color="var(--ink)" />
+    <div class="container chapter__grid">
+      <div class="chapter__head">
+        <span class="chapter__no" aria-hidden="true">
+          01
+        </span>
+        <SectionHead
+          eyebrow="First in Korea"
+          id="ch1-title"
+          title="정식 수입의 문을<br />처음 열었어요."
+          lead="대한민국 최초로 성인용품을 정식 수입 통관했어요. 세 번의 대법원 승소가 그 길을 만들었어요."
+        />
       </div>
-
-      <div class="row my-5 pt-3 shadow-card">
-        <div class="col-12 product">
-          <p class="fw-bold">02. 18년간의 도/소매 유통 및 매장 오픈, 운영 노하우</p>
-        </div>
-        {sites.map((s) => (
-          <div class="col-12 col-md-4 p-3">
-            <Image
-              class="w-100 h-auto"
-              src={img(s.image)}
-              alt={`${s.name} 화면`}
-              widths={[350, 500]}
-              sizes="(min-width: 768px) 350px, 100vw"
-            />
-            <h3 class="site-name orange my-2">{s.name}</h3>
-            <p set:html={s.html} />
-          </div>
+      <ol class="timeline">
+        {lawsuits.map((l, i) => (
+          <li data-reveal style={`--i: ${i}`}>
+            <time>{l.date}</time>
+            <div>
+              <strong>{l.title}</strong>
+              <p>{l.text}</p>
+            </div>
+          </li>
         ))}
-      </div>
-
-      <div class="row my-5 pt-3 shadow-card">
-        <div class="col-12 product mb-3">
-          <p class="fw-bold">03. 대한민국 유일 자체 성인용품 TOTAL BRAND, ZINI 보유</p>
-          <ul>
-            <li>2008년 제조를 시작으로 현재 전 세계 33개국에 수출, 연간 200만 불 수출 달성</li>
-            <li>세계 3대 디자인 어워드 레드닷(red dot), 이프(iF), 한국 우수디자인 (GD) 수상</li>
-            <li>
-              케어앤셰어만의 독창적인 상상력과 기술력으로 제작된 심미적인 디자인과 다양한 컨셉의
-              제품
-            </li>
-          </ul>
-          <Image
-            class="w-100 h-auto"
-            src={img('selling.jpg')}
-            alt="ZINI 제품이 소개된 매거진"
-            widths={[600, 990]}
-            sizes="(min-width: 1200px) 1080px, 100vw"
-          />
-        </div>
-      </div>
-
-      <div class="row my-5 pt-3 shadow-card">
-        <div class="col-12 product mb-3">
-          <p class="fw-bold mb-5">
-            04. 18년간의 운영 노하우와 해외 인프라를 통한 케어앤셰어만의 상품 파워!
-          </p>
-          <ul>
-            {productPower.map((item) => (
-              <li class="mb-5">
-                <p class="text-black fw-bold">{item.title}</p>
-                <Fragment set:html={item.html} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <div class="row my-5 pt-3 shadow-card">
-        <div class="col-12 product mb-3">
-          <p class="fw-bold">05. 재고 부담 없고 믿을 수 있는 대리배송 시스템</p>
-          <ul>
-            {dropShipping.map((line) => (
-              <li>√ {line}</li>
-            ))}
-          </ul>
-          <Image
-            class="d-none d-md-block w-100 h-auto p-5"
-            src={img('selling2.jpg')}
-            alt="대리배송 시스템 흐름도"
-            widths={[990]}
-            sizes="(min-width: 1200px) 1080px, 100vw"
-          />
-        </div>
-      </div>
+      </ol>
     </div>
-    <Zigzag edge="bottom" point="down" color="var(--c-amber)" />
+    <Zigzag edge="bottom" color="var(--ink)" />
   </section>
 
-  <section class="band bg-orange mb-0">
-    <div class="container text-center bg-white shadow-card">
-      <div class="row mb-5 pt-3 shadow-card">
-        <div class="col-12 product mb-3">
-          <h2 class="my-3">보유상품</h2>
-          <p class="fw-bold">
-            01. 안 팔리는 상품은 취급하지 않습니다! 오직! 합법적으로 정식 수입된 정품만을
-            취급합니다!
-          </p>
-        </div>
-        {goneList.map((item) => (
-          <div class="col-12 col-md-4">
-            <h3 class="gone-title orange" set:html={item.title} />
-            {item.lines.map((line) => (
-              <p set:html={line} />
-            ))}
-          </div>
-        ))}
+  <!-- 02 유통 채널 -->
+  <section class="chapter section" aria-labelledby="ch2-title">
+    <div class="container">
+      <div class="chapter__head">
+        <span class="chapter__no" aria-hidden="true">
+          02
+        </span>
+        <SectionHead
+          eyebrow="18 Years of Know-how"
+          id="ch2-title"
+          title="온라인, 오프라인,<br />그리고 B2B까지."
+          lead="18년 동안 도·소매 유통과 매장 운영 노하우를 쌓았어요."
+        />
       </div>
-
-      <div class="row my-5 pt-4 shadow-card">
-        <div class="col-12 product mb-3">
-          <p class="fw-bold">
-            02. 해외 성인용품 수입 노하우를 기반으로 국내 최초 대한민국 세관을 통한 정식수입 절차를
-            거친 100% 정품만 판매합니다!
-          </p>
-        </div>
-        {['pass01.jpg', 'pass02.jpg'].map((src, i) => (
-          <div class:list={['col-12', 'col-md-6', { 'mb-3': i === 1 }]}>
-            <Image
-              class="w-100 h-auto p-2"
-              src={img(src)}
-              alt={`정식 수입 통관 증빙 ${i + 1}`}
-              widths={[500]}
-              sizes="(min-width: 768px) 500px, 100vw"
-            />
-          </div>
+      <ul class="channels">
+        {channels.map((c, i) => (
+          <li data-reveal style={`--i: ${i}`}>
+            <article class="channel">
+              <div class="channel__shot">
+                <Img
+                  name={c.image}
+                  alt={`${c.name} 화면`}
+                  widths={[360, 500]}
+                  sizes="(min-width: 1080px) 400px, (min-width: 760px) 45vw, 92vw"
+                />
+                <span class="channel__label">{c.label}</span>
+              </div>
+              <div class="channel__body">
+                <h3>
+                  {c.href ? (
+                    <a class="stretched" href={c.href} target="_blank" rel="noopener noreferrer">
+                      {c.name} <Icon name="arrow-up-right" size="18" />
+                    </a>
+                  ) : (
+                    c.name
+                  )}
+                </h3>
+                <p>{c.text}</p>
+              </div>
+            </article>
+          </li>
         ))}
-      </div>
+      </ul>
+    </div>
+  </section>
 
-      <div class="row my-5 pt-4 shadow-card">
-        <div class="col-12 product mb-3">
-          <h2 class="visually-hidden">주요 취급 해외 브랜드</h2>
-          <p class="fw-bold">03. PARTNER | 주요 취급 해외 브랜드</p>
+  <!-- 03 자체 브랜드 -->
+  <section class="chapter section own-brand" aria-labelledby="ch3-title">
+    <div class="container own-brand__grid">
+      <div>
+        <div class="chapter__head">
+          <span class="chapter__no" aria-hidden="true">
+            03
+          </span>
+          <SectionHead
+            eyebrow="Our Own Brand"
+            id="ch3-title"
+            title="대한민국 유일의<br />토털 성인용품 브랜드."
+            lead="독창적인 상상력과 기술력으로 만든 심미적인 디자인. 세계 3대 디자인 어워드 중 레드닷과 iF, 그리고 한국 우수디자인(GD)을 받았어요."
+          />
         </div>
-        <ul class="col brand-logos mb-0">
-          {brands.map(([file, name]) => (
-            <li>
-              <Image src={img(`${file}.jpg`)} alt={name} width={140} />
-            </li>
+        <dl class="facts">
+          {brandFacts.map((f, i) => (
+            <div data-reveal style={`--i: ${i}`}>
+              <dt>{f.label}</dt>
+              <dd>
+                {f.value}
+                <span>{f.unit}</span>
+              </dd>
+            </div>
           ))}
-        </ul>
+        </dl>
       </div>
+      <figure class="own-brand__photo" data-reveal>
+        <Img
+          name="selling.jpg"
+          alt="해외 박람회와 매거진에 소개된 ZINI, 레드닷·iF 디자인 어워드 수상 제품"
+          widths={[480, 720, 990]}
+          sizes="(min-width: 960px) 560px, 92vw"
+        />
+      </figure>
     </div>
   </section>
+
+  <!-- 04 상품 파워 -->
+  <section class="chapter section" aria-labelledby="ch4-title">
+    <div class="container">
+      <div class="chapter__head">
+        <span class="chapter__no" aria-hidden="true">
+          04
+        </span>
+        <SectionHead
+          eyebrow="Product Power"
+          id="ch4-title"
+          title="18년 노하우가 만든<br />상품 파워."
+        />
+      </div>
+      <ul class="powers">
+        {productPower.map((p, i) => (
+          <li class="power" data-reveal style={`--i: ${i}`}>
+            <span class="power__no">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{p.title}</h3>
+            <ul>
+              {p.lines.map((line) => (
+                <li>
+                  <Icon name="check" size="18" />
+                  {line}
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 05 대리배송 -->
+  <section class="chapter section dropship" aria-labelledby="ch5-title">
+    <div class="container">
+      <div class="chapter__head">
+        <span class="chapter__no" aria-hidden="true">
+          05
+        </span>
+        <SectionHead
+          eyebrow="Drop Shipping"
+          id="ch5-title"
+          title="재고 걱정 없는<br />대리배송 시스템."
+          lead="주문만 받으세요. 포장부터 배송까지 케어앤셰어가 대신해요."
+        />
+      </div>
+      <ul class="checks">
+        {dropShipping.map((line, i) => (
+          <li data-reveal style={`--i: ${i % 3}`}>
+            <span class="checks__icon" aria-hidden="true">
+              <Icon name="check" size="18" />
+            </span>
+            {line}
+          </li>
+        ))}
+      </ul>
+      <figure class="flow" data-reveal>
+        <Img
+          name="selling2.jpg"
+          alt="대리배송 흐름 — 고객 주문부터 케어앤셰어 물류센터 출고, 고객 배송까지"
+          widths={[640, 990]}
+          sizes="(min-width: 1080px) 990px, 92vw"
+        />
+      </figure>
+    </div>
+  </section>
+
+  <!-- 이런 성인용품은 가라 -->
+  <section class="gone section" aria-labelledby="gone-title">
+    <Zigzag edge="top" color="var(--yellow)" />
+    <div class="container">
+      <SectionHead
+        eyebrow="No More"
+        id="gone-title"
+        title="이런 성인용품은<br />가라!"
+        lead="안 팔리는 상품은 취급하지 않아요. 합법적으로 정식 수입된 정품만 다뤄요."
+        align="center"
+      />
+      <ul class="gone__list">
+        {goneList.map((g, i) => (
+          <li data-reveal style={`--i: ${i}`}>
+            <span class="gone__stamp" aria-hidden="true">
+              GO AWAY
+            </span>
+            <h3>{g.title}</h3>
+            <p>{g.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <Zigzag edge="bottom" color="var(--yellow)" />
+  </section>
+
+  <!-- 정식 통관 증빙 -->
+  <section class="section proof" aria-labelledby="proof-title">
+    <div class="container proof__grid">
+      <SectionHead
+        eyebrow="100% Genuine"
+        id="proof-title"
+        title="세관을 통과한<br />정품만 팔아요."
+        lead="해외 성인용품 수입 노하우로 국내 최초 정식 수입 절차를 밟았어요. 수입 신고필증을 눌러 크게 보세요."
+      />
+      <ul class="proof__docs" data-lightbox>
+        {proofs.map((p, i) => (
+          <li data-reveal style={`--i: ${i}`}>
+            <a
+              href={p.large.src}
+              data-pswp-width={p.large.attributes.width}
+              data-pswp-height={p.large.attributes.height}
+            >
+              <Img
+                name={p.name}
+                alt={p.alt}
+                widths={[300, 500]}
+                sizes="(min-width: 960px) 280px, 44vw"
+              />
+              <span class="proof__zoom">
+                <Icon name="zoom" size="18" /> 크게 보기
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 파트너 브랜드 -->
+  <section class="partners section" aria-labelledby="partners-title">
+    <div class="container">
+      <SectionHead
+        eyebrow="Partners"
+        id="partners-title"
+        title={`해외 브랜드 ${brands.length}곳과 함께해요.`}
+        align="center"
+      />
+    </div>
+    <div class="partners__rows">
+      {brandRows.map((row, r) => (
+        <Marquee speed={48} reverse={r === 1} gap="16px">
+          {row.map(([file, name]) => (
+            <span class="logo-chip">
+              <Img name={`${file}.jpg`} alt={name} width={140} />
+            </span>
+          ))}
+        </Marquee>
+      ))}
+    </div>
+  </section>
+
+  <CtaBand
+    title="함께 성장할<br />파트너를 찾아요."
+    text="입점·도매·OEM·창업 컨설팅까지, 케어앤셰어와 이야기해요."
+  />
+  <Lightbox />
 </BaseLayout>
 
 <style>
-  .about-strength {
+  /* 히어로 사진 더미 */
+  .photo-stack {
+    position: relative;
+    width: min(100%, 480px);
+    aspect-ratio: 1.1;
+  }
+  .photo-stack :global(picture) {
+    position: absolute;
+    overflow: hidden;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .photo-stack :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .photo-stack :global(picture:nth-child(1)) {
+    top: 0;
+    left: 0;
+    width: 62%;
+    aspect-ratio: 4 / 3;
+    rotate: -5deg;
+  }
+  .photo-stack :global(picture:nth-child(2)) {
+    right: 0;
+    top: 22%;
+    width: 58%;
+    aspect-ratio: 4 / 3;
+    rotate: 4deg;
+  }
+  .photo-stack :global(picture:nth-child(3)) {
+    left: 18%;
+    bottom: 0;
+    width: 40%;
+    aspect-ratio: 1;
+    rotate: -2deg;
+  }
+
+  /* 강점 */
+  .strengths {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+  .strengths li {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    padding: 28px 16px;
+    text-align: center;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+  }
+  .strengths :global(img) {
+    width: 88px;
+  }
+  .strengths p {
+    display: grid;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .strengths strong {
+    font-size: 1.125rem;
+    color: var(--ink);
+  }
+
+  /* 챕터 머리 */
+  .chapter__head {
     position: relative;
   }
-  .date {
-    font-size: 1.3rem;
+  .chapter__no {
+    display: block;
+    margin-bottom: 12px;
+    font-family: var(--display);
+    font-size: clamp(3.5rem, 2.4rem + 4vw, 6rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: transparent;
+    -webkit-text-stroke: 2px currentColor;
   }
-  .site-name {
-    font-size: 1.5rem;
+  .on-dark .chapter__no {
+    color: transparent;
+    -webkit-text-stroke-color: var(--yellow);
   }
-  .gone-title {
-    font-size: 1.3rem;
+
+  /* 01 타임라인 */
+  .chapter__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(40px, 6vw, 96px);
+  }
+  .timeline {
+    position: relative;
+    display: grid;
+    gap: 14px;
+  }
+  .timeline li {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    align-items: start;
+    gap: 20px;
+    padding: 22px 24px;
+    background: rgb(255 255 255 / 6%);
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: var(--radius);
+  }
+  .timeline time {
+    font-family: var(--display);
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--yellow);
+  }
+  .timeline strong {
+    display: block;
+    font-size: 1.125rem;
+    color: var(--white);
+  }
+  .timeline p {
+    margin-top: 2px;
+  }
+
+  /* 02 채널 */
+  .channels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+  .channel {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    transition:
+      transform 0.35s var(--ease-out),
+      box-shadow 0.35s var(--ease-out);
+  }
+  .channel:has(a):hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+  }
+  .channel__shot {
+    position: relative;
+    border-bottom: var(--border);
+  }
+  .channel__shot :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+  .channel__label {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 4px 10px;
+    font-family: var(--display);
+    font-size: 0.6875rem;
     font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    background: var(--yellow);
+    border: var(--border);
+    border-radius: 999px;
   }
-  .brand-logos {
+  .channel__body {
+    display: grid;
+    gap: 6px;
+    padding: 22px 24px 26px;
+  }
+  .channel__body h3 {
+    font-family: var(--display);
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+  }
+  .channel__body h3 a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .channel__body p {
+    color: var(--muted);
+  }
+
+  /* 03 브랜드 */
+  .own-brand {
+    background: var(--cream);
+  }
+  .own-brand__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(40px, 6vw, 96px);
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 40px;
+  }
+  .facts div {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column-reverse;
+    gap: 6px;
+    padding: 20px;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-sm);
   }
-  .brand-logos li {
-    padding: 1rem;
+  .facts dt {
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .facts dd {
+    font-family: var(--display);
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.6rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .facts dd span {
+    margin-left: 3px;
+    font-family: var(--sans);
+    font-size: 1rem;
+  }
+  .own-brand__photo :global(img) {
+    width: 100%;
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* 04 상품 파워 */
+  .powers {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+  .power {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    padding: 26px 24px 28px;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+  }
+  .power__no {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    font-family: var(--display);
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--ink);
+    background: var(--yellow);
+    border: var(--border);
+    border-radius: 50%;
+  }
+  .power h3 {
+    font-size: 1.25rem;
+  }
+  .power ul {
+    display: grid;
+    gap: 8px;
+  }
+  .power li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px;
+    color: var(--muted);
+  }
+  .power li :global(.icon) {
+    margin-top: 0.3em;
+    color: var(--ink);
+  }
+
+  /* 05 대리배송 */
+  .dropship {
+    padding-top: 0;
+  }
+  .checks {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: clamp(36px, 5vw, 56px);
+  }
+  .checks li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--white);
+    border: var(--border);
+    border-radius: 999px;
+  }
+  .checks__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    color: var(--white);
+    background: var(--ink);
+    border-radius: 50%;
+  }
+  .flow {
+    margin-top: 28px;
+    padding: clamp(16px, 3vw, 32px);
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+  }
+  .flow :global(img) {
+    width: 100%;
+  }
+
+  /* 가라! */
+  .gone {
+    background: var(--yellow);
+  }
+  .gone__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+  .gone__list li {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    padding: 64px 26px 30px;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+  }
+  .gone__stamp {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    padding: 3px 10px;
+    font-family: var(--display);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #d93a3a;
+    border: 2px solid #d93a3a;
+    border-radius: 6px;
+    rotate: -6deg;
+  }
+  .gone__list h3 {
+    font-size: 1.3rem;
+  }
+  .gone__list p {
+    color: var(--muted);
+  }
+
+  /* 통관 증빙 */
+  .proof__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(40px, 6vw, 96px);
+  }
+  .proof__docs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .proof__docs a {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-sm);
+    transition:
+      transform 0.35s var(--ease-out),
+      box-shadow 0.35s var(--ease-out);
+  }
+  .proof__docs li:nth-child(2) a {
+    margin-top: 36px;
+  }
+  .proof__docs a:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+  }
+  .proof__docs :global(img) {
+    width: 100%;
+  }
+  .proof__zoom {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    color: var(--white);
+    background: var(--ink);
+    border-radius: 999px;
+  }
+
+  /* 파트너 */
+  .partners {
+    padding-top: 0;
+  }
+  .partners__rows {
+    display: grid;
+    gap: 16px;
+    margin-top: clamp(36px, 5vw, 56px);
+  }
+  .logo-chip {
+    display: grid;
+    place-items: center;
+    width: 160px;
+    height: 104px;
+    overflow: hidden;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .logo-chip :global(img) {
+    width: 140px;
+  }
+
+  @media (max-width: 1023px) {
+    .strengths,
+    .powers {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .channels {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .checks {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 899px) {
+    .chapter__grid,
+    .own-brand__grid,
+    .proof__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .gone__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 639px) {
+    .channels,
+    .checks {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .facts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .timeline li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 8px;
+    }
+  }
+  @media (max-width: 479px) {
+    .strengths,
+    .powers {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .strengths li {
+      grid-template-columns: 64px minmax(0, 1fr);
+      justify-items: start;
+      align-items: center;
+      padding: 16px 18px;
+      text-align: left;
+    }
+    .strengths :global(img) {
+      width: 64px;
+    }
   }
 </style>

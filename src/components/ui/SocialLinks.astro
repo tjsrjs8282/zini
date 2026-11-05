@@ -2,119 +2,60 @@
 import Icon from './Icon.astro';
 import { socialLinks } from '../../data/site';
 
-/**
- * 소셜 링크 목록. 위치마다 모양이 달라 variant로 고릅니다.
- * - hero: 메인 배너 오른쪽 흰 사각형 / circle: 전체 메뉴의 원형 버튼
- * - footer: 푸터 NETWORK / contact: 연락처 박스 / condom: 커버플로우 카드 호버 박스
- */
+/** 소셜 링크 — light: 밝은 배경 / dark: 어두운 배경 */
 interface Props {
-  variant: 'hero' | 'circle' | 'footer' | 'contact' | 'condom';
+  tone?: 'light' | 'dark';
   class?: string;
 }
 
-const { variant, class: className } = Astro.props;
-const links = variant === 'condom' ? socialLinks.filter((s) => s.id !== 'youtube') : socialLinks;
+const { tone = 'light', class: className } = Astro.props;
 ---
 
-<ul class:list={['social', `social--${variant}`, className]}>
-  {links.map((s) => (
+<ul class:list={['social', `social--${tone}`, className]}>
+  {socialLinks.map((s) => (
     <li>
-      <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>
-        <Icon name={s.id} />
+      <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={`${s.label} (새 창)`}>
+        <Icon name={s.id} size="18" />
       </a>
     </li>
   ))}
 </ul>
 
 <style>
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
   .social a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    transition:
+      transform 0.25s var(--ease-spring),
+      background-color 0.2s,
+      color 0.2s;
   }
-
-  /* 메인 배너 */
-  .social--hero {
-    flex-direction: column;
-    gap: 10px;
+  .social a:hover {
+    transform: translateY(-3px) rotate(-6deg);
   }
-  .social--hero a {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
-    color: var(--c-text);
-    background: #fff;
-    border: 1px solid #fff;
-    transition: all ease 1s;
+  .social--light a {
+    color: var(--ink);
+    background: var(--white);
+    border: var(--border);
   }
-
-  /* 전체 메뉴 */
-  .social--circle {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 22px;
+  .social--light a:hover {
+    background: var(--yellow);
   }
-  .social--circle a {
-    width: 50px;
-    height: 50px;
-    margin-top: 40px;
-    font-size: 18px;
-    color: var(--c-text);
-    background-color: #fff;
-    border: 4px solid #fff;
-    border-radius: 50px;
-    transition: all ease 1s;
+  .social--dark a {
+    color: var(--white);
+    border: 1.5px solid rgb(255 255 255 / 30%);
   }
-  .social--circle a:hover {
-    margin-top: 30px;
-    color: #000;
-    border-color: #000;
-  }
-
-  /* 푸터 */
-  .social--footer {
-    display: flex;
-    margin: 1rem 0 3rem;
-  }
-  .social--footer a {
-    height: 48px;
-    margin-right: 20px;
-    font-size: 1.75rem;
-    color: #fff;
-  }
-
-  /* 연락처 */
-  .social--contact {
-    display: flex;
-    margin-top: 1rem;
-  }
-  .social--contact a {
-    margin-right: 10px;
-    font-size: 1.25rem;
-    color: #fff;
-  }
-
-  .social--footer a:hover,
-  .social--contact a:hover {
-    color: var(--c-text);
-  }
-
-  /* 콘돔 카드 */
-  .social--condom {
-    display: flex;
-    justify-content: center;
-    background-color: #fff;
-  }
-  .social--condom a {
-    width: 38px;
-    height: 40px;
-    margin: 0 20px;
-    font-size: 24px;
-    color: var(--c-ink);
-    transition: 0.3s;
-  }
-  .social--condom a:hover {
-    color: var(--c-red);
+  .social--dark a:hover {
+    color: var(--ink);
+    background: var(--yellow);
+    border-color: var(--yellow);
   }
 </style>

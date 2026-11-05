@@ -1,239 +1,447 @@
 /* ==========================================================================
-   ZINI 전역 스타일 — 토큰, 리셋, Bootstrap 5 보정, 여러 컴포넌트가 함께 쓰는 패턴
-   컴포넌트 전용 스타일은 각 .astro 파일의 <style> 블록에 있습니다.
+   ZINI 디자인 시스템
+   토큰 → 리셋 → 기본 타이포 → 레이아웃 → 공용 컴포넌트 → 유틸리티 순서입니다.
+   각 섹션 전용 스타일은 해당 .astro 파일의 <style>에 있습니다(레이어 밖이라 항상 우선).
    ========================================================================== */
 
-:root {
-  --c-red: #d62f36;
-  --c-yellow: #fdb813;
-  --c-amber: #ffa800;
-  --c-orange: #f47320;
-  --c-gold: #f1c30f;
-  --c-teal: #0b5568;
-  --c-bg: #e9ecef;
-  --c-ink: #18191d;
-  --c-text: #333;
-  --c-muted: #6c757d;
-  --c-dark: #1c1c1d;
-  --font-sans:
-    'Noto Sans KR Variable', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui,
-    sans-serif;
+@layer reset, base, layout, components, utilities;
 
-  /* Bootstrap 변수 */
-  --bs-body-font-family: var(--font-sans);
-  --bs-body-bg: var(--c-bg);
-  --bs-link-color: #000;
-  --bs-link-color-rgb: 0, 0, 0;
-  --bs-link-hover-color: #000;
-  --bs-link-hover-color-rgb: 0, 0, 0;
+:root {
+  /* 브랜드 */
+  --yellow: #ffd504;
+  --yellow-soft: #fff3b0;
+  --ink: #151413;
+  --ink-soft: #3a3631;
+  --paper: #fffaf0;
+  --cream: #fff1cc;
+  --white: #ffffff;
+  --text: #2d2a26;
+  --muted: #6e675c;
+  --line: rgb(21 20 19 / 14%);
+  --orange: #f9a81a;
+
+  /* 캐릭터 대표색 — 패키지 사진 배경과 같은 값 */
+  --c-safe: #fe924a;
+  --c-jell: #fe8084;
+  --c-kangsoe: #9d99bc;
+  --c-combo: #d89680;
+  --c-skinny: #e7b650;
+  --c-ninja: #acacac;
+
+  /* S-SOLUTION */
+  --blush: #ffe2ef;
+  --pink: #c2185b;
+  --champagne: #f5ebd3;
+  --mint: #e1f1e5;
+  --lavender: #e7e4f6;
+
+  /* 글꼴 — --font-sans / --font-display 는 BaseLayout의 <Font>가 정의합니다. */
+  --sans: var(--font-sans, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif);
+  /* 영문은 Unbounded, 그 안의 한글·기호는 Pretendard로 이어집니다. */
+  --display: var(--font-display, 'Arial Black'), var(--sans);
+
+  /* 글자 크기(화면 폭에 따라 유동) */
+  --fs-hero: clamp(3.5rem, 1.9rem + 6.8vw, 8.5rem);
+  --fs-display: clamp(2.75rem, 1.7rem + 4.4vw, 6rem);
+  --fs-h2: clamp(2rem, 1.4rem + 2.6vw, 3.6rem);
+  --fs-h3: clamp(1.3rem, 1.12rem + 0.75vw, 1.75rem);
+  --fs-lead: clamp(1.0625rem, 0.99rem + 0.32vw, 1.3rem);
+  --fs-body: 1.0625rem;
+  --fs-sm: 0.9375rem;
+  --fs-xs: 0.8125rem;
+
+  /* 간격 · 모양 */
+  --gutter: clamp(20px, 4.5vw, 56px);
+  --container: 1280px;
+  --section: clamp(88px, 3.5rem + 7vw, 176px);
+  --radius-sm: 14px;
+  --radius: 26px;
+  --radius-lg: 40px;
+  --border: 2px solid var(--ink);
+  --shadow: 4px 4px 0 var(--ink);
+  --shadow-lg: 8px 8px 0 var(--ink);
+  --header-h: 76px;
+
+  /* 움직임 */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --header-h: 64px;
+    --fs-body: 1rem;
+    --radius: 22px;
+    --radius-lg: 30px;
+  }
 }
 
 /* ---------- 리셋 ---------- */
-* {
-  margin: 0;
-  padding: 0;
-}
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-}
-ul,
-ol {
-  padding-left: 0;
-}
-li {
-  list-style: none;
-}
-a {
-  text-decoration: none;
-}
-/* 디자인에서 span을 줄바꿈 용도로 사용합니다. 인라인이 필요하면 .d-inline / .hl을 씁니다. */
-span {
-  display: block;
-}
-button {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: 0;
-  cursor: pointer;
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  * {
+    margin: 0;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  img,
+  picture,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+  img {
+    height: auto;
+  }
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+  button {
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+  ul,
+  ol {
+    padding: 0;
+    list-style: none;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  dialog {
+    padding: 0;
+    border: 0;
+  }
+  address {
+    font-style: normal;
+  }
+  fieldset {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+  }
 }
 
-/* 제목 크기는 화면 폭과 관계없이 고정합니다(Bootstrap의 반응형 글자 크기를 덮어씀). */
-h1 {
-  font-size: 2.5rem;
-}
-h2 {
-  font-size: 2rem;
-}
-h3 {
-  font-size: 1.75rem;
-}
-h4 {
-  font-size: 1.5rem;
+/* ---------- 기본 ---------- */
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-padding-top: calc(var(--header-h) + 24px);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    min-height: 100svh;
+    font-family: var(--sans);
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    background: var(--paper);
+    /* 한글은 어절 단위로 줄바꿈 */
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  strong,
+  b {
+    font-weight: 700;
+  }
+  /* 기울인 띠·장식이 옆으로 넘쳐도 가로 스크롤이 생기지 않게(세로는 그대로 보임) */
+  main {
+    display: block;
+    overflow-x: clip;
+  }
+  ::selection {
+    color: var(--ink);
+    background: var(--yellow);
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus, var(--ink));
+    outline-offset: 3px;
+  }
 }
 
-/* ---------- 레이아웃: 30px 거터, 최대 1140px 컨테이너 ---------- */
-.container,
-.container-fluid,
-.row {
-  --bs-gutter-x: 30px;
-}
-.row.g-0 {
-  --bs-gutter-x: 0;
-}
-.container-fluid {
-  padding-left: 0;
-  padding-right: 0;
-}
-@media (min-width: 1400px) {
+/* ---------- 레이아웃 ---------- */
+@layer layout {
   .container {
-    max-width: 1140px;
+    width: min(100% - var(--gutter) * 2, var(--container));
+    margin-inline: auto;
+  }
+  .container--narrow {
+    --container: 960px;
+  }
+  .section {
+    position: relative;
+    padding-block: var(--section);
+  }
+  .on-dark {
+    --focus: var(--yellow);
+    color: rgb(255 255 255 / 78%);
+    background: var(--ink);
+  }
+  .on-dark :is(h1, h2, h3, h4) {
+    color: var(--white);
   }
 }
 
-/* 가로 띠 섹션 */
-.band {
-  padding: 4rem 0;
-  margin-bottom: 2rem;
-  background-color: var(--c-bg);
-  border-radius: 0.3rem;
-}
+/* ---------- 공용 컴포넌트 ---------- */
+@layer components {
+  /* 작은 영문 머리말 */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65em;
+    font-family: var(--display);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--eyebrow, var(--ink));
+  }
+  .eyebrow::before {
+    content: '';
+    flex: none;
+    width: 0.62em;
+    height: 0.62em;
+    background: currentColor;
+    border-radius: 50%;
+  }
+  .on-dark .eyebrow {
+    --eyebrow: var(--yellow);
+  }
 
-/* ---------- 색 · 보조 유틸리티 ---------- */
-.orange {
-  color: var(--c-orange);
-}
-.bg-orange {
-  background: var(--c-orange);
-}
-.bg-yellow {
-  background: var(--c-amber);
-}
-/* 문장 속 강조(오렌지 굵은 글씨) */
-.hl {
-  display: inline-block;
-  font-style: normal;
-  font-weight: 700;
-  color: var(--c-orange);
-}
-.shadow-card {
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
-}
-@media (max-width: 1100px) {
-  .m-db {
-    display: block !important;
+  /* 섹션 제목 묶음 */
+  .section-head {
+    display: grid;
+    justify-items: start;
+    gap: 18px;
+    max-width: 780px;
+  }
+  .section-head--center {
+    justify-items: center;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .section-title {
+    font-size: var(--fs-h2);
+    line-height: 1.16;
+  }
+  .section-lead {
+    max-width: 38em;
+    font-size: var(--fs-lead);
+    line-height: 1.65;
+    color: var(--lead, var(--muted));
+  }
+  .on-dark .section-lead {
+    --lead: rgb(255 255 255 / 72%);
+  }
+
+  /* 버튼 — 굵은 테두리와 단단한 그림자, 누르면 눌리는 느낌 */
+  .btn {
+    --btn-bg: var(--white);
+    --btn-fg: var(--ink);
+    --btn-shadow: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55em;
+    min-height: 54px;
+    padding: 0.85em 1.55em;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    color: var(--btn-fg);
+    background: var(--btn-bg);
+    border: var(--border);
+    border-radius: 999px;
+    box-shadow: 4px 4px 0 var(--btn-shadow);
+    transition:
+      transform 0.25s var(--ease-out),
+      box-shadow 0.25s var(--ease-out),
+      background-color 0.2s;
+  }
+  .btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--btn-shadow);
+  }
+  .btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 1px 1px 0 var(--btn-shadow);
+  }
+  .btn .icon {
+    flex: none;
+    transition: transform 0.25s var(--ease-out);
+  }
+  .btn:hover .icon {
+    transform: translateX(3px);
+  }
+  .btn:hover .icon--diagonal {
+    transform: translate(2px, -2px);
+  }
+  .btn--ink {
+    --btn-bg: var(--ink);
+    --btn-fg: var(--white);
+  }
+  .btn--yellow {
+    --btn-bg: var(--yellow);
+  }
+  .btn--sm {
+    min-height: 42px;
+    padding: 0.55em 1.1em;
+    font-size: 0.9375rem;
+    box-shadow: 3px 3px 0 var(--btn-shadow);
+  }
+  .on-dark .btn {
+    --btn-shadow: var(--yellow);
+    border-color: var(--white);
+  }
+
+  /* 화살표 텍스트 링크 */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    padding-bottom: 3px;
+    font-weight: 700;
+    border-bottom: 2px solid currentColor;
+    transition: gap 0.25s var(--ease-out);
+  }
+  .link-arrow:hover {
+    gap: 0.75em;
+  }
+
+  /* 알약 모양 태그 */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding: 0.32em 0.85em;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    line-height: 1.35;
+    border: 1.5px solid currentColor;
+    border-radius: 999px;
+  }
+
+  /* 카드 전체를 덮는 링크 */
+  .stretched::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+  }
+
+  /* 콘돔 포장지처럼 톱니 모양 가장자리 */
+  .zigzag {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    height: 12px;
+    pointer-events: none;
+    background: var(--zz, currentColor);
+    -webkit-mask: var(--zz-mask) 0 0 / 24px 12px repeat-x;
+    mask: var(--zz-mask) 0 0 / 24px 12px repeat-x;
+  }
+  .zigzag--bottom {
+    top: calc(100% - 1px);
+    --zz-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpolygon points='0,0 24,0 12,12'/%3E%3C/svg%3E");
+  }
+  .zigzag--top {
+    bottom: calc(100% - 1px);
+    --zz-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpolygon points='0,12 12,0 24,12'/%3E%3C/svg%3E");
   }
 }
 
-/* ---------- 섹션 제목 ---------- */
-.product {
-  position: relative;
-}
-.product h2 {
-  text-transform: uppercase;
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--c-muted);
-}
-.product p {
-  color: var(--c-muted);
-  font-size: 1rem;
-}
-
-/* ---------- 알약 모양 버튼 ---------- */
-.btn-pill {
-  display: inline-block;
-  font-size: 16px;
-  padding: 15px 35px;
-  border: none;
-  background: #fff;
-  color: var(--c-text);
-  cursor: pointer;
-  margin-top: 10px;
-  font-weight: 700;
-  border-radius: 50px;
-  text-transform: uppercase;
-  animation: shadow-pulse 2s infinite;
-  transition: padding 0.4s;
-}
-.btn-pill:hover,
-.btn-pill:focus-visible {
-  padding: 15px 40px;
-  color: var(--c-text);
-}
-@keyframes shadow-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+/* ---------- 유틸리티 ---------- */
+@layer utilities {
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
   }
-  100% {
-    box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+  .skip-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1000;
+    padding: 0.7em 1.2em;
+    font-weight: 700;
+    color: var(--white);
+    background: var(--ink);
+    border-radius: 999px;
+    transform: translateY(-160%);
+    transition: transform 0.2s;
   }
-}
-@media (max-width: 550px) {
-  .btn-pill,
-  .btn-pill:hover {
-    padding: 10px 25px;
+  .skip-link:focus-visible {
+    transform: none;
+  }
+  /* 스크롤하면 나타나는 요소 — JS가 켜져 있을 때만 숨겨 둡니다. */
+  [data-reveal] {
+    transition:
+      opacity 0.9s var(--ease-out),
+      transform 0.9s var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .js [data-reveal]:not(.is-in) {
+    opacity: 0;
+    transform: translate3d(0, 36px, 0);
   }
 }
 
-/* ---------- 지그재그(톱니) 경계 ---------- */
-.zigzag {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 10px;
-  pointer-events: none;
-  background-color: var(--zigzag-color, var(--c-bg));
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpolygon points='0,0 20,0 10,10'/%3E%3C/svg%3E")
-    0 0 / 20px 10px repeat-x;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpolygon points='0,0 20,0 10,10'/%3E%3C/svg%3E")
-    0 0 / 20px 10px repeat-x;
+/* ---------- 페이지 전환(지원 브라우저에서만) ---------- */
+@view-transition {
+  navigation: auto;
 }
-.zigzag--up {
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpolygon points='0,10 10,0 20,10'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpolygon points='0,10 10,0 20,10'/%3E%3C/svg%3E");
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.32s;
+  animation-timing-function: var(--ease-out);
 }
 
-/* ---------- 슬라이더 공통 페이지네이션(사각 점) ---------- */
-.swiper-pagination.pager-squares {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-.pager-squares .swiper-pagination-bullet {
-  width: 11px;
-  height: 11px;
-  margin: 0 !important;
-  border-radius: 0;
-  background: #f3f1f1;
-  opacity: 1;
-}
-.pager-squares .swiper-pagination-bullet:hover,
-.pager-squares .swiper-pagination-bullet-active {
-  background: #000;
-}
-
-/* ---------- 접근성 ---------- */
-.skip-link {
-  position: absolute;
-  left: 1rem;
-  top: -100px;
-  z-index: 1000;
-  padding: 0.5rem 1rem;
-  background: #000;
-  color: #fff;
-  font-weight: 700;
-}
-.skip-link:focus {
-  top: 1rem;
-  color: #fff;
-}
-:focus-visible {
-  outline: 3px solid var(--c-orange);
-  outline-offset: 2px;
-}
-
+/* ---------- 동작 줄이기 ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -242,5 +450,12 @@ h4 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .js [data-reveal]:not(.is-in) {
+    opacity: 1;
+    transform: none;
+  }
+  @view-transition {
+    navigation: none;
   }
 }

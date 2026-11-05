@@ -1,35 +1,41 @@
 ---
-// ZINI 얼굴 로고 — 오른쪽 눈이 4초마다 윙크합니다.
+/**
+ * ZINI 얼굴 로고. 오른쪽 눈이 가끔 윙크합니다.
+ * interactive를 켜면 마우스를 따라 눈동자가 움직이고, 터치 기기에서는 천천히 두리번거립니다.
+ */
 interface Props {
-  width: number;
-  height: number;
   class?: string;
+  interactive?: boolean;
+  /** 지정하면 보조기기에 읽히는 이미지로, 비우면 장식으로 처리합니다. */
+  label?: string;
 }
 
-const { width, height, class: className } = Astro.props;
+const { class: className, interactive = false, label } = Astro.props;
 ---
 
 <svg
   class:list={['zini-face', className]}
-  width={width}
-  height={height}
   viewBox="0 0 150 100"
-  aria-hidden="true"
+  width="150"
+  height="100"
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
   focusable="false"
+  data-face={interactive ? '' : undefined}
 >
-  <circle fill="#010101" cx="13.403" cy="32.272" r="12.627"></circle>
-  <path
-    class="right-eye"
-    fill="#010101"
-    d="M149.224,32.272c0,6.975-5.652,12.627-12.626,12.627c-6.971,0-12.628-5.652-12.628-12.627s5.657-12.627,12.628-12.627C143.571,19.645,149.224,25.297,149.224,32.272z"
-  ></path>
+  <g class="eye">
+    <circle cx="13.403" cy="32.272" r="12.627"></circle>
+  </g>
+  <g class="eye">
+    <circle class="lid" cx="136.597" cy="32.272" r="12.627"></circle>
+  </g>
   <g
     fill="none"
-    stroke="#010101"
-    stroke-width="5.0508"
+    stroke="currentColor"
+    stroke-width="5.05"
     stroke-linecap="round"
     stroke-linejoin="round"
-    stroke-miterlimit="10"
   >
     <path d="M61.169,26.817v19.729c0,0,1.159,8.102,8.735,10.891c0,0,5.206,8.893,10.467,0c0,0,7.474-3.633,8.578-10.997v-9.1"></path>
     <path d="M47.812,71.73c0,0,7.576,13.473,28.832,12.943c0,0,17.47,0.211,24.622-10.734"></path>
@@ -37,20 +43,91 @@ const { width, height, class: className } = Astro.props;
   </g>
 </svg>
 
-<style>
-  .right-eye {
-    transform-origin: 44px 35px;
-    animation: eye-wink 4s infinite;
+<script>
+  // 눈동자가 포인터를 따라갑니다. 정밀한 포인터가 있고 '동작 줄이기'가 꺼져 있을 때만 동작합니다.
+  const faces = [...document.querySelectorAll<SVGSVGElement>('[data-face]')];
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (faces.length && finePointer && !reduced) {
+    const MAX = 5; // SVG 좌표 기준 최대 이동 거리
+    let x = 0;
+    let y = 0;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      for (const face of faces) {
+        const r = face.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) continue;
+        const dx = x - (r.left + r.width / 2);
+        const dy = y - (r.top + r.height * 0.32);
+        const dist = Math.hypot(dx, dy) || 1;
+        const k = Math.min(1, dist / 360) * MAX;
+        face.style.setProperty('--ex', ((dx / dist) * k).toFixed(2));
+        face.style.setProperty('--ey', ((dy / dist) * k).toFixed(2));
+      }
+    };
+
+    faces.forEach((face) => face.classList.add('is-tracking'));
+    window.addEventListener(
+      'pointermove',
+      (event) => {
+        x = event.clientX;
+        y = event.clientY;
+        if (!frame) frame = requestAnimationFrame(update);
+      },
+      { passive: true },
+    );
   }
-  @keyframes eye-wink {
-    28% {
+</script>
+
+<style>
+  .zini-face {
+    overflow: visible;
+    height: auto;
+    fill: currentColor;
+  }
+  .eye {
+    transform: translate(calc(var(--ex, 0) * 1px), calc(var(--ey, 0) * 1px));
+    transition: transform 0.35s var(--ease-out);
+  }
+  .lid {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: wink 6s infinite;
+  }
+  [data-face]:not(.is-tracking) .eye {
+    animation: look 9s ease-in-out infinite;
+  }
+  @keyframes wink {
+    0%,
+    90%,
+    96%,
+    100% {
       transform: scaleY(1);
     }
-    38% {
-      transform: scaleY(0.05);
+    93% {
+      transform: scaleY(0.12);
     }
-    48% {
-      transform: scaleY(1);
+  }
+  @keyframes look {
+    0%,
+    18%,
+    100% {
+      transform: translate(0, 0);
+    }
+    25%,
+    40% {
+      transform: translate(-4px, 1px);
+    }
+    50%,
+    65% {
+      transform: translate(4px, -1px);
+    }
+    75%,
+    88% {
+      transform: translate(1px, 3px);
     }
   }
 </style>

@@ -1,0 +1,89 @@
+---
+import Icon from '../ui/Icon.astro';
+import Img from '../ui/Img.astro';
+
+/**
+ * 긴 상세페이지 이미지를 처음엔 접어 두고 버튼으로 펼칩니다.
+ * JS가 없으면 처음부터 모두 펼친 상태로 보입니다.
+ */
+interface Props {
+  id: string;
+  images: { src: string; alt: string }[];
+}
+
+const { id, images } = Astro.props;
+---
+
+<div class="fold" data-fold>
+  <div class="fold__content" id={id}>
+    {images.map((im) => (
+      <Img
+        name={im.src}
+        alt={im.alt}
+        widths={[480, 720, 1000]}
+        sizes="(min-width: 860px) 760px, 92vw"
+      />
+    ))}
+  </div>
+  <div class="fold__bar">
+    <button class="btn fold__toggle" type="button" aria-expanded="false" aria-controls={id}>
+      <span data-fold-label>상세 정보 펼치기</span>
+      <Icon name="plus" class="fold__icon" />
+    </button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-fold]').forEach((fold) => {
+    const button = fold.querySelector<HTMLButtonElement>('.fold__toggle');
+    const label = fold.querySelector<HTMLElement>('[data-fold-label]');
+    if (!button || !label) return;
+    button.addEventListener('click', () => {
+      const open = !fold.classList.contains('is-open');
+      fold.classList.toggle('is-open', open);
+      button.setAttribute('aria-expanded', String(open));
+      label.textContent = open ? '상세 정보 접기' : '상세 정보 펼치기';
+      if (!open) fold.scrollIntoView({ block: 'start' });
+    });
+  });
+</script>
+
+<style>
+  .fold {
+    position: relative;
+    width: min(100%, 800px);
+    margin-inline: auto;
+    overflow: hidden;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+  }
+  .fold__content :global(img) {
+    width: 100%;
+  }
+  .fold__bar {
+    display: none;
+  }
+
+  /* JS가 켜져 있을 때만 접습니다. */
+  :global(.js) .fold:not(.is-open) .fold__content {
+    max-height: 980px;
+    overflow: hidden;
+  }
+  :global(.js) .fold__bar {
+    position: absolute;
+    inset: auto 0 0;
+    display: grid;
+    place-items: center;
+    padding: 120px 20px 32px;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0%), var(--white) 62%);
+  }
+  :global(.js) .fold.is-open .fold__bar {
+    position: static;
+    padding: 24px 20px 32px;
+    background: none;
+  }
+  .fold.is-open :global(.fold__icon) {
+    rotate: 45deg;
+  }
+</style>

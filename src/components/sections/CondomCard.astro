@@ -1,0 +1,147 @@
+---
+import Img from '../ui/Img.astro';
+import { formatPrice } from '../../data/products';
+import type { Condom } from '../../data/products';
+
+interface Props {
+  condom: Condom;
+}
+
+const { condom } = Astro.props;
+---
+
+<article class="condom-card" style={`--c: ${condom.color}`}>
+  <div class="condom-card__media">
+    <Img
+      name={condom.pack}
+      alt={`${condom.code} ${condom.name} 패키지`}
+      widths={[300, 450, 600]}
+      sizes="(min-width: 1080px) 380px, (min-width: 640px) 45vw, 90vw"
+    />
+  </div>
+  <div class="condom-card__body">
+    <p class="condom-card__code">{condom.code}</p>
+    <h3 class="condom-card__name">{condom.name}</h3>
+    <p class="condom-card__tagline">{condom.tagline}</p>
+    <ul class="condom-card__tags">
+      {condom.tags.map((t) => (
+        <li class="chip">{t}</li>
+      ))}
+    </ul>
+    <p class="condom-card__meta">
+      <span>{condom.spec}</span>
+      <strong>{formatPrice(condom.price)}</strong>
+    </p>
+  </div>
+</article>
+
+<style>
+  .condom-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    transition:
+      transform 0.35s var(--ease-out),
+      box-shadow 0.35s var(--ease-out);
+  }
+  .condom-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+  }
+  .condom-card__media {
+    overflow: hidden;
+    background: var(--c);
+    border-bottom: var(--border);
+  }
+  .condom-card__media :global(img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .condom-card:hover .condom-card__media :global(img) {
+    transform: scale(1.06) rotate(-2deg);
+  }
+  .condom-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 6px;
+    padding: 22px 24px 24px;
+  }
+  .condom-card__code {
+    font-family: var(--display);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .condom-card__name {
+    font-size: var(--fs-h3);
+  }
+  .condom-card__tagline {
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .condom-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+    color: var(--ink);
+  }
+  .condom-card__meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 18px;
+    color: var(--muted);
+  }
+  .condom-card__meta strong {
+    font-family: var(--display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  /* 휴대폰: 사진 왼쪽 · 글 오른쪽 가로 카드 */
+  @media (max-width: 599px) {
+    .condom-card {
+      flex-direction: row;
+    }
+    .condom-card__media {
+      flex: 0 0 40%;
+      border-right: var(--border);
+      border-bottom: 0;
+    }
+    .condom-card__media :global(img) {
+      height: 100%;
+      aspect-ratio: auto;
+    }
+    .condom-card__body {
+      gap: 4px;
+      padding: 16px 16px 16px 18px;
+    }
+    .condom-card__name {
+      font-size: 1.125rem;
+    }
+    .condom-card__tagline {
+      font-size: var(--fs-sm);
+    }
+    .condom-card__tags {
+      gap: 4px;
+    }
+    .condom-card__meta {
+      padding-top: 10px;
+      font-size: var(--fs-sm);
+    }
+    .condom-card__meta strong {
+      font-size: 1.05rem;
+    }
+  }
+</style>

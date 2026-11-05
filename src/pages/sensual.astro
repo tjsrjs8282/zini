@@ -1,41 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import DetailImages from '../components/sections/DetailImages.astro';
-import ProductSection from '../components/sections/ProductSection.astro';
-import ProductCarousel from '../components/sections/ProductCarousel.astro';
-import Recommend from '../components/sections/Recommend.astro';
+import GelLineDetail from '../components/sections/GelLineDetail.astro';
+import { gelLines } from '../data/products';
 ---
 
 <BaseLayout
   current="gel"
   title="센슈얼 러브젤"
-  description="사라사라, 앱솔루트 클린, 누루누루, 익싸이팅 포맨 — 90%가 물로 이루어진 ZINI 센슈얼 러브젤 라인업."
+  themeColor={gelLines.sensual.tone}
+  description="사라사라, 앱솔루트 클린, 누루누루, 익싸이팅 포맨 — 200ml 대용량 수용성 S-SOLUTION 센슈얼 러브젤 4종."
 >
-  <h1 class="visually-hidden">ZINI 센슈얼 러브젤</h1>
-  <DetailImages
-    title="ZINI GEL APPEAL"
-    images={[
-      { src: 'gel_content1.jpg', alt: '성분의 90%가 물인 젤' },
-      { src: 'product3.jpg', alt: '사라사라', half: true },
-      { src: 'product4.jpg', alt: '앱솔루트 클린', half: true },
-      { src: 'gels.jpg', alt: '센슈얼 젤 종류 소개' },
-      { src: 'product2.jpg', alt: '익싸이팅 포맨', half: true },
-      { src: 'product5.jpg', alt: '누루누루', half: true },
-      { src: 'gels2.jpg', alt: '센슈얼 젤 사용법 소개' },
-    ]}
-  />
-  <ProductSection
-    class="mt-5"
-    title="ZINI LOVE GEL"
-    groups={[{ subtitle: 'SENSUAL LINE UP', line: 'sensual' }]}
-    currentLine="sensual"
-  />
-  <ProductSection class="mt-5" groups={[{ subtitle: 'PREMIUM LINE UP', line: 'premium' }]} />
-  <ProductSection
-    class="mt-5 mb-5"
-    title="ZINI MASSAGE GEL"
-    groups={[{ subtitle: '- MASSAGE GEL LINE UP -', line: 'massage' }]}
-  />
-  <ProductCarousel />
-  <Recommend />
+  <GelLineDetail line="sensual" />
 </BaseLayout>

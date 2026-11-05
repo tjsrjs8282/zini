@@ -1,0 +1,95 @@
+---
+import Zigzag from '../ui/Zigzag.astro';
+
+/**
+ * 서브 페이지 첫 화면. 왼쪽엔 제목, 오른쪽엔 visual 슬롯.
+ * tone은 배경색(CSS 색 값), title·lead에는 <br />을 쓸 수 있습니다.
+ */
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  tone?: string;
+  /** 배경에 반복해서 깔 패턴 이미지 주소 */
+  pattern?: string;
+  class?: string;
+}
+
+const { eyebrow, title, lead, tone = 'var(--yellow)', pattern, class: className } = Astro.props;
+const style = [`--tone: ${tone}`, pattern && `--pattern: url(${pattern})`]
+  .filter(Boolean)
+  .join('; ');
+---
+
+<section class:list={['page-hero', { 'page-hero--pattern': pattern }, className]} style={style}>
+  <div class="page-hero__inner container">
+    <div class="page-hero__copy">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1 class="page-hero__title" set:html={title} />
+      {lead && <p class="page-hero__lead" set:html={lead} />}
+      <slot name="actions" />
+    </div>
+    {Astro.slots.has('visual') && (
+      <div class="page-hero__visual">
+        <slot name="visual" />
+      </div>
+    )}
+  </div>
+  <Zigzag edge="bottom" color={tone} />
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    z-index: 1;
+    padding-top: calc(var(--header-h) + clamp(32px, 6vw, 88px));
+    padding-bottom: clamp(56px, 7vw, 104px);
+    background: var(--tone);
+  }
+  .page-hero--pattern {
+    background-image: var(--pattern);
+    background-size: 84px;
+  }
+  .page-hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+  }
+  .page-hero__inner:not(:has(.page-hero__visual)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .page-hero__title {
+    margin-top: 20px;
+    font-size: var(--fs-display);
+    font-weight: 900;
+    line-height: 1.06;
+    letter-spacing: -0.05em;
+  }
+  .page-hero__lead {
+    max-width: 32em;
+    margin-top: 24px;
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+  }
+  .page-hero__copy :global(.page-hero__actions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .page-hero__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  @media (max-width: 859px) {
+    .page-hero__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .page-hero__visual {
+      order: -1;
+    }
+  }
+</style>

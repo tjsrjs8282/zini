@@ -1,0 +1,86 @@
+---
+import Icon from '../ui/Icon.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import LineCard from './LineCard.astro';
+import { gelLineList } from '../../data/products';
+import { url } from '../../lib/url';
+---
+
+<section class="gels section" aria-labelledby="gels-title">
+  <div class="container gels__layout">
+    <div class="gels__intro">
+      <SectionHead
+        eyebrow="S-Solution by ZINI"
+        id="gels-title"
+        title="90% 이상이<br />물인 러브젤."
+        lead="피부 알러지·점막 테스트를 마친 약산성 저자극 수용성 젤. 물로 쉽게 씻기고 촉촉함은 오래가요."
+      >
+        <a class="btn" href={url('gel.html')}>
+          S-SOLUTION 알아보기 <Icon name="arrow-right" />
+        </a>
+      </SectionHead>
+      <p class="gels__big" aria-hidden="true">
+        90<span>%</span>
+      </p>
+    </div>
+
+    <ul class="gels__lines">
+      {gelLineList.map((line, i) => (
+        <li data-reveal style={`--i: ${i}`}>
+          <LineCard line={line} />
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .gels {
+    background: var(--blush);
+  }
+  .gels__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: clamp(40px, 6vw, 96px);
+  }
+  .gels__intro {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+  .gels__intro :global(.section-title) {
+    font-size: clamp(2rem, 1.3rem + 2.1vw, 3.25rem);
+  }
+  .gels__intro :global(.btn) {
+    margin-top: 12px;
+  }
+  .gels__big {
+    margin-top: 40px;
+    font-family: var(--display);
+    font-size: clamp(5rem, 3rem + 9vw, 11rem);
+    font-weight: 900;
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--pink);
+  }
+  .gels__big span {
+    font-size: 0.5em;
+  }
+  .gels__lines {
+    display: grid;
+    gap: 20px;
+  }
+
+  @media (max-width: 1060px) {
+    .gels__layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .gels__intro {
+      position: static;
+    }
+    .gels__big {
+      display: none;
+    }
+  }
+</style>

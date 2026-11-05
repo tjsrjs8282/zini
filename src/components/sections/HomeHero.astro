@@ -1,0 +1,251 @@
+---
+import Icon from '../ui/Icon.astro';
+import Img from '../ui/Img.astro';
+import SpinBadge from '../ui/SpinBadge.astro';
+import ZiniFace from '../ui/ZiniFace.astro';
+import Zigzag from '../ui/Zigzag.astro';
+import { condoms } from '../../data/products';
+import { url } from '../../lib/url';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__inner container">
+    <div class="hero__copy">
+      <p class="eyebrow">Character Condoms &amp; Love Gel</p>
+      <h1 class="hero__title" id="hero-title">
+        <span>명랑하게,</span>
+        <span>안전하게.</span>
+      </h1>
+      <p class="hero__lead">
+        아시아인 사이즈에 꼭 맞춘 캐릭터 콘돔과 피부에 순한 러브젤. 즐거운 사랑에 필요한 건 ZINI가
+        챙길게요.
+      </p>
+      <div class="hero__cta">
+        <a class="btn btn--ink" href={url('condom.html')}>
+          콘돔 라인업 보기 <Icon name="arrow-right" />
+        </a>
+        <a class="btn" href={url('gel.html')}>
+          러브젤 보기
+        </a>
+      </div>
+    </div>
+
+    <div class="hero__stage">
+      <div class="hero__face-wrap">
+        <ZiniFace class="hero__face" interactive label="ZINI 얼굴 로고" />
+        <SpinBadge class="hero__badge" text="FOR YOUR WISHES · ZINI CONDOMS · ">
+          <Icon name="spark" size="100%" />
+        </SpinBadge>
+      </div>
+
+      <ul class="hero__crew" aria-label="ZINI 캐릭터 — 누르면 소개로 이동">
+        {condoms.map((c, i) => (
+          <li style={`--i: ${i}`}>
+            <a href="#meet" data-pick={c.id}>
+              <span class="hero__bob">
+                <Img name={c.character} alt="" width={116} loading="eager" />
+              </span>
+              <span class="hero__name">{c.code}</span>
+              <span class="visually-hidden">{c.name} 소개 보기</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <a class="hero__scroll" href="#why" aria-label="아래로 스크롤">
+    <Icon name="arrow-down" />
+  </a>
+  <Zigzag edge="bottom" color="var(--yellow)" />
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    align-items: center;
+    min-height: min(100svh, 1000px);
+    padding-top: calc(var(--header-h) + clamp(16px, 4vw, 48px));
+    padding-bottom: clamp(56px, 7vw, 88px);
+    /* 장식(배지·캐릭터)이 가로로 넘쳐도 페이지가 옆으로 밀리지 않게 */
+    overflow-x: clip;
+    background: var(--yellow);
+  }
+  .hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+  }
+
+  .hero__title {
+    margin-top: 22px;
+    font-size: clamp(3.4rem, 1.6rem + 6.4vw, 8rem);
+    font-weight: 900;
+    line-height: 1.02;
+    letter-spacing: -0.055em;
+  }
+  .hero__title span {
+    display: block;
+  }
+  .hero__lead {
+    max-width: 29em;
+    margin-top: 26px;
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+  }
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 36px;
+  }
+
+  .hero__stage {
+    display: grid;
+    justify-items: center;
+    gap: clamp(24px, 3vw, 40px);
+  }
+  .hero__face-wrap {
+    position: relative;
+    width: min(100%, 540px);
+    animation: face-in 1s var(--ease-spring) both;
+  }
+  .hero__face {
+    width: 100%;
+    color: var(--ink);
+  }
+  .hero__badge {
+    position: absolute;
+    top: -26%;
+    right: 4%;
+    width: clamp(92px, 10vw, 132px);
+    rotate: 8deg;
+  }
+  .hero__badge :global(.icon) {
+    width: 100%;
+    height: auto;
+    color: var(--ink);
+  }
+
+  .hero__crew {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: clamp(4px, 1.2vw, 16px);
+    width: min(100%, 560px);
+  }
+  .hero__crew li {
+    animation: crew-in 0.8s var(--ease-spring) both;
+    animation-delay: calc(var(--i) * 80ms + 250ms);
+  }
+  .hero__crew a {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    border-radius: 12px;
+  }
+  .hero__bob {
+    display: block;
+    width: clamp(46px, 6.2vw, 80px);
+    animation: bob 3.4s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.55s);
+  }
+  .hero__bob :global(img) {
+    width: 100%;
+    transition: transform 0.35s var(--ease-spring);
+  }
+  .hero__crew a:hover .hero__bob :global(img),
+  .hero__crew a:focus-visible .hero__bob :global(img) {
+    transform: translateY(-14px) rotate(-6deg) scale(1.06);
+  }
+  .hero__name {
+    padding: 2px 7px;
+    font-family: var(--display);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    color: var(--yellow);
+    background: var(--ink);
+    border-radius: 999px;
+  }
+
+  .hero__scroll {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    color: var(--ink);
+    border: var(--border);
+    border-radius: 50%;
+    translate: -50% 0;
+    animation: nudge 2s ease-in-out infinite;
+  }
+
+  @keyframes face-in {
+    from {
+      opacity: 0;
+      transform: scale(0.86) rotate(-6deg);
+    }
+  }
+  @keyframes crew-in {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+  }
+  @keyframes bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-7px);
+    }
+  }
+  @keyframes nudge {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(6px);
+    }
+  }
+
+  @media (max-width: 899px) {
+    .hero {
+      min-height: auto;
+      padding-bottom: 96px;
+    }
+    .hero__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .hero__stage {
+      order: -1;
+    }
+    .hero__face-wrap {
+      width: min(64vw, 340px);
+    }
+    .hero__badge {
+      top: -34%;
+      right: -14%;
+      width: 84px;
+    }
+  }
+  @media (max-width: 559px) {
+    .hero__name,
+    .hero__badge {
+      display: none;
+    }
+  }
+  @media (max-width: 899px) and (max-height: 700px) {
+    .hero__scroll {
+      display: none;
+    }
+  }
+</style>

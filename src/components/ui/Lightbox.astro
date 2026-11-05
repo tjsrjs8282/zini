@@ -1,0 +1,26 @@
+---
+/**
+ * [data-lightbox] 안의 a[data-pswp-width] 링크를 PhotoSwipe 라이트박스로 엽니다.
+ * 라이트박스 본체는 사진을 처음 열 때 불러옵니다.
+ */
+import 'photoswipe/style.css';
+---
+
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+
+  document.querySelectorAll<HTMLElement>('[data-lightbox]').forEach((gallery) => {
+    const lightbox = new PhotoSwipeLightbox({
+      gallery,
+      children: 'a[data-pswp-width]',
+      pswpModule: () => import('photoswipe'),
+      bgOpacity: 0.92,
+      closeTitle: '닫기 (Esc)',
+      zoomTitle: '확대/축소 (Z)',
+      arrowPrevTitle: '이전 사진',
+      arrowNextTitle: '다음 사진',
+      errorMsg: '사진을 불러오지 못했어요.',
+    });
+    lightbox.init();
+  });
+</script>

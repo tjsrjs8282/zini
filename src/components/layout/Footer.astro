@@ -1,49 +1,71 @@
 ---
-import { Image } from 'astro:assets';
-import CompanyInfo from './CompanyInfo.astro';
+import Icon from '../ui/Icon.astro';
 import SocialLinks from '../ui/SocialLinks.astro';
+import Wordmark from '../ui/Wordmark.astro';
 import Zigzag from '../ui/Zigzag.astro';
-import { familySites, infoLinks } from '../../data/site';
-import { img } from '../../lib/images';
-import { url } from '../../lib/url';
+import { company, familySites, footerNav, site } from '../../data/site';
+import { isExternal, linkAttrs, url } from '../../lib/url';
+
+const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer">
-  <Zigzag edge="top" point="up" color="var(--c-teal)" />
+<footer class="site-footer on-dark">
+  <Zigzag edge="top" color="var(--ink)" />
   <div class="container">
-    <div class="row">
-      <div class="col-12 col-lg-5">
-        <CompanyInfo />
+    <div class="top">
+      <div class="intro">
+        <p class="slogan">For your wishes.</p>
+        <p class="desc">
+          명랑하고 안전한 사랑을 위한
+          <br />
+          캐릭터 콘돔 & 러브젤, ZINI
+        </p>
+        <SocialLinks tone="dark" />
       </div>
-      <div class="col-12 col-lg-3 mt-4 mt-lg-0">
-        <h2 class="footer-title">INFORMATION</h2>
-        <ul class="info-links">
-          {infoLinks.map((link) => (
-            <li>
-              {link.href ? <a href={url(link.href)}>{link.label}</a> : <span>{link.label}</span>}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div class="col-12 col-lg-4 mt-4 mt-lg-0">
-        <h2 class="footer-title">NETWORK</h2>
-        <SocialLinks variant="footer" />
-        <h2 class="footer-title">FAMILY SITE</h2>
-        <ul class="family-sites">
+
+      <nav class="cols" aria-label="사이트 맵">
+        {footerNav.map((col) => (
+          <div class="col">
+            <h2 class="col__title">{col.title}</h2>
+            <ul>
+              {col.links.map((link) => (
+                <li>
+                  <a href={url(link.href)} {...linkAttrs(link.href)}>
+                    {link.label}
+                    {isExternal(link.href) && <Icon name="arrow-up-right" size="14" />}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </nav>
+    </div>
+
+    <Wordmark class="giant" />
+
+    <div class="bottom">
+      <p class="company">
+        {company.name} <span aria-hidden="true">·</span> ZINI · S-SOLUTION
+        <span class="family">
+          <span class="visually-hidden">패밀리 사이트:</span>
           {familySites.map((f) => (
-            <li>
-              <a href={f.href} target="_blank" rel="noopener noreferrer">
-                <Image
-                  src={img(f.image)}
-                  alt={f.name}
-                  width={300}
-                  sizes="(min-width: 992px) 180px, 50vw"
-                />
-              </a>
-            </li>
+            <a href={f.href} target="_blank" rel="noopener noreferrer">
+              {f.label}
+            </a>
           ))}
-        </ul>
-      </div>
+        </span>
+      </p>
+      <p class="credit">
+        © {year} ZINI. Redesign by
+        <a href={site.credit.href} target="_blank" rel="noopener noreferrer">
+          {site.credit.name}
+        </a>
+        — 포트폴리오용 리디자인 작업물로, 이 사이트에서는 판매하지 않아요.
+        <a class="legacy" href={url('legacy/')}>
+          2020 원본 보기
+        </a>
+      </p>
     </div>
   </div>
 </footer>
@@ -51,45 +73,104 @@ import { url } from '../../lib/url';
 <style>
   .site-footer {
     position: relative;
-    padding: 3rem 0 4rem;
-    background-color: var(--c-teal);
+    padding-top: clamp(72px, 9vw, 120px);
+    overflow-x: clip;
   }
-  .footer-title {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #fff;
+  .top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 48px;
   }
-  .info-links {
-    margin-top: 22px;
+  .slogan {
+    font-family: var(--display);
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--yellow);
   }
-  .info-links li {
-    margin: 4px 0;
-    font-size: 0.8rem;
-    color: #eee;
+  .desc {
+    margin: 14px 0 28px;
+    color: rgb(255 255 255 / 70%);
   }
-  .info-links a {
-    display: block;
-    color: #eee;
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
   }
-  .info-links a:hover {
-    color: #222;
-    font-weight: 700;
+  .col__title {
+    margin-bottom: 14px;
+    font-family: var(--display);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--yellow);
   }
-  .family-sites {
+  .col li + li {
+    margin-top: 8px;
+  }
+  .col a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: rgb(255 255 255 / 82%);
+    transition: color 0.2s;
+  }
+  .col a:hover {
+    color: var(--white);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .giant {
+    width: 100%;
+    margin-top: clamp(56px, 8vw, 104px);
+    color: var(--yellow);
+  }
+
+  .bottom {
+    display: grid;
+    gap: 6px;
+    padding-block: 28px 40px;
+    font-size: var(--fs-xs);
+    color: rgb(255 255 255 / 55%);
+  }
+  .company {
     display: flex;
     flex-wrap: wrap;
+    gap: 6px 10px;
   }
-  .family-sites li {
-    flex: 50%;
-    padding: 5px 10px 5px 0;
+  .family {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
-  .family-sites img {
-    width: 100%;
-    height: auto;
-    transition: 0.3s ease;
+  .family a::before {
+    content: '·';
+    margin-right: 10px;
   }
-  .family-sites li:hover img {
-    opacity: 0.8;
+  .bottom a {
+    color: rgb(255 255 255 / 78%);
+    text-decoration: underline;
+    text-decoration-color: rgb(255 255 255 / 30%);
+    text-underline-offset: 3px;
+  }
+  .bottom a:hover {
+    color: var(--yellow);
+  }
+  .legacy {
+    margin-left: 6px;
+  }
+
+  @media (max-width: 860px) {
+    .top {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 520px) {
+    .cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 </style>

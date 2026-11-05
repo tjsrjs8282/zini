@@ -1,89 +1,181 @@
 ---
-import 'photoswipe/style.css';
-import { getImage, Image } from 'astro:assets';
-import type { GallerySection } from '../../data/gallery';
+import { getImage } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
+import Img from '../ui/Img.astro';
+import type { GalleryCategory } from '../../data/gallery';
 import { img } from '../../lib/images';
 
 interface Props {
-  section: GallerySection;
+  category: GalleryCategory;
 }
 
-const { section } = Astro.props;
-const columns = section.colClass.includes('col-md-3') ? 4 : 3;
-const items = await Promise.all(
-  section.images.map(async (name) => {
-    const meta = img(name);
-    const large = await getImage({ src: meta, width: Math.min(meta.width, 1600), format: 'webp' });
-    return { meta, large };
-  }),
+const { category } = Astro.props;
+
+// 라이트박스용 큰 사진(최대 1600px)
+const groups = await Promise.all(
+  category.groups.map(async (group) => ({
+    ...group,
+    items: await Promise.all(
+      group.images.map(async (image) => {
+        const meta = img(image.src);
+        const large = await getImage({
+          src: meta,
+          width: Math.min(meta.width, 1600),
+          format: 'webp',
+        });
+        return { ...image, large };
+      }),
+    ),
+  })),
 );
+const square = category.layout === 'square';
 ---
 
-<section
-  class="gallery-section mb-5 bg-white shadow-card"
-  id={section.id}
-  aria-labelledby={`${section.id}-title`}
->
-  <div class="product pt-5 text-center">
-    <h2 id={`${section.id}-title`}>{section.title}</h2>
-    {section.years && <p>{section.years}</p>}
+<section class="gallery-cat" id={category.id} aria-labelledby={`${category.id}-title`}>
+  <div class="gallery-cat__head" data-reveal>
+    <p class="eyebrow">{category.title}</p>
+    <h2 class="gallery-cat__title" id={`${category.id}-title`}>
+      {category.ko}
+    </h2>
+    <p class="gallery-cat__desc">{category.description}</p>
   </div>
-  <div class="container-fluid">
-    <div class="row g-0" data-gallery>
-      {items.map((item, i) => (
-        <div class={section.colClass}>
-          <a
-            class="img-wrapper"
-            href={item.large.src}
-            data-pswp-width={item.large.attributes.width}
-            data-pswp-height={item.large.attributes.height}
-          >
-            <Image
-              src={item.meta}
-              alt={`${section.title} 사진 ${i + 1}`}
-              widths={[300, 480, 720]}
-              sizes={`(min-width: 768px) ${Math.round(100 / columns)}vw, 50vw`}
-            />
-          </a>
+
+  {groups.map((group) => (
+    <div class="gallery-group">
+      {!square && (
+        <div class="gallery-group__head" data-reveal>
+          <h3>{group.title}</h3>
+          <p>
+            {group.place} · {group.years}
+          </p>
         </div>
-      ))}
+      )}
+      <ul class:list={['tiles', square ? 'tiles--square' : 'tiles--photo']} data-lightbox>
+        {group.items.map((item, i) => (
+          <li class="tile" data-reveal style={`--i: ${i % 4}`}>
+            <a
+              href={item.large.src}
+              data-pswp-width={item.large.attributes.width}
+              data-pswp-height={item.large.attributes.height}
+            >
+              <Img
+                name={item.src}
+                alt={item.alt}
+                widths={[300, 480, 720]}
+                sizes={
+                  square
+                    ? '(min-width: 1340px) 310px, (min-width: 760px) 23vw, 46vw'
+                    : '(min-width: 1340px) 420px, (min-width: 760px) 31vw, 92vw'
+                }
+              />
+              <span class="tile__zoom" aria-hidden="true">
+                <Icon name="zoom" size="20" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
-  </div>
+  ))}
 </section>
 
-<script>
-  import PhotoSwipeLightbox from 'photoswipe/lightbox';
-
-  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
-    const lightbox = new PhotoSwipeLightbox({
-      gallery,
-      children: 'a',
-      pswpModule: () => import('photoswipe'),
-      bgOpacity: 0.9,
-      closeTitle: '닫기 (Esc)',
-      zoomTitle: '확대/축소 (Z)',
-      arrowPrevTitle: '이전 사진',
-      arrowNextTitle: '다음 사진',
-      errorMsg: '사진을 불러오지 못했습니다.',
-    });
-    lightbox.init();
-  });
-</script>
-
 <style>
-  .img-wrapper {
+  .gallery-cat {
+    padding-top: clamp(64px, 8vw, 112px);
+  }
+  .gallery-cat__head {
+    display: grid;
+    gap: 12px;
+    max-width: 720px;
+  }
+  .gallery-cat__title {
+    font-size: var(--fs-h2);
+  }
+  .gallery-cat__desc {
+    font-size: var(--fs-lead);
+    color: var(--muted);
+  }
+
+  .gallery-group {
+    margin-top: clamp(28px, 4vw, 44px);
+  }
+  .gallery-group__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 16px;
+    margin-bottom: 18px;
+  }
+  .gallery-group__head h3 {
+    font-family: var(--display);
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .gallery-group__head p {
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .tiles--square {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .tiles--photo {
+    columns: 3 240px;
+    column-gap: 14px;
+  }
+  .tiles--photo .tile {
+    margin-bottom: 14px;
+    break-inside: avoid;
+  }
+  .tile a {
+    position: relative;
     display: block;
     overflow: hidden;
+    border: var(--border);
+    border-radius: var(--radius-sm);
   }
-  .img-wrapper img {
-    display: block;
+  .tile :global(img) {
     width: 100%;
-    height: auto;
-    transition: transform 0.5s ease;
-    cursor: zoom-in;
+    transition: transform 0.6s var(--ease-out);
   }
-  .img-wrapper:hover img,
-  .img-wrapper:focus-visible img {
-    transform: scale(1.3);
+  .tiles--square .tile :global(img) {
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  .tile a:hover :global(img) {
+    transform: scale(1.05);
+  }
+  .tile__zoom {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    color: var(--ink);
+    background: var(--white);
+    border: var(--border);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.8);
+    transition:
+      opacity 0.25s,
+      transform 0.25s var(--ease-spring);
+  }
+  .tile a:hover .tile__zoom,
+  .tile a:focus-visible .tile__zoom {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 759px) {
+    .tiles--square {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
   }
 </style>

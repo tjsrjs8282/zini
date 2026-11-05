@@ -1,0 +1,319 @@
+---
+import Icon from '../ui/Icon.astro';
+import Img from '../ui/Img.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import { condoms, formatPrice } from '../../data/products';
+import { url } from '../../lib/url';
+
+const first = condoms[0]!;
+---
+
+<section
+  class="meet"
+  id="meet"
+  aria-labelledby="meet-title"
+  style={`--c: ${first.color}`}
+  data-picker
+>
+  <div class="container">
+    <SectionHead
+      eyebrow="Meet the Characters"
+      id="meet-title"
+      title="여섯 캐릭터,<br />여섯 가지 취향."
+      lead="캐릭터를 골라 오늘 나에게 맞는 콘돔을 찾아보세요."
+    />
+
+    <div class="meet__tabs" role="tablist" aria-label="캐릭터 고르기">
+      {condoms.map((c, i) => (
+        <button
+          type="button"
+          class="meet__tab"
+          role="tab"
+          id={`tab-${c.id}`}
+          aria-controls={`panel-${c.id}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          data-id={c.id}
+          data-color={c.color}
+          style={`--tab-c: ${c.color}`}
+        >
+          <span class="meet__avatar">
+            <Img name={c.character} alt="" width={116} />
+          </span>
+          {c.code}
+        </button>
+      ))}
+    </div>
+
+    {condoms.map((c, i) => (
+      <div
+        class="meet__panel"
+        role="tabpanel"
+        id={`panel-${c.id}`}
+        aria-labelledby={`tab-${c.id}`}
+        hidden={i !== 0}
+      >
+        <div class="meet__visual">
+          <Img
+            name={c.pack}
+            alt={`${c.code} ${c.name} 패키지`}
+            widths={[360, 480, 600]}
+            sizes="(min-width: 900px) 520px, 88vw"
+          />
+        </div>
+        <div class="meet__info">
+          <p class="meet__code" aria-hidden="true">
+            {c.code}
+          </p>
+          <h3 class="meet__name">
+            {c.name}
+            <span class="meet__tagline">{c.tagline}</span>
+          </h3>
+          <p class="meet__desc">{c.description}</p>
+          <ul class="meet__tags">
+            {c.tags.map((t) => (
+              <li class="chip">{t}</li>
+            ))}
+            <li class="chip">{c.spec}</li>
+          </ul>
+          <div class="meet__buy">
+            <p class="meet__price">
+              <span class="visually-hidden">가격</span>
+              {formatPrice(c.price)}
+            </p>
+            <a class="btn btn--ink" href={url('condom.html#lineup')}>
+              라인업 전체 보기 <Icon name="arrow-right" />
+            </a>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-picker]').forEach((root) => {
+    const tablist = root.querySelector<HTMLElement>('[role="tablist"]');
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+
+    const select = (tab: HTMLButtonElement, focus = false) => {
+      for (const t of tabs) {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
+        if (panel) panel.hidden = !on;
+      }
+      root.style.setProperty('--c', tab.dataset.color ?? '');
+      if (focus) tab.focus();
+      // 선택한 탭이 가로 스크롤 영역 가운데 오도록(페이지는 스크롤하지 않음)
+      if (tablist && tablist.scrollWidth > tablist.clientWidth) {
+        tablist.scrollTo({
+          left: tab.offsetLeft - (tablist.clientWidth - tab.offsetWidth) / 2,
+          behavior: 'smooth',
+        });
+      }
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (event) => {
+        const keys: Record<string, number> = {
+          ArrowRight: (i + 1) % tabs.length,
+          ArrowLeft: (i - 1 + tabs.length) % tabs.length,
+          Home: 0,
+          End: tabs.length - 1,
+        };
+        const next = tabs[keys[event.key] ?? -1];
+        if (!next) return;
+        event.preventDefault();
+        select(next, true);
+      });
+    });
+
+    // 히어로의 캐릭터를 누르면 해당 캐릭터를 골라 둔 채로 이동합니다.
+    document.addEventListener('click', (event) => {
+      const link = (event.target as Element).closest<HTMLElement>('[data-pick]');
+      const tab = link && tabs.find((t) => t.dataset.id === link.dataset.pick);
+      if (tab) select(tab);
+    });
+  });
+</script>
+
+<style>
+  .meet {
+    position: relative;
+    padding-block: var(--section);
+    background: var(--c);
+    transition: background-color 0.6s var(--ease-out);
+  }
+  .meet :global(.section-lead) {
+    --lead: var(--ink-soft);
+  }
+
+  .meet__tabs {
+    display: flex;
+    gap: 10px;
+    margin-top: clamp(32px, 4vw, 48px);
+    padding: 4px 6px 14px 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .meet__tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .meet__tab {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 18px 5px 5px;
+    font-family: var(--display);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    background: var(--white);
+    border: var(--border);
+    border-radius: 999px;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition:
+      transform 0.2s var(--ease-out),
+      box-shadow 0.2s var(--ease-out),
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .meet__tab:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .meet__tab[aria-selected='true'] {
+    color: var(--white);
+    background: var(--ink);
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--ink);
+  }
+  .meet__avatar {
+    display: block;
+    width: 38px;
+    height: 38px;
+    overflow: hidden;
+    background: var(--tab-c);
+    border-radius: 50%;
+  }
+  .meet__avatar :global(img) {
+    width: 100%;
+    height: auto;
+    margin-top: 3px;
+  }
+
+  .meet__panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(28px, 5vw, 80px);
+    margin-top: clamp(20px, 3vw, 36px);
+  }
+  .meet__panel[hidden] {
+    display: none;
+  }
+  .meet__visual {
+    overflow: hidden;
+    background: var(--c);
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    transition: background-color 0.6s var(--ease-out);
+  }
+  .meet__visual :global(img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  .meet__panel:not([hidden]) .meet__visual :global(img) {
+    animation: pack-in 0.75s var(--ease-spring) both;
+  }
+
+  .meet__info > * {
+    animation: info-in 0.6s var(--ease-out) both;
+  }
+  .meet__info > :nth-child(2) {
+    animation-delay: 60ms;
+  }
+  .meet__info > :nth-child(3) {
+    animation-delay: 120ms;
+  }
+  .meet__info > :nth-child(4) {
+    animation-delay: 180ms;
+  }
+  .meet__info > :nth-child(5) {
+    animation-delay: 240ms;
+  }
+  .meet__code {
+    font-family: var(--display);
+    font-size: clamp(3.2rem, 1.6rem + 6vw, 7.2rem);
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+  }
+  .meet__name {
+    display: grid;
+    gap: 4px;
+    margin-top: 20px;
+    font-size: var(--fs-h3);
+  }
+  .meet__tagline {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink-soft);
+  }
+  .meet__desc {
+    max-width: 30em;
+    margin-top: 14px;
+    color: var(--ink-soft);
+  }
+  .meet__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+    color: var(--ink);
+  }
+  .meet__buy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+    margin-top: 32px;
+  }
+  .meet__price {
+    font-family: var(--display);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  @keyframes pack-in {
+    from {
+      opacity: 0;
+      transform: translateY(28px) scale(0.92) rotate(-5deg);
+    }
+  }
+  @keyframes info-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+
+  @media (max-width: 859px) {
+    .meet__panel {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .meet__visual {
+      width: min(100%, 460px);
+    }
+  }
+</style>

@@ -1,0 +1,60 @@
+---
+/**
+ * 끝없이 흐르는 띠. 슬롯 내용을 두 번 그려 이음매 없이 반복합니다.
+ * 두 번째 묶음은 보조기기·키보드에서 제외(inert)합니다. '동작 줄이기'에서는 멈춥니다.
+ */
+interface Props {
+  class?: string;
+  /** 한 바퀴 도는 데 걸리는 시간(초) */
+  speed?: number;
+  reverse?: boolean;
+  gap?: string;
+}
+
+const { class: className, speed = 40, reverse = false, gap = '3rem' } = Astro.props;
+const html = await Astro.slots.render('default');
+---
+
+<div
+  class:list={['marquee', { 'marquee--reverse': reverse }, className]}
+  style={`--speed: ${speed}s; --gap: ${gap}`}
+>
+  <div class="marquee__track">
+    <div class="marquee__group" set:html={html} />
+    <div class="marquee__group" aria-hidden="true" inert set:html={html} />
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee var(--speed) linear infinite;
+  }
+  .marquee--reverse .marquee__track {
+    animation-direction: reverse;
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  .marquee__group {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--gap);
+    padding-inline-end: var(--gap);
+  }
+  @keyframes marquee {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+    }
+  }
+</style>

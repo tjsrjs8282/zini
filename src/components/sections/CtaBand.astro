@@ -1,0 +1,97 @@
+---
+import Icon from '../ui/Icon.astro';
+import Img from '../ui/Img.astro';
+import Zigzag from '../ui/Zigzag.astro';
+import { condoms } from '../../data/products';
+import { site } from '../../data/site';
+import { url } from '../../lib/url';
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+
+const {
+  title = '오늘의 ZINI,<br />공식몰에서 만나요.',
+  text = '여섯 캐릭터 콘돔과 S-SOLUTION 러브젤은 부르르닷컴에서 구매할 수 있어요.',
+} = Astro.props;
+---
+
+<section class="cta" aria-labelledby="cta-title">
+  <Zigzag edge="top" color="var(--yellow)" />
+  <div class="container cta__inner">
+    <div data-reveal>
+      <h2 class="cta__title" id="cta-title" set:html={title} />
+      <p class="cta__text">{text}</p>
+    </div>
+    <div class="cta__actions" data-reveal style="--i: 1">
+      <a class="btn btn--ink" href={site.shopUrl} target="_blank" rel="noopener noreferrer">
+        공식몰 바로가기 <Icon name="arrow-up-right" />
+        <span class="visually-hidden">(새 창)</span>
+      </a>
+      <a class="btn" href={url('contact.html')}>
+        제휴·도매 문의
+      </a>
+    </div>
+  </div>
+  <div class="cta__ground">
+    <ul class="cta__crew" aria-hidden="true">
+      {condoms.map((c, i) => (
+        <li style={`--i: ${i}`}>
+          <Img name={c.character} alt="" width={116} />
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    padding-top: clamp(80px, 10vw, 140px);
+    overflow-x: clip;
+    background: var(--yellow);
+  }
+  /* 캐릭터 발끝이 땅(섹션 아래 끝) 뒤로 살짝 숨도록 여기서만 자릅니다. */
+  .cta__ground {
+    overflow: hidden;
+  }
+  .cta__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .cta__title {
+    font-size: var(--fs-display);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.05em;
+  }
+  .cta__text {
+    max-width: 32em;
+    margin-top: 20px;
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+  }
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .cta__crew {
+    display: flex;
+    justify-content: center;
+    gap: clamp(6px, 3vw, 40px);
+    margin-top: clamp(48px, 6vw, 88px);
+  }
+  .cta__crew li {
+    width: clamp(48px, 7vw, 96px);
+    margin-bottom: -18px;
+    transition: transform 0.4s var(--ease-spring);
+  }
+  .cta__crew li:hover {
+    transform: translateY(-16px);
+  }
+</style>

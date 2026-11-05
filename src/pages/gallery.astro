@@ -1,17 +1,173 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/sections/PageHero.astro';
 import GalleryGrid from '../components/sections/GalleryGrid.astro';
-import { gallerySections } from '../data/gallery';
+import CtaBand from '../components/sections/CtaBand.astro';
+import Img from '../components/ui/Img.astro';
+import Lightbox from '../components/ui/Lightbox.astro';
+import { condoms } from '../data/products';
+import { galleryCategories } from '../data/gallery';
 ---
 
 <BaseLayout
   current="gallery"
   title="갤러리"
-  theme="white"
-  description="ZINI 캐릭터와 케이스 디자인, 베를린·라스베가스·홍콩·상해 성인용품 박람회 참가 사진을 모았습니다."
+  themeColor="#e7e4f6"
+  description="ZINI 캐릭터와 패키지 디자인, 베를린·라스베이거스·상하이·홍콩 성인용품 박람회 현장 사진을 모았습니다."
 >
-  <h1 class="visually-hidden">갤러리</h1>
-  {gallerySections.map((section) => (
-    <GalleryGrid section={section} />
-  ))}
+  <PageHero
+    eyebrow="Gallery"
+    title="캐릭터부터<br />세계 박람회까지."
+    lead="ZINI의 캐릭터와 패키지, 그리고 해외 박람회 현장을 모았어요. 사진을 누르면 크게 볼 수 있어요."
+    tone="var(--lavender)"
+  >
+    <ul class="mosaic" slot="visual" aria-hidden="true">
+      {condoms.map((c, i) => (
+        <li style={`--i: ${i}`}>
+          <Img name={c.portrait} alt="" widths={[200, 300]} sizes="160px" loading="eager" />
+        </li>
+      ))}
+    </ul>
+  </PageHero>
+
+  <nav class="cat-nav" aria-label="갤러리 분류">
+    <ul class="container">
+      {galleryCategories.map((cat) => (
+        <li>
+          <a href={`#${cat.id}`} data-spy={cat.id}>
+            {cat.ko}
+            <span>{cat.groups.reduce((n, g) => n + g.images.length, 0)}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <div class="container gallery-body">
+    {galleryCategories.map((category) => (
+      <GalleryGrid category={category} />
+    ))}
+  </div>
+
+  <CtaBand />
+  <Lightbox />
 </BaseLayout>
+
+<script>
+  // 지금 보고 있는 분류를 상단 탭에 표시합니다.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-spy]')];
+  const sections = links
+    .map((a) => document.getElementById(a.dataset.spy ?? ''))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (sections.length && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          for (const a of links) {
+            if (a.dataset.spy === entry.target.id) a.setAttribute('aria-current', 'true');
+            else a.removeAttribute('aria-current');
+          }
+        }
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((s) => observer.observe(s));
+  }
+</script>
+
+<style>
+  .mosaic {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    width: min(100%, 480px);
+  }
+  .mosaic li {
+    overflow: hidden;
+    border: var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    rotate: calc((var(--i) - 2.5) * 2deg);
+    animation: tile-in 0.8s var(--ease-spring) both;
+    animation-delay: calc(var(--i) * 70ms);
+  }
+  .mosaic li:nth-child(even) {
+    translate: 0 18px;
+  }
+  .mosaic :global(img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  @keyframes tile-in {
+    from {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+  }
+
+  .cat-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    transition: top 0.45s var(--ease-out);
+    padding-block: 14px;
+    background: color-mix(in srgb, var(--paper) 90%, transparent);
+    border-bottom: 1px solid var(--line);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .cat-nav ul {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cat-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--ink);
+    background: var(--white);
+    border: var(--border);
+    border-radius: 999px;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .cat-nav a span {
+    font-family: var(--display);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .cat-nav a[aria-current] {
+    color: var(--white);
+    background: var(--ink);
+  }
+  .cat-nav a[aria-current] span {
+    color: var(--yellow);
+  }
+
+  /* 사이트 헤더가 보일 때는 그 아래에 붙습니다. */
+  :global(body:has(.site-header:not(.is-hidden))) .cat-nav {
+    top: var(--header-h);
+  }
+
+  .gallery-body {
+    padding-bottom: var(--section);
+  }
+  .gallery-body :global(.gallery-cat) {
+    scroll-margin-top: calc(var(--header-h) + 72px);
+  }
+
+  @media (max-width: 859px) {
+    .mosaic {
+      width: min(100%, 360px);
+    }
+  }
+</style>

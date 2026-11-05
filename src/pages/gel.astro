@@ -1,100 +1,280 @@
 ---
-import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PromoSlider from '../components/sections/PromoSlider.astro';
-import ProductSection from '../components/sections/ProductSection.astro';
-import ProductCarousel from '../components/sections/ProductCarousel.astro';
-import Recommend from '../components/sections/Recommend.astro';
-import { img } from '../lib/images';
+import PageHero from '../components/sections/PageHero.astro';
+import FeatureCards from '../components/sections/FeatureCards.astro';
+import type { Feature } from '../components/sections/FeatureCards.astro';
+import GelCard from '../components/sections/GelCard.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
+import Icon from '../components/ui/Icon.astro';
+import Img from '../components/ui/Img.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
+import { gelLineList } from '../data/products';
+import { url } from '../lib/url';
 
-const appeal = [
+const appeal: Feature[] = [
   {
-    title: 'SAFETY',
-    lines: [
-      '안심하고 사용하세요.',
-      '피부 알러지 테스트 완료! 다양한 점막 테스트 완료.',
-      '피부에 부드러운 약산성, 저자극 수용성 성분으로 <span>내 몸에 꼭 맞는 PH 발란스를 유지, 항상 청결한 느낌을</span> 지속시켜 줍니다.',
-    ],
+    label: 'SAFETY',
+    title: '피부에 맞춘 <em>약산성</em>',
+    text: '피부 알러지 테스트와 다양한 점막 테스트를 마쳤어요. 약산성 저자극 수용성 성분이 내 몸의 pH 밸런스를 지켜 줘요.',
     image: 'gel_image3.jpg',
-    alt: '피부 알러지·점막 테스트를 마친 안전한 젤',
+    alt: '산성부터 알칼리성까지 pH 단계 그림 — S-SOLUTION은 약산성',
+    span: 'third',
   },
   {
-    title: 'CLEAN',
-    lines: ['저자극 수용성 제품으로 물에 쉽게 <span>세척이 가능합니다.</span>'],
+    label: 'CLEAN',
+    title: '물로 쉽게, <em>깔끔하게</em>',
+    text: '저자극 수용성 제품이라 물에 쉽게 씻겨요. 쓰고 난 뒤에도 산뜻함이 남아요.',
     image: 'gel_image2.jpg',
-    alt: '물에 쉽게 씻기는 수용성 젤',
+    alt: '샤워기 물로 몸을 씻는 모습',
+    span: 'third',
   },
   {
-    title: 'EFFECT',
-    lines: [
-      '저자극 수용성 성분으로 민감한 부분은<span>물론 전신에 사용할 수 있으며,</span>수분과 윤기가 오랫동안 지속됩니다.',
-    ],
+    label: 'EFFECT',
+    title: '온몸에 오래가는 <em>촉촉함</em>',
+    text: '민감한 부위는 물론 전신에 쓸 수 있고, 수분과 윤기가 오랫동안 지속돼요.',
     image: 'gel_image1.jpg',
-    alt: '수분과 윤기가 오래 가는 젤',
+    alt: '전신 마사지와 촉촉한 피부 사진 모음',
+    span: 'third',
   },
 ];
 ---
 
 <BaseLayout
   current="gel"
-  title="젤"
-  description="피부 알러지·점막 테스트를 마친 저자극 수용성 ZINI 러브젤과 마사지젤 라인업을 소개합니다."
+  title="S-SOLUTION 러브젤"
+  themeColor="#ffe2ef"
+  description="피부 알러지·점막 테스트를 마친 저자극 수용성 S-SOLUTION by ZINI — 센슈얼·프리미엄 러브젤과 마사지젤 라인업을 소개합니다."
 >
-  <h1 class="visually-hidden">ZINI 젤</h1>
-  <PromoSlider />
+  <PageHero
+    eyebrow="S-Solution by ZINI"
+    title="피부가 먼저<br />반하는 러브젤."
+    lead="사랑에 즐거움을 더해 주는 고품격 침실 화장품, S-SOLUTION. 센슈얼·프리미엄·마사지 세 가지 라인으로 만나 보세요."
+    tone="var(--blush)"
+  >
+    <div class="page-hero__actions" slot="actions">
+      <a class="btn btn--ink" href="#lines">
+        라인업 보기 <Icon name="arrow-down" />
+      </a>
+    </div>
+    <figure class="gel-hero" slot="visual">
+      <Img
+        name="PBM3.jpg"
+        alt="S-SOLUTION 러브젤과 마사지젤 제품 사진"
+        widths={[480, 720, 960]}
+        sizes="(min-width: 860px) 520px, 92vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <span class="gel-hero__sticker" aria-hidden="true">
+        WATER
+        <br />
+        BASED
+      </span>
+    </figure>
+  </PageHero>
 
-  <section class="gel-appeal band my-5" aria-labelledby="gel-appeal-title">
-    <div class="container bg-white shadow-card">
-      {appeal.map((item, i) => (
-        <div class:list={['col-12', 'product', 'text-center', i === 0 ? 'p-3' : 'py-4']}>
-          {i === 0 && (
-            <h2 id="gel-appeal-title" class="pt-3">
-              GEL APPEAL
-            </h2>
-          )}
-          <h3>{item.title}</h3>
-          {item.lines.map((line) => (
-            <p set:html={line} />
-          ))}
-          <Image
-            class="w-100 h-auto p-4"
-            src={img(item.image)}
-            alt={item.alt}
-            widths={[600, 850]}
-            sizes="(min-width: 1200px) 1080px, 100vw"
-          />
+  <section class="water section" aria-labelledby="water-title">
+    <div class="container water__grid">
+      <div class="water__copy">
+        <p class="water__big" aria-hidden="true">
+          90<span>%</span>
+        </p>
+        <SectionHead
+          eyebrow="Water Based"
+          id="water-title"
+          title="러브젤의 90% 이상은<br />물이에요."
+          lead="그래서 피부에 부담이 적고, 물로 쉽게 씻겨요. S-SOLUTION은 모두 수용성이에요."
+        />
+      </div>
+      <figure class="water__photo" data-reveal>
+        <Img
+          name="gel_content1.jpg"
+          alt="물방울과 함께 ‘러브로션의 90% 이상은 물!’이라고 적힌 그림"
+          widths={[420, 700]}
+          sizes="(min-width: 960px) 560px, 92vw"
+        />
+      </figure>
+    </div>
+  </section>
+
+  <section class="section appeal-wrap" aria-labelledby="gel-appeal-title">
+    <div class="container">
+      <SectionHead
+        eyebrow="Gel Appeal"
+        id="gel-appeal-title"
+        title="안심하고 쓰는<br />세 가지 이유."
+      />
+      <FeatureCards class="gel-appeal" items={appeal} />
+    </div>
+  </section>
+
+  <section class="lines section" id="lines" aria-labelledby="lines-title">
+    <div class="container">
+      <SectionHead
+        eyebrow="Line Up"
+        id="lines-title"
+        title="세 가지 라인,<br />열 가지 젤."
+        lead="매일 쓰는 센슈얼, 특별한 날의 프리미엄, 온몸을 위한 마사지젤."
+      />
+
+      {gelLineList.map((line) => (
+        <div class="line" style={`--tone: ${line.tone}`}>
+          <div class="line__head" data-reveal>
+            <div>
+              <p class="line__en">{line.title}</p>
+              <h3 class="line__title">{line.ko}</h3>
+              <p class="line__summary">{line.summary}</p>
+            </div>
+            <a class="link-arrow" href={url(line.href)}>
+              {line.ko} 자세히 보기 <Icon name="arrow-right" />
+            </a>
+          </div>
+          <ul class:list={['line__grid', `line__grid--${line.products.length}`]}>
+            {line.products.map((p, i) => (
+              <li data-reveal style={`--i: ${i}`}>
+                <GelCard gel={p} href={line.href} />
+              </li>
+            ))}
+          </ul>
         </div>
       ))}
     </div>
   </section>
 
-  <ProductSection
-    class="mt-5"
-    title="ZINI LOVE GEL"
-    groups={[
-      { subtitle: 'SENSUAL LINE UP', line: 'sensual' },
-      { subtitle: 'PREMIUM LINE UP', line: 'premium' },
-    ]}
+  <CtaBand
+    title="오늘 밤엔<br />촉촉하게."
+    text="S-SOLUTION 러브젤과 마사지젤은 공식몰 부르르닷컴에서 만날 수 있어요."
   />
-  <ProductSection
-    class="mt-5 mb-5"
-    title="ZINI MASSAGE GEL"
-    groups={[{ subtitle: '- MASSAGE GEL LINE UP -', line: 'massage' }]}
-  />
-  <ProductCarousel />
-  <Recommend />
 </BaseLayout>
 
 <style>
-  .gel-appeal {
-    padding: 0;
+  .gel-hero {
+    position: relative;
+    width: min(100%, 540px);
+    rotate: 2deg;
   }
-  .gel-appeal h3 {
-    margin-bottom: 1rem;
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--c-muted);
+  .gel-hero :global(img) {
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    object-fit: cover;
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+  }
+  .gel-hero__sticker {
+    position: absolute;
+    left: -18px;
+    bottom: -22px;
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 112px;
+    font-family: var(--display);
+    font-size: 0.875rem;
+    font-weight: 800;
+    line-height: 1.15;
     text-align: center;
-    text-transform: uppercase;
+    color: var(--white);
+    background: var(--pink);
+    border: var(--border);
+    border-radius: 50%;
+    rotate: -12deg;
+  }
+
+  .water__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(40px, 6vw, 96px);
+  }
+  .water__big {
+    margin-bottom: 8px;
+    font-family: var(--display);
+    font-size: clamp(5.5rem, 3rem + 10vw, 12rem);
+    font-weight: 900;
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--pink);
+  }
+  .water__big span {
+    font-size: 0.5em;
+  }
+  .water__photo :global(img) {
+    width: 100%;
+    border: var(--border);
+    border-radius: var(--radius-lg);
+  }
+
+  .appeal-wrap {
+    padding-top: 0;
+  }
+  .gel-appeal {
+    margin-top: clamp(40px, 5vw, 64px);
+    --hl: #ffc2dc;
+  }
+
+  .lines {
+    background: var(--cream);
+  }
+  .line {
+    margin-top: clamp(48px, 6vw, 88px);
+  }
+  .line__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px 32px;
+    padding-bottom: 20px;
+    border-bottom: var(--border);
+  }
+  .line__en {
+    font-family: var(--display);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .line__title {
+    margin-top: 4px;
+    font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.4rem);
+  }
+  .line__summary {
+    margin-top: 2px;
+    color: var(--muted);
+  }
+  .line__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 24px;
+  }
+  .line__grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (max-width: 1023px) {
+    .line__grid,
+    .line__grid--3 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 859px) {
+    .water__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .gel-hero__sticker {
+      left: auto;
+      right: -8px;
+      width: 92px;
+      height: 92px;
+    }
+  }
+  @media (max-width: 479px) {
+    .line__grid,
+    .line__grid--3 {
+      gap: 12px;
+    }
   }
 </style>

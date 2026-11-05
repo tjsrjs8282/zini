@@ -1,13 +1,8 @@
 ---
-import '@fontsource-variable/noto-sans-kr';
-import 'bootstrap/dist/css/bootstrap-reboot.min.css';
-import 'bootstrap/dist/css/bootstrap-grid.min.css';
-import 'bootstrap/dist/css/bootstrap-utilities.min.css';
 import '../styles/global.css';
 
-import { getImage } from 'astro:assets';
+import { Font, getImage } from 'astro:assets';
 import Header from '../components/layout/Header.astro';
-import FullNav from '../components/layout/FullNav.astro';
 import Footer from '../components/layout/Footer.astro';
 import { site } from '../data/site';
 import type { NavId } from '../data/site';
@@ -20,36 +15,30 @@ interface Props {
   description?: string;
   /** 현재 메뉴 강조 */
   current: NavId;
-  /** 페이지 배경 테마 */
-  theme?: 'default' | 'white' | 'dark';
-  footer?: boolean;
+  /** 첫 화면 배경색 — 모바일 브라우저 주소창 색(theme-color)에 씁니다. */
+  themeColor?: string;
 }
 
-const {
-  title,
-  description = site.description,
-  current,
-  theme = 'default',
-  footer = true,
-} = Astro.props;
+const { title, description = site.description, current, themeColor = '#ffd504' } = Astro.props;
 
-const pageTitle = title ? `${title} | ZINI 지니` : 'ZINI 지니 | 캐릭터 콘돔 & 러브젤 브랜드';
+const pageTitle = title ? `${title} | ZINI 지니` : site.title;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = await getImage({ src: img('ex01.jpg'), width: 1200, format: 'jpg' });
 const ogImageUrl = new URL(ogImage.src, Astro.site);
 ---
 
 <!doctype html>
-<html lang="ko" class:list={[`theme-${theme}`]}>
+<html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href={url('favicon.ico')} sizes="any" />
+    <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={url('favicon.ico')} sizes="32x32" />
     <link rel="sitemap" href={url('sitemap-index.xml')} />
-    <meta name="theme-color" content="#fdb813" />
+    <meta name="theme-color" content={themeColor} />
     <meta name="generator" content={Astro.generator} />
 
     <meta property="og:type" content="website" />
@@ -62,28 +51,29 @@ const ogImageUrl = new URL(ogImage.src, Astro.site);
     <meta property="og:image:width" content={String(ogImage.attributes.width)} />
     <meta property="og:image:height" content={String(ogImage.attributes.height)} />
     <meta name="twitter:card" content="summary_large_image" />
+
+    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-display" preload />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // 페이지 전환 효과가 생략되면(백그라운드 탭 등) 브라우저가 내는 오류를 조용히 처리합니다.
+      ['pageswap', 'pagereveal'].forEach((type) =>
+        addEventListener(type, (e) => e.viewTransition?.ready.catch(() => {})),
+      );
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">
       본문 바로가기
     </a>
-    <Header current={current}>
-      <slot name="hero" />
-    </Header>
-    <FullNav current={current} />
+    <Header current={current} />
     <main id="main">
       <slot />
     </main>
-    {footer && <Footer />}
+    <Footer />
+
+    <script>
+      import '../scripts/reveal';
+    </script>
   </body>
 </html>
-
-<style is:global>
-  .theme-white body {
-    background-color: #fff;
-  }
-  html.theme-dark,
-  .theme-dark body {
-    background-color: var(--c-dark);
-  }
-</style>
