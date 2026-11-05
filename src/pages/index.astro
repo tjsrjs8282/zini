@@ -1,37 +1,66 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HeroSlider from '../components/sections/HeroSlider.astro';
-import CharacterSeries from '../components/sections/CharacterSeries.astro';
-import CondomLineup from '../components/sections/CondomLineup.astro';
-import PromoSlider from '../components/sections/PromoSlider.astro';
-import ProductSection from '../components/sections/ProductSection.astro';
-import ProductCarousel from '../components/sections/ProductCarousel.astro';
-import ServicesBanner from '../components/sections/ServicesBanner.astro';
-import Recommend from '../components/sections/Recommend.astro';
+import HomeHero from '../components/sections/HomeHero.astro';
+import WhyZini from '../components/sections/WhyZini.astro';
+import CharacterPicker from '../components/sections/CharacterPicker.astro';
+import StatBand from '../components/sections/StatBand.astro';
+import GelShowcase from '../components/sections/GelShowcase.astro';
+import WorldStage from '../components/sections/WorldStage.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
+import Icon from '../components/ui/Icon.astro';
+import Marquee from '../components/ui/Marquee.astro';
+import { condoms } from '../data/products';
 ---
 
 <BaseLayout current="home">
-  <HeroSlider slot="hero" />
+  <HomeHero />
 
-  <h1 class="visually-hidden">ZINI 지니 — 캐릭터 콘돔 & 러브젤 브랜드</h1>
-  <CharacterSeries />
-  <CondomLineup />
-  <PromoSlider />
-  <ProductSection
-    class="mt-5"
-    title="ZINI LOVE GEL"
-    groups={[
-      { subtitle: 'SENSUAL LINE UP', line: 'sensual' },
-      { subtitle: 'PREMIUM LINE UP', line: 'premium' },
-    ]}
-    imageWidth={350}
-  />
-  <ProductSection
-    class="mt-5 mb-5"
-    title="ZINI MASSAGE GEL"
-    groups={[{ subtitle: '- MASSAGE GEL LINE UP -', line: 'massage' }]}
-  />
-  <ProductCarousel />
-  <ServicesBanner />
-  <Recommend tone="gray" />
+  <div class="ribbon" aria-hidden="true">
+    <Marquee speed={36} gap="2.2rem">
+      {condoms.map((c) => (
+        <>
+          <span class="ribbon__word">{c.code}</span>
+          <Icon name="spark" size="1.4rem" class="ribbon__spark" />
+          <span class="ribbon__ko">{c.tagline}</span>
+          <Icon name="spark" size="1.4rem" class="ribbon__spark" />
+        </>
+      ))}
+    </Marquee>
+  </div>
+
+  <WhyZini />
+  <CharacterPicker />
+  <StatBand />
+  <GelShowcase />
+  <WorldStage />
+  <CtaBand />
 </BaseLayout>
+
+<style>
+  .ribbon {
+    position: relative;
+    z-index: 1;
+    padding-block: 18px;
+    color: var(--yellow);
+    background: var(--ink);
+    rotate: -1.2deg;
+    margin-block: 24px -12px;
+    margin-inline: -2vw;
+  }
+  .ribbon__word {
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+  .ribbon__ko {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
+    font-weight: 700;
+    color: var(--white);
+    white-space: nowrap;
+  }
+  .ribbon :global(.ribbon__spark) {
+    color: var(--yellow);
+  }
+</style>

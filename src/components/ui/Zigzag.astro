@@ -1,25 +1,20 @@
 ---
 /**
- * 섹션 가장자리의 톱니(지그재그) 장식. 부모 요소는 position: relative 여야 합니다.
- * - edge: 붙일 가장자리 / point: 삼각형 방향
- * - inset: true면 섹션 안쪽, false면 바깥쪽(10px 밖)에 붙습니다.
+ * 콘돔 포장지처럼 톱니 모양으로 끝나는 섹션 가장자리. 부모는 position: relative 여야 합니다.
+ * - edge: 섹션의 어느 쪽에 붙일지(톱니가 바깥쪽 이웃 섹션 위로 튀어나옵니다)
+ * - color: 섹션 배경과 같은 색
  */
 interface Props {
-  edge: 'top' | 'bottom';
-  point: 'up' | 'down';
+  edge?: 'top' | 'bottom';
   color?: string;
-  inset?: boolean;
   class?: string;
 }
 
-const { edge, point, color, inset = false, class: className } = Astro.props;
-const style = [`${edge}: ${inset ? '0' : '-10px'}`, color && `--zigzag-color: ${color}`]
-  .filter(Boolean)
-  .join('; ');
+const { edge = 'bottom', color, class: className } = Astro.props;
 ---
 
 <span
-  class:list={['zigzag', `zigzag--${point}`, className]}
-  style={style}
+  class:list={['zigzag', `zigzag--${edge}`, className]}
+  style={color ? `--zz: ${color}` : undefined}
   aria-hidden="true"
 ></span>

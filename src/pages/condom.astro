@@ -1,273 +1,322 @@
 ---
-import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CharacterSeries from '../components/sections/CharacterSeries.astro';
-import CondomLineup from '../components/sections/CondomLineup.astro';
-import ProductCarousel from '../components/sections/ProductCarousel.astro';
-import Recommend from '../components/sections/Recommend.astro';
-import Zigzag from '../components/ui/Zigzag.astro';
-import ziniCondoms from '../assets/svg/ziniCondom2.svg';
-import { img } from '../lib/images';
+import PageHero from '../components/sections/PageHero.astro';
+import CondomCard from '../components/sections/CondomCard.astro';
+import FeatureCards from '../components/sections/FeatureCards.astro';
+import type { Feature } from '../components/sections/FeatureCards.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
+import Icon from '../components/ui/Icon.astro';
+import Img from '../components/ui/Img.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
+import Wordmark from '../components/ui/Wordmark.astro';
+import { condoms } from '../data/products';
+import pattern from '../assets/svg/condom_topBack.svg';
 
-const appeal = [
+const appeal: Feature[] = [
   {
-    title: '아시아인 사이즈에 맞춘, 아시아인을 위한 <em>맞춤형 콘돔!</em>',
+    title: '아시아인을 위한 <em>맞춤 사이즈</em>',
+    text: '아시아인의, 아시아인에 의한, 아시아인을 위한 콘돔. 아시아인 체형에 맞춰 설계해 헐겁거나 조이지 않아요.',
     image: 'condom_content1.jpg',
-    alt: '아시아인 사이즈에 맞춘 콘돔',
-    text: '아시아인의, 아시아인에 의한, 아시아인을 위한, bururu CONDOMS의 대단한 도전! 드디어 아시아인 사이즈에 맞는 <em>맞춤형 콘돔 탄생!</em>',
-    half: true,
+    alt: 'SAFE와 JELL 캐릭터 콘돔 패키지',
   },
   {
-    title: '착용 시 맨살에 느껴지는 <em class="m-db">놀라운 밀착력!</em>',
+    title: '맨살 같은 <em>밀착력</em>',
+    text: '착용하면 부드럽게 밀착되어 남녀 모두 이질감이 적고, 잘 빠지지 않아 편안하고 만족스러운 핏을 선사해요.',
     image: 'condom_content2.jpg',
-    alt: '피부에 밀착되는 콘돔',
-    text: '착용 시 부드럽게 밀착되어 남성과 여성 모두 이질감을 느끼지 않으며, 이탈방지 효과와 함께 편안하고 만족스러운 핏감을 선사해 드립니다.',
-    half: true,
+    alt: '피부에 꼭 맞게 밀착된 콘돔',
   },
   {
-    title: '놀랄만큼 뛰어난 <em>신축성</em>과 <em>탄력성</em>',
+    title: '놀랄 만큼 뛰어난 <em>신축성</em>과 <em>탄력</em>',
+    text: '쭉 늘려도 쉽게 찢어지지 않아요. 착용감은 부담 없이, 강한 마찰과 외압에도 걱정 없이 쓸 수 있어요.',
     image: 'condom_content3.png',
-    alt: '신축성과 탄력성이 뛰어난 콘돔',
-    text: '놀라운 탄력성으로 착용 시 부담을 주지 않으며, 강한 마찰과 외압에도 걱정없이 안전하게 사용하실 수 있습니다.',
+    alt: '양손으로 길게 늘려도 찢어지지 않는 콘돔',
+    span: 'full',
   },
   {
-    title: '<em>두께</em>는 낮추고, <em>투명도</em>는 높이고!',
+    title: '두께는 낮추고, <em>투명도</em>는 높이고',
+    text: '용기에 씌워도 글자가 그대로 비칠 만큼 얇고 투명해요. 보는 느낌과 실제 착용감을 함께 챙겼어요.',
     image: 'condom_content5.jpg',
-    alt: '얇고 투명한 콘돔',
-    text: '얇은 두께와 투명감으로 시각적인 느낌과 실제 착용감을 동시에 만족시켜드립니다.',
+    alt: '용기 위에 씌운 콘돔 너머로 제품 글자가 선명하게 비치는 착용 테스트',
+    span: 'full',
+  },
+];
+
+const trust = [
+  {
+    image: 'condom_logo1.jpg',
+    title: 'SMART ON TYPE',
+    text: 'ZINI만의 인체공학적 간편 착용 솔루션',
+  },
+  {
+    image: 'condom_logo2.jpg',
+    title: 'KGMP 인증',
+    text: '한국 우수 의약품 제조 및 품질관리 기준 충족',
+  },
+  {
+    image: 'condom_logo3.jpg',
+    title: '품질 적합 인증',
+    text: '의료기기 제조 및 품질관리 기준 적합 인정서',
   },
 ];
 ---
 
 <BaseLayout
   current="condom"
-  title="콘돔"
-  description="아시아인 사이즈에 맞춘 ZINI 캐릭터 콘돔 6종 — 오리지널, 젤, 강쇠, 콤보, 스키니, 닌자 콘돔을 소개합니다."
+  title="캐릭터 콘돔"
+  themeColor="#f9a81a"
+  description="아시아인 사이즈에 맞춘 ZINI 캐릭터 콘돔 6종 — SAFE, JELL, KANGSOE, COMBO, SKINNY, NINJA를 소개합니다."
 >
-  <h1 class="visually-hidden">ZINI 콘돔</h1>
-
-  <section class="condom-top">
-    <div class="container text-center">
-      <Image src={ziniCondoms} alt="ZINI CONDOMS" loading="eager" />
-      <div class="condom-mascot">
-        <Image src={img('condomMainCh.png')} alt="" width={400} loading="eager" />
+  <PageHero
+    class="condom-hero"
+    eyebrow="ZINI Condoms"
+    title="명랑 전!<br />안전모 착용 준수."
+    lead="아시아인 사이즈에 맞춘 캐릭터 콘돔 6종. 책임질 수 있는 사랑을 위한, 안전제일 솔루션이에요."
+    tone="#f9a81a"
+    pattern={pattern.src}
+  >
+    <div class="page-hero__actions" slot="actions">
+      <a class="btn btn--ink" href="#lineup">
+        라인업 보기 <Icon name="arrow-down" />
+      </a>
+    </div>
+    <div class="condom-hero__visual" slot="visual">
+      <Wordmark class="condom-hero__word" condoms label="ZINI CONDOMS" />
+      <div class="condom-hero__mascot">
+        <Img
+          name="condomMainCh.png"
+          alt="안전모를 쓴 SAFE 캐릭터"
+          width={415}
+          loading="eager"
+          fetchpriority="high"
+        />
       </div>
     </div>
-    <Zigzag edge="bottom" point="down" color="#f9a81a" />
-  </section>
+  </PageHero>
 
-  <section class="condom-middle bg-white">
-    <div class="container text-center">
-      <p class="kicker">명랑 안전제일!</p>
-      <h2>명랑 전! 안전모 착용 준수</h2>
-      <div class="row mt-3">
-        {[0, 1, 2].map((i) => (
-          <div class:list={[i === 1 ? 'col-12 col-md-4' : 'd-none d-md-block col-md-4']}>
-            <Image
-              src={img('condom_img1.png')}
-              alt={i === 1 ? '안전모를 쓴 콘돔 캐릭터' : ''}
-              width={226}
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="condom-bottom mb-5">
-    <Zigzag edge="top" point="up" color="var(--c-amber)" />
+  <section class="section" aria-labelledby="appeal-title">
     <div class="container">
-      <Image
-        class="w-100 h-auto"
-        src={img('condom_mainBottom.jpg')}
-        alt="ZINI 콘돔 캐릭터들"
-        widths={[540, 800, 1000]}
-        sizes="(min-width: 1200px) 1110px, 100vw"
+      <SectionHead
+        eyebrow="Condoms Appeal"
+        id="appeal-title"
+        title="귀여운 얼굴,<br />진지한 안전."
+        lead="캐릭터는 명랑하지만 품질은 타협하지 않아요. ZINI 콘돔이 지키는 네 가지."
       />
+      <FeatureCards class="appeal" items={appeal} />
     </div>
-    <Zigzag edge="bottom" point="down" color="var(--c-amber)" />
   </section>
 
-  <section class="condom-appeal" aria-labelledby="condom-appeal-title">
-    <div class="container text-center bg-white shadow-card">
-      <div class="row mb-4">
-        <div class="col-12 product mb-3">
-          <h2 id="condom-appeal-title">CONDOMS APPEAL</h2>
-        </div>
-      </div>
-      <div class="row">
-        {appeal.map((item) => (
-          <div class:list={['col-12', 'pt-3', 'mb-4', 'shadow-card', { 'col-md-6': item.half }]}>
-            <h3 set:html={item.title} />
-            <Image
-              class="w-100 h-auto mb-2"
-              src={img(item.image)}
-              alt={item.alt}
-              widths={item.half ? [450] : [600, 920]}
-              sizes={
-                item.half ? '(min-width: 768px) 450px, 100vw' : '(min-width: 1200px) 920px, 100vw'
-              }
-            />
-            <p class="my-3" set:html={item.text} />
-          </div>
+  <section class="lineup section" id="lineup" aria-labelledby="lineup-title">
+    <div class="container">
+      <SectionHead
+        eyebrow="Condoms Line Up"
+        id="lineup-title"
+        title="여섯 캐릭터 라인업"
+        lead="모두 10개입 3,000원. 오늘 기분에 맞는 캐릭터를 골라 보세요."
+      />
+      <ul class="lineup__grid">
+        {condoms.map((c, i) => (
+          <li data-reveal style={`--i: ${i % 3}`}>
+            <CondomCard condom={c} />
+          </li>
         ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="made section on-dark" aria-labelledby="made-title">
+    <div class="container made__grid">
+      <div>
+        <SectionHead
+          eyebrow="Made by MS Harmony"
+          id="made-title"
+          title="믿을 수 있는 공장에서<br />직접 만들어요."
+          lead="명랑전문 주식회사 엠에스하모니가 직접 만든 콘돔이에요. 안전성과 착용감, 두 가지를 모두 만족시키는 게 목표예요."
+        />
+        <ul class="trust">
+          {trust.map((t, i) => (
+            <li class="trust__item" data-reveal style={`--i: ${i}`}>
+              <span class="trust__logo">
+                <Img name={t.image} alt="" width={129} />
+              </span>
+              <span>
+                <strong>{t.title}</strong>
+                <span>{t.text}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <figure class="made__photo" data-reveal>
+        <Img
+          name="condom_img2.jpg"
+          alt="엠에스하모니 공장 외관과 콘돔 생산 설비"
+          widths={[480, 698]}
+          sizes="(min-width: 960px) 560px, 92vw"
+        />
+        <figcaption>엠에스하모니 생산 공장과 콘돔 성형 설비</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="pack section" aria-labelledby="pack-title">
+    <div class="container">
+      <figure class="pack__banner" data-reveal>
+        <Img
+          name="condom_mainBottom.jpg"
+          alt="10개입과 3개입 캐릭터 콘돔 패키지 — 책임완수를 위한 안전제일 솔루션"
+          widths={[640, 1000]}
+          sizes="(min-width: 1080px) 760px, 92vw"
+        />
+      </figure>
+      <div class="pack__copy">
+        <SectionHead
+          eyebrow="10 pcs · 3 pcs"
+          id="pack-title"
+          title="책임지는 사랑이<br />진짜 사랑!"
+          lead="넉넉한 10개입과 가볍게 챙기는 3개입. 노골적이지 않은 디자인이라 가방에 넣어도 부담 없어요."
+        />
       </div>
     </div>
   </section>
 
-  <section class="condom-brand mb-5">
-    <div class="container bg-white text-center mb-5 shadow-card">
-      <div class="row">
-        <div class="col-12 mb-5 brand-banner">
-          <Image
-            class="w-100 h-auto"
-            src={img('condom_img1.jpg')}
-            alt="ZINI 콘돔 캐릭터 배너"
-            widths={[698]}
-            sizes="(min-width: 768px) 698px, 100vw"
-          />
-          <p class="brand-copy">
-            명랑전문 주식회사 (주)엠에스하모니에서 만든
-            <span>
-              <span class="hl">믿을 수 있는 콘돔!</span>
-            </span>
-            <span>
-              <span class="hl">안전성과 착용감</span>을 모두 만족시켜주는
-            </span>
-            <span>
-              <span class="hl">ZINI CONDOMS</span>
-            </span>
-          </p>
-        </div>
-        <div class="col-12 col-md-4">
-          <Image class="mb-2" src={img('condom_logo1.jpg')} alt="SMART ON TYPE 로고" width={116} />
-          <p>
-            ZINI CONDOMS 만의 <span>인체공학적 간편착용 솔루션</span>
-            <span class="hl">SMART ON TYPE</span>
-          </p>
-        </div>
-        <div class="col-12 col-md-4">
-          <Image class="mb-2" src={img('condom_logo2.jpg')} alt="KGMP 인증 로고" width={116} />
-          <p>
-            한국 우수 의약품 제조 및<span>품질관리 기준을 만족하는</span>
-            <span class="hl">KGMP 인증 획득</span>
-          </p>
-        </div>
-        <div class="col-12 col-md-4">
-          <Image class="mb-2" src={img('condom_logo3.jpg')} alt="품질 인증 마크" width={129} />
-        </div>
-        <div class="col-12 py-3">
-          <Image
-            class="w-100 h-auto"
-            src={img('condom_img2.jpg')}
-            alt="ZINI 콘돔 패키지 라인업"
-            widths={[698]}
-            sizes="(min-width: 768px) 698px, 100vw"
-          />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <CharacterSeries tight />
-  <CondomLineup linked={false} />
-  <ProductCarousel />
-  <Recommend />
+  <CtaBand
+    title="오늘은 어떤 캐릭터로<br />할까요?"
+    text="ZINI 캐릭터 콘돔 6종은 공식몰 부르르닷컴에서 만날 수 있어요."
+  />
 </BaseLayout>
 
 <style>
-  .condom-top {
-    position: relative;
-    height: 340px;
-    padding: 2rem 0;
-    background: url('../assets/svg/condom_topBack.svg');
+  .condom-hero__visual {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    width: min(100%, 460px);
   }
-  .condom-mascot {
-    position: absolute;
-    bottom: -200px;
-    left: 50%;
-    z-index: 2;
-    width: 400px;
-    max-width: 90vw;
-    transform: translateX(-50%);
+  :global(.condom-hero__word) {
+    width: min(78%, 340px);
+    color: var(--ink);
   }
-  .condom-mascot img {
+  .condom-hero__mascot {
+    width: min(86%, 380px);
+    animation: mascot 4s ease-in-out infinite;
+  }
+  .condom-hero__mascot :global(img) {
     width: 100%;
-    height: auto;
+    filter: drop-shadow(8px 8px 0 var(--ink));
   }
-
-  .condom-middle {
-    height: 800px;
-    padding: 4rem 0;
-    background-image: url('../assets/svg/condom_back.svg');
-  }
-  .condom-middle .container {
-    margin-top: 150px;
-  }
-  .condom-middle .kicker {
-    font-size: 1.6rem;
-    font-weight: 700;
-  }
-  .condom-middle h2 {
-    font-size: 2.4rem;
-    font-weight: 700;
-  }
-  .condom-middle img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  .condom-bottom {
-    position: relative;
-    padding: 4rem 0;
-    background: var(--c-amber);
-  }
-
-  .condom-appeal {
-    position: relative;
-    z-index: 1;
-    padding: 1rem 0;
-  }
-  .condom-appeal h3 {
-    margin-bottom: 0.5rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-  .condom-appeal p {
-    font-weight: 700;
-    color: #444;
-  }
-  .condom-appeal :global(em) {
-    display: inline-block;
-    font-style: normal;
-    color: #d53036;
-  }
-
-  .brand-banner {
-    position: relative;
-  }
-  .brand-copy {
-    padding-top: 1rem;
-    font-size: 1.1rem;
-  }
-  @media (min-width: 992px) {
-    .brand-copy {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      padding: 0;
-      font-size: 1.3rem;
-      transform: translate(-50%, -50%);
+  @keyframes mascot {
+    0%,
+    100% {
+      transform: translateY(0) rotate(-2deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(2deg);
     }
   }
 
-  @media (max-width: 767px) {
-    .condom-appeal h3 {
-      font-size: 1.3rem;
+  .appeal {
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+
+  .lineup {
+    background: var(--cream);
+  }
+  .lineup__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+
+  .made__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(40px, 6vw, 96px);
+  }
+  .trust {
+    display: grid;
+    gap: 12px;
+    margin-top: 36px;
+  }
+  .trust__item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 18px 12px 12px;
+    background: rgb(255 255 255 / 6%);
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: var(--radius-sm);
+  }
+  .trust__item strong {
+    display: block;
+    color: var(--white);
+  }
+  .trust__item span span {
+    display: block;
+    font-size: var(--fs-sm);
+  }
+  .trust__logo {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    background: var(--white);
+    border-radius: 12px;
+  }
+  .trust__logo :global(img) {
+    width: auto;
+    max-width: 84%;
+    max-height: 84%;
+  }
+  .made__photo :global(img) {
+    width: 100%;
+    border: 2px solid var(--white);
+    border-radius: var(--radius);
+  }
+  .made__photo figcaption {
+    margin-top: 12px;
+    font-size: var(--fs-sm);
+    color: rgb(255 255 255 / 60%);
+  }
+
+  .pack .container {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+  }
+  .pack__banner {
+    overflow: hidden;
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+  }
+  .pack__banner :global(img) {
+    width: 100%;
+  }
+
+  @media (max-width: 1023px) {
+    .lineup__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .condom-appeal p {
-      font-size: 0.9rem;
+  }
+  @media (max-width: 899px) {
+    .made__grid,
+    .pack .container {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 859px) {
+    .condom-hero__visual {
+      width: min(100%, 280px);
+    }
+  }
+  @media (max-width: 599px) {
+    .lineup__grid {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

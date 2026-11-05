@@ -1,0 +1,207 @@
+---
+import Img from '../ui/Img.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import Zigzag from '../ui/Zigzag.astro';
+
+const stats = [
+  { value: 2008, unit: '', label: '자체 제조 시작', count: false },
+  { value: 33, unit: '개국', label: '전 세계 수출', count: true },
+  { value: 200, unit: '만 불', label: '연간 수출액', count: true },
+  { value: 3, unit: '관왕', label: '레드닷 · iF · GD 디자인 어워드', count: true },
+];
+
+const certs = [
+  {
+    image: 'condom_logo1.jpg',
+    title: 'SMART ON TYPE',
+    text: 'ZINI만의 인체공학적 간편 착용 솔루션',
+  },
+  {
+    image: 'condom_logo2.jpg',
+    title: 'KGMP 인증',
+    text: '한국 우수 의약품 제조 및 품질관리 기준을 만족했어요',
+  },
+  {
+    image: 'condom_logo3.jpg',
+    title: '품질 적합 인증',
+    text: '의료기기 제조 및 품질관리 기준 적합 인정서 보유',
+  },
+];
+---
+
+<section class="stats section on-dark" aria-labelledby="stats-title">
+  <Zigzag edge="top" color="var(--ink)" />
+  <div class="container">
+    <SectionHead
+      eyebrow="Since 2008"
+      id="stats-title"
+      title="귀여운 얼굴로<br />세계를 설득했어요."
+      lead="2008년 직접 만들기 시작해 지금은 33개국에 수출해요. 레드닷과 iF 디자인 어워드가 먼저 알아봤어요."
+    />
+
+    <dl class="stats__grid">
+      {stats.map((s, i) => (
+        <div class="stats__item" data-reveal style={`--i: ${i}`}>
+          <dt>{s.label}</dt>
+          <dd>
+            <span class="stats__value" data-count={s.count ? s.value : undefined}>
+              {s.value}
+            </span>
+            {s.unit && <span class="stats__unit">{s.unit}</span>}
+          </dd>
+        </div>
+      ))}
+    </dl>
+
+    <ul class="certs">
+      {certs.map((c, i) => (
+        <li class="cert" data-reveal style={`--i: ${i}`}>
+          <span class="cert__logo">
+            <Img name={c.image} alt="" width={129} />
+          </span>
+          <span>
+            <strong class="cert__title">{c.title}</strong>
+            <span class="cert__text">{c.text}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <Zigzag edge="bottom" color="var(--ink)" />
+</section>
+
+<script>
+  // 숫자가 화면에 들어오면 0부터 세어 올라갑니다. HTML에는 최종 숫자가 들어 있습니다.
+  const counters = [...document.querySelectorAll<HTMLElement>('[data-count]')];
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (counters.length && !reduced && 'IntersectionObserver' in window) {
+    const run = (el: HTMLElement) => {
+      const end = Number(el.dataset.count);
+      const start = performance.now();
+      const duration = 1400;
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - start) / duration);
+        el.textContent = String(Math.round(end * (1 - Math.pow(1 - p, 3))));
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          observer.unobserve(entry.target);
+          run(entry.target as HTMLElement);
+        }
+      },
+      { threshold: 0.6 },
+    );
+    for (const el of counters) {
+      if (el.getBoundingClientRect().top > window.innerHeight) el.textContent = '0';
+      observer.observe(el);
+    }
+  }
+</script>
+
+<style>
+  .stats {
+    z-index: 1;
+  }
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: clamp(48px, 6vw, 80px);
+    border-top: 1px solid rgb(255 255 255 / 18%);
+  }
+  .stats__item {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 28px 24px 28px 0;
+    border-bottom: 1px solid rgb(255 255 255 / 18%);
+  }
+  .stats__item + .stats__item {
+    padding-left: 24px;
+    border-left: 1px solid rgb(255 255 255 / 18%);
+  }
+  .stats__item dt {
+    font-size: var(--fs-sm);
+    color: rgb(255 255 255 / 66%);
+  }
+  .stats__item dd {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    color: var(--yellow);
+  }
+  .stats__value {
+    font-family: var(--display);
+    font-size: clamp(2.75rem, 1.6rem + 3.6vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stats__unit {
+    font-size: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .certs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+  .cert {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 18px 14px 14px;
+    background: rgb(255 255 255 / 6%);
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: var(--radius);
+  }
+  .cert__logo {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    overflow: hidden;
+    background: var(--white);
+    border-radius: 18px;
+  }
+  .cert__logo :global(img) {
+    max-width: 82%;
+    max-height: 82%;
+    width: auto;
+    object-fit: contain;
+  }
+  .cert__title {
+    display: block;
+    color: var(--white);
+  }
+  .cert__text {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 960px) {
+    .stats__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .stats__item:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .certs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

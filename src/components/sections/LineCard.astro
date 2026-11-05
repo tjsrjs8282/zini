@@ -1,0 +1,155 @@
+---
+import Icon from '../ui/Icon.astro';
+import Img from '../ui/Img.astro';
+import { formatPrice, priceFrom } from '../../data/products';
+import type { GelLine } from '../../data/products';
+import { url } from '../../lib/url';
+
+/** S-SOLUTION 라인(센슈얼·프리미엄·마사지) 바로가기 카드 */
+interface Props {
+  line: GelLine;
+  compact?: boolean;
+}
+
+const { line, compact = false } = Astro.props;
+---
+
+<article
+  class:list={['line-card', { 'line-card--compact': compact }]}
+  style={`--tone: ${line.tone}`}
+>
+  <div class="line-card__shots" aria-hidden="true">
+    {line.products.slice(0, 3).map((p) => (
+      <Img name={p.image} alt="" width={300} />
+    ))}
+  </div>
+  <div class="line-card__body">
+    <p class="line-card__en">{line.title}</p>
+    <h3 class="line-card__title">
+      <a class="stretched" href={url(line.href)}>
+        {line.ko}
+      </a>
+    </h3>
+    <p class="line-card__summary">{line.summary}</p>
+    <p class="line-card__price">{formatPrice(priceFrom(line))}부터</p>
+  </div>
+  <span class="line-card__arrow" aria-hidden="true">
+    <Icon name="arrow-right" size="22" />
+  </span>
+</article>
+
+<style>
+  .line-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    min-height: 220px;
+    height: 100%;
+    overflow: hidden;
+    background: var(--tone);
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    transition:
+      transform 0.35s var(--ease-out),
+      box-shadow 0.35s var(--ease-out);
+  }
+  .line-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+  }
+  .line-card__shots {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 100%;
+    padding: 18px 0 0 18px;
+  }
+  .line-card__shots :global(picture) {
+    width: 40%;
+    margin-inline: -6%;
+    transition: transform 0.45s var(--ease-spring);
+  }
+  .line-card__shots :global(img) {
+    width: 100%;
+    mix-blend-mode: multiply;
+  }
+  .line-card:hover .line-card__shots :global(picture:nth-child(1)) {
+    transform: translateY(-8px) rotate(-6deg);
+  }
+  .line-card:hover .line-card__shots :global(picture:nth-child(2)) {
+    transform: translateY(-14px);
+  }
+  .line-card:hover .line-card__shots :global(picture:nth-child(3)) {
+    transform: translateY(-8px) rotate(6deg);
+  }
+  .line-card__body {
+    padding: 28px 64px 28px 8px;
+  }
+  .line-card__en {
+    font-family: var(--display);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .line-card__title {
+    margin-top: 6px;
+    font-size: var(--fs-h3);
+  }
+  .line-card__summary {
+    margin-top: 6px;
+    color: var(--muted);
+  }
+  .line-card__price {
+    margin-top: 14px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .line-card__arrow {
+    position: absolute;
+    right: 22px;
+    bottom: 22px;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    color: var(--white);
+    background: var(--ink);
+    border-radius: 50%;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .line-card:hover .line-card__arrow {
+    transform: rotate(-45deg);
+  }
+
+  /* 좁은 칸(다른 라인 바로가기)에서는 사진 위, 글 아래로 */
+  .line-card--compact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .line-card--compact .line-card__shots {
+    padding: 24px 24px 0;
+  }
+  .line-card--compact .line-card__shots :global(picture) {
+    width: 32%;
+  }
+  .line-card--compact .line-card__body {
+    padding: 4px 26px 28px;
+  }
+
+  @media (max-width: 560px) {
+    .line-card {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .line-card__shots {
+      padding: 22px 22px 0;
+    }
+    .line-card__shots :global(picture) {
+      width: 34%;
+    }
+    .line-card__body {
+      padding: 4px 24px 28px;
+    }
+  }
+</style>

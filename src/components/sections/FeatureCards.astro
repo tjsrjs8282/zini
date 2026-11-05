@@ -1,0 +1,136 @@
+---
+import Img from '../ui/Img.astro';
+
+/**
+ * 사진 + 번호 + 제목 + 설명 카드 묶음. span으로 한 줄에 몇 개를 놓을지 정합니다.
+ * - full: 한 줄 전체(가로로 긴 사진) / half: 두 개 / third: 세 개
+ */
+export interface Feature {
+  title: string;
+  text: string;
+  image: string;
+  alt: string;
+  label?: string;
+  span?: 'full' | 'half' | 'third';
+}
+
+interface Props {
+  items: Feature[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+const sizes = {
+  full: '(min-width: 1340px) 1280px, 92vw',
+  half: '(min-width: 1340px) 630px, (min-width: 760px) 46vw, 92vw',
+  third: '(min-width: 1340px) 420px, (min-width: 900px) 31vw, 92vw',
+};
+---
+
+<ol class:list={['features', className]}>
+  {items.map((f, i) => {
+    const span = f.span ?? 'half';
+    return (
+      <li class:list={['feature', `feature--${span}`]} data-reveal style={`--i: ${i % 3}`}>
+        <div class="feature__card">
+          <div class="feature__media">
+            <Img
+              name={f.image}
+              alt={f.alt}
+              widths={span === 'full' ? [640, 960, 1280] : [400, 640, 900]}
+              sizes={sizes[span]}
+            />
+          </div>
+          <div class="feature__body">
+            <span class="feature__no">{f.label ?? String(i + 1).padStart(2, '0')}</span>
+            <h3 class="feature__title" set:html={f.title} />
+            <p class="feature__text">{f.text}</p>
+          </div>
+        </div>
+      </li>
+    );
+  })}
+</ol>
+
+<style>
+  .features {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .feature--full {
+    grid-column: span 6;
+  }
+  .feature--half {
+    grid-column: span 3;
+  }
+  .feature--third {
+    grid-column: span 2;
+  }
+  .feature__card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+  }
+  .feature__media {
+    overflow: hidden;
+    background: var(--white);
+    border-bottom: var(--border);
+  }
+  .feature__media :global(img) {
+    width: 100%;
+    transition: transform 0.7s var(--ease-out);
+  }
+  .feature__card:hover .feature__media :global(img) {
+    transform: scale(1.04);
+  }
+  .feature--half .feature__media :global(img),
+  .feature--third .feature__media :global(img) {
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+  .feature__body {
+    display: grid;
+    gap: 8px;
+    padding: 24px 26px 28px;
+  }
+  .feature--full .feature__body {
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: baseline;
+    gap: 8px 28px;
+  }
+  .feature__no {
+    font-family: var(--display);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .feature__title {
+    font-size: var(--fs-h3);
+  }
+  .feature__title :global(em) {
+    font-style: normal;
+    background: linear-gradient(transparent 60%, var(--hl, var(--yellow)) 60%);
+  }
+  .feature__text {
+    color: var(--muted);
+  }
+
+  @media (max-width: 899px) {
+    .feature--third {
+      grid-column: span 6;
+    }
+    .feature--full .feature__body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 759px) {
+    .feature--half {
+      grid-column: span 6;
+    }
+  }
+</style>

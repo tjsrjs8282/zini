@@ -1,0 +1,118 @@
+---
+import Icon from '../ui/Icon.astro';
+import Img from '../ui/Img.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import { exhibitions } from '../../data/gallery';
+import { url } from '../../lib/url';
+---
+
+<section class="world section" aria-labelledby="world-title">
+  <div class="container">
+    <div class="world__head">
+      <SectionHead
+        eyebrow="World Stage"
+        id="world-title"
+        title="베를린에서<br />라스베이거스까지."
+        lead="세계 성인용품 박람회에서 ZINI를 직접 소개해 왔어요."
+      />
+      <a class="link-arrow" href={url('gallery.html#world-stage')}>
+        현장 사진 모두 보기 <Icon name="arrow-right" />
+      </a>
+    </div>
+
+    <ul class="world__list">
+      {exhibitions.map((ex, i) => (
+        <li class="world__item" data-reveal style={`--i: ${i}`}>
+          <figure class="stamp" style={`--tilt: ${i % 2 ? 1.6 : -1.4}deg`}>
+            <Img
+              name={ex.cover}
+              alt={`${ex.title} 현장`}
+              widths={[360, 540, 720]}
+              sizes="(min-width: 1080px) 300px, (min-width: 640px) 45vw, 80vw"
+            />
+            <figcaption>
+              <strong>{ex.title}</strong>
+              <span>
+                {ex.place} · {ex.years}
+              </span>
+            </figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .world__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .world__list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+  .stamp {
+    padding: 12px 12px 18px;
+    background: var(--white);
+    border: var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    rotate: var(--tilt);
+    transition:
+      rotate 0.4s var(--ease-spring),
+      transform 0.4s var(--ease-spring);
+  }
+  .stamp:hover {
+    rotate: 0deg;
+    transform: translateY(-6px);
+  }
+  .stamp :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  .stamp figcaption {
+    display: grid;
+    gap: 2px;
+    margin-top: 14px;
+    padding-inline: 4px;
+  }
+  .stamp strong {
+    font-family: var(--display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .stamp span {
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+
+  @media (max-width: 1080px) {
+    .world__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 560px) {
+    .world__list {
+      display: flex;
+      gap: 16px;
+      margin-inline: calc(var(--gutter) * -1);
+      padding: 8px var(--gutter) 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+    }
+    .world__item {
+      flex: 0 0 78%;
+      scroll-snap-align: start;
+    }
+  }
+</style>

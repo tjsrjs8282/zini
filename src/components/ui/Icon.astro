@@ -1,17 +1,31 @@
 ---
 // 인라인 SVG 아이콘
-// 브랜드 아이콘: Simple Icons(CC0) / 전화 아이콘: Material Design Icons(Apache-2.0)
+// 브랜드 아이콘: Simple Icons(CC0) / 나머지: 직접 그린 24px 선 아이콘
 import { siFacebook, siInstagram, siX, siYoutube } from 'simple-icons';
 
 const brand = { facebook: siFacebook, x: siX, youtube: siYoutube, instagram: siInstagram };
 
+const stroke = (d: string) =>
+  `<path d="${d}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`;
+
 const ui = {
-  'chevron-left':
-    '<path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
-  'chevron-right':
-    '<path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
-  phone:
-    '<rect width="24" height="24" rx="4" fill="currentColor"/><path fill="var(--icon-cutout, #fff)" transform="translate(4.5 4.5) scale(0.625)" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>',
+  'arrow-right': stroke('M4 12h15M13 6l6 6-6 6'),
+  'arrow-up-right': stroke('M7 17L17 7M9 7h8v8'),
+  'arrow-down': stroke('M12 4v15M6 13l6 6 6-6'),
+  'chevron-left': stroke('M15 18l-6-6 6-6'),
+  'chevron-right': stroke('M9 6l6 6-6 6'),
+  plus: stroke('M12 5v14M5 12h14'),
+  minus: stroke('M5 12h14'),
+  close: stroke('M6 6l12 12M18 6L6 18'),
+  check: stroke('M5 12.5l4.2 4.2L19 7'),
+  zoom: stroke('M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM15.5 15.5L20 20M10.5 8v5M8 10.5h5'),
+  store: stroke(
+    'M4 9.5l1.6-4.5h12.8L20 9.5M4 9.5h16M4 9.5c0 1.7 1.3 3 3 3s3-1.3 3-3m0 0c0 1.7 1.3 3 3 3s3-1.3 3-3m0 0c0 1.7 1.3 3 3 3M5.5 12.2V19h13v-6.8M10 19v-4h4v4',
+  ),
+  globe: stroke(
+    'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3.5 9h17M3.5 15h17M12 3c2.5 2.6 3.6 5.6 3.6 9s-1.1 6.4-3.6 9c-2.5-2.6-3.6-5.6-3.6-9S9.5 5.6 12 3z',
+  ),
+  spark: `<path d="M12 2.5l2.2 6.3 6.3 2.2-6.3 2.2L12 19.5l-2.2-6.3L3.5 11l6.3-2.2z" fill="currentColor"/>`,
 };
 
 export type IconName = keyof typeof brand | keyof typeof ui;
@@ -22,7 +36,7 @@ interface Props {
   class?: string;
 }
 
-const { name, size = '1em', class: className } = Astro.props;
+const { name, size = '1.15em', class: className } = Astro.props;
 const body =
   name in brand
     ? `<path fill="currentColor" d="${brand[name as keyof typeof brand].path}"/>`
@@ -30,7 +44,7 @@ const body =
 ---
 
 <svg
-  class:list={['icon', className]}
+  class:list={['icon', { 'icon--diagonal': name === 'arrow-up-right' }, className]}
   width={size}
   height={size}
   viewBox="0 0 24 24"
@@ -42,7 +56,7 @@ const body =
 <style>
   .icon {
     display: inline-block;
-    vertical-align: middle;
-    flex-shrink: 0;
+    flex: none;
+    vertical-align: -0.15em;
   }
 </style>

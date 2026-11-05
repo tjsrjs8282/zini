@@ -1,33 +1,102 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/ui/Icon.astro';
+import Img from '../components/ui/Img.astro';
 import ZiniFace from '../components/ui/ZiniFace.astro';
 import { url } from '../lib/url';
 ---
 
 <BaseLayout current="home" title="페이지를 찾을 수 없어요">
-  <section class="not-found">
-    <ZiniFace width={180} height={120} />
-    <h1>페이지를 찾을 수 없어요</h1>
-    <p>주소가 바뀌었거나 삭제된 페이지입니다.</p>
-    <a href={url()} class="btn-pill">
-      홈으로 가기
-    </a>
+  <section class="lost">
+    <div class="lost__inner container">
+      <div class="lost__visual" aria-hidden="true">
+        <ZiniFace class="lost__face" interactive />
+        <span class="lost__ninja">
+          <Img name="ch6.png" alt="" width={116} loading="eager" />
+        </span>
+      </div>
+      <p class="lost__code">404</p>
+      <h1 class="lost__title">이 페이지는 은폐엄폐 중이에요.</h1>
+      <p class="lost__text">NINJA가 숨겨 버렸나 봐요. 주소가 바뀌었거나 사라진 페이지예요.</p>
+      <div class="lost__actions">
+        <a class="btn btn--ink" href={url()}>
+          홈으로 돌아가기 <Icon name="arrow-right" />
+        </a>
+        <a class="btn" href={url('condom.html')}>
+          콘돔 라인업 보기
+        </a>
+      </div>
+    </div>
   </section>
 </BaseLayout>
 
 <style>
-  .not-found {
-    padding: 6rem 1rem;
+  .lost {
+    display: grid;
+    place-items: center;
+    min-height: 100svh;
+    padding: calc(var(--header-h) + 40px) 0 96px;
     text-align: center;
+    background: var(--yellow);
   }
-  h1 {
-    margin: 2rem 0 0.5rem;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--c-muted);
+  .lost__inner {
+    display: grid;
+    justify-items: center;
   }
-  p {
-    margin-bottom: 1.5rem;
-    color: var(--c-muted);
+  .lost__visual {
+    position: relative;
+    width: min(60vw, 300px);
+  }
+  .lost :global(.lost__face) {
+    width: 100%;
+    color: var(--ink);
+  }
+  .lost__ninja {
+    position: absolute;
+    right: -26%;
+    bottom: -18%;
+    width: 72px;
+    animation: peek 3.6s ease-in-out infinite;
+  }
+  .lost__ninja :global(img) {
+    width: 100%;
+  }
+  @keyframes peek {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0);
+    }
+    40% {
+      transform: translateY(-14px) rotate(-8deg);
+    }
+    60% {
+      transform: translateY(-14px) rotate(8deg);
+    }
+  }
+  .lost__code {
+    margin-top: 40px;
+    font-family: var(--display);
+    font-size: clamp(4rem, 2.4rem + 7vw, 8rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--ink);
+  }
+  .lost__title {
+    margin-top: 16px;
+    font-size: var(--fs-h2);
+  }
+  .lost__text {
+    margin-top: 12px;
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+  }
+  .lost__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
   }
 </style>

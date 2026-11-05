@@ -1,10 +1,12 @@
 ---
-import { Image } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
+import Img from '../ui/Img.astro';
+import SocialLinks from '../ui/SocialLinks.astro';
+import Wordmark from '../ui/Wordmark.astro';
 import ZiniFace from '../ui/ZiniFace.astro';
-import Zigzag from '../ui/Zigzag.astro';
 import { navItems, site } from '../../data/site';
 import type { NavId } from '../../data/site';
-import { img } from '../../lib/images';
+import { condoms } from '../../data/products';
 import { url } from '../../lib/url';
 
 interface Props {
@@ -12,358 +14,404 @@ interface Props {
 }
 
 const { current } = Astro.props;
-const left = navItems.slice(0, 3);
-const right = navItems.slice(3);
-
-// 메뉴 글자 뒤 연필 모양: 페이지가 열리면 글자 길이(pencilEnd)만큼 늘어납니다.
-const pencilFrom =
-  'M8.942,7.376H13c5.898,2.479,10.292,7.85,11.41,14.364c2.527,0.003,4.573,1.461,4.573,3.259c0,1.799-2.046,3.26-4.573,3.262C23.292,34.773,18.898,40.148,13,42.627H8.942';
-const pencilTo = (end: number) =>
-  `M8.942,7.376H${end}c5.898,2.479,10.292,7.85,11.41,14.364c2.527,0.003,4.573,1.461,4.573,3.259c0,1.799-2.046,3.26-4.573,3.262c-1.118,6.512-5.512,11.887-11.41,14.365H8.942`;
-const pencilCap =
-  'M5.49,1.697c-1.906,0-3.453,2.082-3.453,4.65v1.296v34.715v1.297c0,2.57,1.547,4.648,3.453,4.648s3.452-2.078,3.452-4.648v-2.336V8.684V6.347C8.942,3.778,7.396,1.697,5.49,1.697z';
+const menuItems = [{ id: 'home', label: '홈', en: 'Home', href: '' }, ...navItems];
 ---
 
-<header class="header">
-  <div class="topNavWrap">
-    <a href={site.shopUrl} class="comLogo" target="_blank" rel="noopener noreferrer">
-      <Image src={img('bururuCom.png')} alt="부르르닷컴" width={155} densities={[1, 2]} />
+<header class="site-header" data-header>
+  <div class="bar container">
+    <a class="brand" href={url()} aria-label="ZINI 홈">
+      <ZiniFace class="brand__face" />
+      <Wordmark class="brand__word" />
     </a>
-    <ul class="loginNav">
-      <li>
-        <a href={site.loginUrl} target="_blank" rel="noopener noreferrer">
-          로그인
-        </a>
-      </li>
-      <li>
-        <a href={site.joinUrl} target="_blank" rel="noopener noreferrer">
-          회원가입
-        </a>
-      </li>
-    </ul>
-  </div>
 
-  <div class="navWrap-holder">
-    <div class="navWrap" data-sticky-nav>
-      <a href={url()} class="m-logo" aria-label="ZINI 홈">
-        <ZiniFace width={100} height={70} />
+    <nav class="gnb" aria-label="주 메뉴">
+      <ul>
+        {navItems.map((item) => (
+          <li>
+            <a href={url(item.href)} aria-current={item.id === current ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a
+        class="btn btn--sm btn--ink shop"
+        href={site.shopUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        공식몰 <Icon name="arrow-up-right" />
+        <span class="visually-hidden">(새 창)</span>
       </a>
-      <nav class="nav container" aria-label="주 메뉴">
-        <ul>
-          {[...left, null, ...right].map((item) =>
-            item ? (
-              <li class="navList">
-                <a
-                  href={url(item.href)}
-                  class:list={[{ active: item.id === current }]}
-                  aria-current={item.id === current ? 'page' : undefined}
-                >
-                  <svg
-                    class="navHover"
-                    width="200"
-                    height="50"
-                    viewBox="0 0 200 50"
-                    aria-hidden="true"
-                    focusable="false"
-                  >
-                    <path class="svgHoverW" d={pencilCap} />
-                    <path class="svgHoverB" d={pencilFrom}>
-                      <animate
-                        attributeName="d"
-                        dur="1.2s"
-                        fill="freeze"
-                        to={pencilTo(item.pencilEnd)}
-                      />
-                    </path>
-                  </svg>
-                  {item.label}
-                </a>
-              </li>
-            ) : (
-              <li class="logo">
-                <a href={url()} aria-label="ZINI 홈">
-                  <ZiniFace class="white" width={120} height={100} />
-                  <Image
-                    class="black"
-                    src={img('logo.png')}
-                    alt=""
-                    width={100}
-                    densities={[1, 2]}
-                  />
-                </a>
-              </li>
-            ),
-          )}
-        </ul>
-      </nav>
       <button
         type="button"
-        class="nav-icon"
-        aria-label="전체 메뉴 열기"
+        class="menu-toggle"
         aria-haspopup="dialog"
-        aria-controls="full-nav"
+        aria-controls="site-menu"
         aria-expanded="false"
-        data-nav-open
+        data-menu-open
       >
-        <span></span>
-        <span></span>
-        <span></span>
+        <span class="menu-toggle__bars" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
+        <span class="visually-hidden">전체 메뉴 열기</span>
       </button>
-      <Zigzag edge="bottom" point="down" color="var(--c-yellow)" class="nav-zigzag" />
     </div>
   </div>
-
-  <slot />
 </header>
 
+<dialog id="site-menu" class="menu" aria-label="전체 메뉴" data-menu>
+  <div class="menu__bar container">
+    <a class="brand" href={url()} aria-label="ZINI 홈">
+      <ZiniFace class="brand__face" />
+      <Wordmark class="brand__word" />
+    </a>
+    <button type="button" class="menu__close" data-menu-close>
+      <Icon name="close" size="24" />
+      <span class="visually-hidden">메뉴 닫기</span>
+    </button>
+  </div>
+
+  <nav class="menu__nav container" aria-label="전체 메뉴">
+    <ol>
+      {menuItems.map((item, i) => (
+        <li style={`--i: ${i}`}>
+          <a href={url(item.href)} aria-current={item.id === current ? 'page' : undefined}>
+            <span class="menu__en">{item.en}</span>
+            <span class="menu__ko">{item.label}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+
+  <div class="menu__foot container">
+    <a class="btn btn--ink" href={site.shopUrl} target="_blank" rel="noopener noreferrer">
+      공식몰 바로가기 <Icon name="arrow-up-right" />
+      <span class="visually-hidden">(새 창)</span>
+    </a>
+    <SocialLinks />
+  </div>
+
+  <ul class="menu__crew" aria-hidden="true">
+    {condoms.map((c, i) => (
+      <li style={`--i: ${i}`}>
+        <Img name={c.character} alt="" width={116} />
+      </li>
+    ))}
+  </ul>
+</dialog>
+
 <script>
-  // 스크롤 100px을 넘으면 메뉴바를 상단에 고정합니다.
-  const nav = document.querySelector<HTMLElement>('[data-sticky-nav]');
-  if (nav) {
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const menu = document.querySelector<HTMLDialogElement>('[data-menu]');
+  const openButton = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+
+  // 스크롤하면 배경을 깔고, 내려갈 때는 숨겼다가 올라오면 다시 보여 줍니다.
+  if (header) {
+    let lastY = window.scrollY;
     let ticking = false;
     const update = () => {
-      nav.classList.toggle('sticky', window.scrollY > 100);
+      const y = window.scrollY;
+      header.classList.toggle('is-scrolled', y > 8);
+      if (y > lastY + 4 && y > 280) header.classList.add('is-hidden');
+      else if (y < lastY - 4 || y <= 280) header.classList.remove('is-hidden');
+      lastY = y;
       ticking = false;
     };
     window.addEventListener(
       'scroll',
       () => {
-        if (!ticking) {
-          ticking = true;
-          requestAnimationFrame(update);
-        }
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
       },
       { passive: true },
     );
     update();
   }
+
+  // 전체 메뉴: 네이티브 <dialog>로 포커스 가두기·ESC 닫기를 처리합니다.
+  if (menu && openButton) {
+    openButton.addEventListener('click', () => {
+      menu.showModal();
+      openButton.setAttribute('aria-expanded', 'true');
+    });
+    menu.querySelector('[data-menu-close]')?.addEventListener('click', () => menu.close());
+    menu.addEventListener('close', () => openButton.setAttribute('aria-expanded', 'false'));
+    menu.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) menu.close();
+    });
+    window.matchMedia('(min-width: 960px)').addEventListener('change', (event) => {
+      if (event.matches && menu.open) menu.close();
+    });
+  }
 </script>
 
 <style>
-  .header {
-    position: relative;
-    width: 100%;
-  }
-
-  /* ---------- 상단 빨간 띠 ---------- */
-  .topNavWrap {
-    position: relative;
-    display: flex;
-    width: 100%;
-    height: 40px;
-    background-color: var(--c-red);
-  }
-  .comLogo {
-    width: 180px;
-    margin: auto;
-  }
-  .comLogo img {
-    width: 100%;
-    height: auto;
-    padding-right: 25px;
-    transition: 0.3s ease;
-  }
-  .comLogo:hover img {
-    opacity: 0.8;
-  }
-  .loginNav {
-    position: absolute;
-    top: 9px;
-    right: 30px;
-    display: flex;
-  }
-  .loginNav li {
-    width: 70px;
-    text-align: center;
-  }
-  .loginNav a {
-    display: block;
-    font-size: 0.9rem;
-    color: #fff;
-    transition: 0.3s ease;
-  }
-  .loginNav a:hover {
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  /* ---------- 노란 메뉴바 ---------- */
-  /* 메뉴바가 fixed로 바뀌어도 아래 콘텐츠가 튀지 않도록 자리를 잡아 둡니다. */
-  .navWrap-holder {
-    position: relative;
-    z-index: 100;
-    height: 70px;
-  }
-  .navWrap {
-    position: relative;
-    z-index: 9;
-    width: 100%;
-    height: 70px;
-    background-color: var(--c-yellow);
-    transition: all 0.3s;
-  }
-  .nav {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-  .nav ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    height: 100%;
-  }
-  .nav li {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 70px;
-  }
-  .nav li a {
-    position: relative;
-    height: 100%;
-    padding: 0 2.5rem;
-    font-size: 1em;
-    font-weight: 700;
-    line-height: 70px;
-    color: var(--c-text);
-    text-transform: uppercase;
-    transition: all 0.4s ease;
-  }
-  .navHover {
-    position: absolute;
-    z-index: -1;
-    top: 10px;
-    left: 10px;
-  }
-  .navHover path {
-    fill: none;
-    stroke: #010101;
-    stroke-width: 1.3917;
-    stroke-miterlimit: 10;
-  }
-  .nav li a.active,
-  .nav li:hover a {
-    color: #fff;
-  }
-  .nav li a.active .svgHoverB,
-  .nav li:hover a .svgHoverB {
-    fill: var(--c-orange);
-  }
-  .nav li a.active .svgHoverW,
-  .nav li:hover a .svgHoverW {
-    fill: #444;
-  }
-  .nav li.logo a {
-    margin: 10px 0;
-    padding: 0 2.5rem;
-  }
-  .nav li.logo .black {
-    display: none;
-    width: 100px;
-    height: auto;
-  }
-  .m-logo {
-    display: none;
-    width: 120px;
-    margin-left: 20px;
-  }
-
-  /* 햄버거 버튼 */
-  .nav-icon {
-    position: absolute;
-    top: 22px;
-    right: 25px;
-    z-index: 1;
-    width: 40px;
-    padding: 5px;
-  }
-  .nav-icon span {
-    display: block;
-    width: 30px;
-    height: 2px;
-    background: var(--c-text);
-    transition: 0.3s linear all;
-  }
-  .nav-icon span:nth-child(1),
-  .nav-icon span:nth-child(3) {
-    width: 20px;
-    margin: 0 auto;
-  }
-  .nav-icon span:nth-child(2) {
-    width: 32px;
-    margin: 5px 0;
-  }
-  .nav-icon:hover span:nth-child(1),
-  .nav-icon:hover span:nth-child(3) {
-    width: 30px;
-  }
-
-  /* ---------- 스크롤 시 고정 ---------- */
-  .navWrap.sticky {
+  /* ---------- 상단 바 ---------- */
+  .site-header {
     position: fixed;
-    top: 0;
-    background-color: #fff;
-    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.35);
-    animation: nav-drop 0.3s both;
+    inset: 0 0 auto;
+    z-index: 50;
+    height: var(--header-h);
+    view-transition-name: site-header;
+    transition:
+      transform 0.45s var(--ease-out),
+      background-color 0.3s,
+      box-shadow 0.3s;
   }
-  @keyframes nav-drop {
-    from {
-      opacity: 0;
-      transform: translate3d(0, -100%, 0);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
+  .site-header.is-scrolled {
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    box-shadow: 0 1px 0 var(--line);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    backdrop-filter: saturate(1.4) blur(14px);
   }
-  .navWrap.sticky a {
-    color: var(--c-ink);
+  .site-header.is-hidden:not(:focus-within) {
+    transform: translateY(-105%);
   }
-  .navWrap.sticky .nav li a.active,
-  .navWrap.sticky .nav li:hover a {
-    color: #fff;
-  }
-  .navWrap.sticky .nav li a.active .svgHoverB,
-  .navWrap.sticky .nav li:hover a .svgHoverB {
-    fill: #000;
-  }
-  .navWrap.sticky .nav li a.active .svgHoverW,
-  .navWrap.sticky .nav li:hover a .svgHoverW {
-    fill: #fff;
-  }
-  .navWrap.sticky li.logo .white {
-    display: none;
-  }
-  .navWrap.sticky li.logo .black {
-    display: inline-block;
-  }
-  .navWrap.sticky .nav-icon span {
-    background: var(--c-ink);
-  }
-  .navWrap.sticky .nav-zigzag {
-    display: none;
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 100%;
   }
 
-  /* ---------- 반응형 ---------- */
-  @media (max-width: 1330px) {
-    .nav li.logo {
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    border-radius: 8px;
+  }
+  .brand__face {
+    width: 40px;
+  }
+  .brand__word {
+    width: 70px;
+  }
+  .brand:hover :global(.lid) {
+    animation-duration: 0.8s;
+  }
+
+  .gnb ul {
+    display: flex;
+    gap: 2px;
+  }
+  .gnb a {
+    display: block;
+    padding: 9px 16px;
+    font-size: 0.96875rem;
+    font-weight: 700;
+    color: var(--ink);
+    border-radius: 999px;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .gnb a:hover {
+    background: rgb(21 20 19 / 8%);
+  }
+  .gnb a[aria-current='page'] {
+    color: var(--white);
+    background: var(--ink);
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .menu-toggle {
+    display: none;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    background: var(--white);
+    border: var(--border);
+    border-radius: 50%;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition:
+      transform 0.2s var(--ease-out),
+      box-shadow 0.2s var(--ease-out);
+  }
+  .menu-toggle:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--ink);
+  }
+  .menu-toggle__bars {
+    display: grid;
+    gap: 6px;
+  }
+  .menu-toggle__bars span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--ink);
+    border-radius: 2px;
+  }
+  .menu-toggle__bars span:last-child {
+    width: 12px;
+  }
+
+  @media (max-width: 959px) {
+    .gnb {
+      display: none;
+    }
+    .menu-toggle {
+      display: grid;
+    }
+  }
+  @media (max-width: 420px) {
+    .shop {
       display: none;
     }
   }
-  @media (max-width: 1000px) {
-    .navList {
-      display: none !important;
-    }
-    .m-logo {
-      display: block;
-    }
-    .comLogo {
-      margin: 5px 0 0;
+
+  /* ---------- 전체 메뉴 ---------- */
+  .menu {
+    position: fixed;
+    inset: 0;
+    flex-direction: column;
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    overflow: hidden auto;
+    color: var(--ink);
+    background: var(--yellow);
+    opacity: 0;
+    transition:
+      opacity 0.35s var(--ease-out),
+      overlay 0.35s allow-discrete,
+      display 0.35s allow-discrete;
+  }
+  .menu[open] {
+    display: flex;
+    opacity: 1;
+  }
+  @starting-style {
+    .menu[open] {
+      opacity: 0;
     }
   }
-  @media (max-width: 550px) {
-    .nav li a {
-      font-size: 0.9em;
+  .menu::backdrop {
+    background: transparent;
+  }
+  :global(html:has(.menu[open])) {
+    overflow: hidden;
+  }
+
+  .menu__bar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-h);
+  }
+  .menu__close {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    background: var(--white);
+    border: var(--border);
+    border-radius: 50%;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  .menu__nav {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    padding-block: 16px;
+  }
+  .menu__nav ol {
+    width: 100%;
+    border-top: var(--border);
+  }
+  .menu__nav li {
+    border-bottom: var(--border);
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+      opacity 0.5s var(--ease-out),
+      transform 0.5s var(--ease-out);
+    transition-delay: calc(var(--i) * 55ms + 80ms);
+  }
+  .menu[open] .menu__nav li {
+    opacity: 1;
+    transform: none;
+  }
+  @starting-style {
+    .menu[open] .menu__nav li {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+  }
+  .menu__nav a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 4px;
+  }
+  .menu__en {
+    font-family: var(--display);
+    font-size: clamp(2rem, 8.5vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .menu__nav a:hover .menu__en {
+    transform: translateX(8px);
+  }
+  .menu__ko {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .menu__nav a[aria-current='page'] .menu__en {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--ink);
+  }
+
+  .menu__foot {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 12px 108px;
+  }
+
+  .menu__crew {
+    position: absolute;
+    inset: auto 0 0;
+    display: flex;
+    justify-content: center;
+    gap: clamp(2px, 2vw, 18px);
+    pointer-events: none;
+  }
+  .menu__crew li {
+    width: clamp(46px, 13vw, 76px);
+    transform: translateY(100%);
+    transition: transform 0.7s var(--ease-spring);
+    transition-delay: calc(var(--i) * 70ms + 200ms);
+  }
+  .menu[open] .menu__crew li {
+    transform: translateY(22%);
+  }
+  @starting-style {
+    .menu[open] .menu__crew li {
+      transform: translateY(100%);
     }
   }
 </style>

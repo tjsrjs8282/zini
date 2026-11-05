@@ -1,0 +1,162 @@
+---
+import Img from '../ui/Img.astro';
+import SectionHead from '../ui/SectionHead.astro';
+
+const points = [
+  {
+    title: '아시아인 맞춤 사이즈',
+    text: '아시아인의 체형에 맞춰 설계해 헐겁거나 조이지 않아요.',
+    character: 'ch1.png',
+    color: 'var(--c-safe)',
+  },
+  {
+    title: '맨살 같은 밀착감',
+    text: '부드럽게 밀착되어 이질감은 줄이고, 잘 빠지지 않아 안심이에요.',
+    character: 'ch2.png',
+    color: 'var(--c-jell)',
+  },
+  {
+    title: '탄탄한 신축성',
+    text: '늘려도 쉽게 찢어지지 않는 탄력으로 강한 마찰에도 걱정 없어요.',
+    character: 'ch5.png',
+    color: 'var(--c-kangsoe)',
+  },
+  {
+    title: '얇고 투명하게',
+    text: '두께는 낮추고 투명도는 높여 보는 느낌과 착용감을 함께 챙겼어요.',
+    character: 'ch4.png',
+    color: 'var(--c-skinny)',
+  },
+];
+---
+
+<section class="why section" id="why" aria-labelledby="why-title">
+  <div class="container">
+    <div class="why__head">
+      <SectionHead
+        eyebrow="Why ZINI"
+        id="why-title"
+        title="민망함은 빼고,<br />명랑함은 더했어요."
+      />
+      <p class="why__lead" data-reveal style="--i: 1">
+        콘돔을 고르는 일이 왜 부끄러워야 할까요? ZINI는 여섯 캐릭터에게 각자의 개성을 맡겼어요.
+        고르는 재미는 캐릭터가, <strong>안전은 ZINI가</strong> 책임집니다.
+      </p>
+    </div>
+
+    <ol class="why__grid">
+      {points.map((p, i) => (
+        <li class="why__item" data-reveal style={`--i: ${i}`}>
+          <div class="why__card" style={`--c: ${p.color}`}>
+            <span class="why__no">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="why__title">{p.title}</h3>
+            <p class="why__text">{p.text}</p>
+            <Img class="why__char" name={p.character} alt="" width={116} />
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .why__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: end;
+    gap: 32px 64px;
+  }
+  .why__lead {
+    font-size: var(--fs-lead);
+    color: var(--muted);
+  }
+  .why__lead strong {
+    color: var(--ink);
+    background: linear-gradient(transparent 58%, var(--yellow) 58%);
+  }
+
+  .why__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: clamp(48px, 6vw, 80px);
+  }
+  .why__card {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    height: 100%;
+    min-height: 300px;
+    padding: 28px 26px 120px;
+    overflow: hidden;
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    transition:
+      transform 0.35s var(--ease-out),
+      box-shadow 0.35s var(--ease-out);
+  }
+  .why__card::before {
+    content: '';
+    position: absolute;
+    right: -40px;
+    bottom: -64px;
+    width: 190px;
+    height: 190px;
+    background: var(--c);
+    border-radius: 50%;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .why__card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+  }
+  .why__card:hover::before {
+    transform: scale(1.12);
+  }
+  .why__no {
+    font-family: var(--display);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .why__title {
+    font-size: var(--fs-h3);
+  }
+  .why__text {
+    position: relative;
+    z-index: 1;
+    color: var(--muted);
+  }
+  .why__card :global(.why__char) {
+    position: absolute;
+    right: 22px;
+    bottom: -10px;
+    width: 76px;
+    transition: transform 0.4s var(--ease-spring);
+  }
+  .why__card:hover :global(.why__char) {
+    transform: translateY(-10px) rotate(-5deg);
+  }
+
+  @media (max-width: 1080px) {
+    .why__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 860px) {
+    .why__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .why__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .why__card {
+      min-height: 0;
+      padding-bottom: 110px;
+    }
+  }
+</style>

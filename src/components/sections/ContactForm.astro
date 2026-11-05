@@ -1,78 +1,161 @@
 ---
-import { company } from '../../data/site';
+import Icon from '../ui/Icon.astro';
 
-// PUBLIC_CONTACT_ENDPOINT(예: Formspree 주소)를 설정하면 그곳으로 전송하고,
-// 없으면 사용자의 메일 앱을 열어 회사 메일로 보냅니다.
+// PUBLIC_CONTACT_ENDPOINT(예: Formspree 주소)를 넣으면 그곳으로 전송합니다.
+// 비워 두면 데모 모드 — 실제로 보내지 않고, 데모라서 전송되지 않았다는 안내만 보여 줍니다.
 const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? '';
+const topics = ['제휴·입점', '도매 거래', 'OEM·ODM', '수입·통관 대행', '창업 컨설팅', '기타'];
 ---
 
-<form class="contact-form" data-contact-form data-endpoint={endpoint} data-email={company.email}>
-  <label class="visually-hidden" for="contact-name">
-    이름
-  </label>
-  <input
-    id="contact-name"
-    name="name"
-    type="text"
-    placeholder="Full name"
-    autocomplete="name"
-    required
-  />
+<form class="form" data-contact-form data-endpoint={endpoint} novalidate>
+  <div class="form__row">
+    <div class="field">
+      <label for="cf-name">
+        이름{' '}
+        <span class="req" aria-hidden="true">
+          *
+        </span>
+      </label>
+      <input id="cf-name" name="name" autocomplete="name" required aria-describedby="cf-name-err" />
+      <p class="field__error" id="cf-name-err"></p>
+    </div>
+    <div class="field">
+      <label for="cf-email">
+        이메일{' '}
+        <span class="req" aria-hidden="true">
+          *
+        </span>
+      </label>
+      <input
+        id="cf-email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        required
+        aria-describedby="cf-email-err"
+      />
+      <p class="field__error" id="cf-email-err"></p>
+    </div>
+  </div>
 
-  <label class="visually-hidden" for="contact-email">
-    이메일
-  </label>
-  <input
-    id="contact-email"
-    name="email"
-    type="email"
-    placeholder="Email Address"
-    autocomplete="email"
-    required
-  />
+  <div class="field">
+    <label for="cf-company">
+      회사명 <span class="opt">(선택)</span>
+    </label>
+    <input id="cf-company" name="company" autocomplete="organization" />
+  </div>
 
-  <label class="visually-hidden" for="contact-message">
-    문의 내용
-  </label>
-  <textarea
-    id="contact-message"
-    name="message"
-    rows="5"
-    placeholder="Message.."
-    required
-  ></textarea>
+  <fieldset class="field">
+    <legend>문의 유형</legend>
+    <div class="topics">
+      {topics.map((t, i) => (
+        <label class="topic">
+          <input type="radio" name="topic" value={t} checked={i === 0} />
+          <span>{t}</span>
+        </label>
+      ))}
+    </div>
+  </fieldset>
 
-  <button type="submit" class="send-btn">
-    SEND
-  </button>
-  <p class="form-status" role="status" aria-live="polite"></p>
+  <div class="field">
+    <label for="cf-message">
+      문의 내용{' '}
+      <span class="req" aria-hidden="true">
+        *
+      </span>
+    </label>
+    <textarea
+      id="cf-message"
+      name="message"
+      rows="6"
+      minlength="10"
+      required
+      placeholder="궁금한 점이나 제안하실 내용을 적어 주세요."
+      aria-describedby="cf-message-err"
+    ></textarea>
+    <p class="field__error" id="cf-message-err"></p>
+  </div>
+
+  <div class="field">
+    <label class="agree">
+      <input type="checkbox" name="agree" required aria-describedby="cf-agree-err" />
+      <span>개인정보(이름·이메일) 수집·이용에 동의합니다. 문의 답변 후 바로 파기해요.</span>
+    </label>
+    <p class="field__error" id="cf-agree-err"></p>
+  </div>
+
+  <div class="form__foot">
+    <button class="btn btn--ink" type="submit">
+      문의 보내기 <Icon name="arrow-right" />
+    </button>
+    <p class="form__status" role="status" aria-live="polite"></p>
+  </div>
 </form>
 
 <script>
+  const messages: Record<string, string> = {
+    name: '이름을 적어 주세요.',
+    email: '이메일을 적어 주세요.',
+    message: '문의 내용을 10자 이상 적어 주세요.',
+    agree: '개인정보 수집·이용에 동의해 주세요.',
+  };
+
   document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
-    const status = form.querySelector<HTMLElement>('.form-status');
-    const setStatus = (message: string) => {
-      if (status) status.textContent = message;
+    const status = form.querySelector<HTMLElement>('.form__status');
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const fields = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]')];
+
+    const setStatus = (text: string, tone: 'ok' | 'error' | '' = '') => {
+      if (!status) return;
+      status.textContent = text;
+      status.dataset.tone = tone;
     };
+
+    const check = (field: HTMLInputElement | HTMLTextAreaElement) => {
+      const error = document.getElementById(field.getAttribute('aria-describedby') ?? '');
+      let text = '';
+      if (!field.validity.valid) {
+        text =
+          field.validity.typeMismatch && field.name === 'email'
+            ? '이메일 주소 형식을 확인해 주세요. (예: name@example.com)'
+            : (messages[field.name] ?? '이 항목을 확인해 주세요.');
+      }
+      field.toggleAttribute('aria-invalid', Boolean(text));
+      if (error) error.textContent = text;
+      return !text;
+    };
+
+    // 한 번 틀린 칸은 고치는 즉시 다시 확인합니다.
+    fields.forEach((field) =>
+      field.addEventListener('input', () => {
+        if (field.hasAttribute('aria-invalid')) check(field);
+      }),
+    );
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
-      const { endpoint, email } = form.dataset;
-
-      if (!endpoint) {
-        const subject = encodeURIComponent(`[ZINI 문의] ${data.name}`);
-        const body = encodeURIComponent(
-          `${data.message}\n\n보낸 사람: ${data.name} <${data.email}>`,
-        );
-        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-        setStatus('메일 앱에서 내용을 확인한 뒤 보내 주세요.');
+      const invalid = fields.filter((field) => !check(field));
+      if (invalid.length) {
+        invalid[0]?.focus();
+        setStatus('표시된 항목을 확인해 주세요.', 'error');
         return;
       }
 
-      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      const endpoint = form.dataset.endpoint;
+
+      if (!endpoint) {
+        form.reset();
+        setStatus(
+          `${data.name}님, 고마워요! 포트폴리오 데모라 실제로 전송되지는 않았어요. 입력한 내용은 어디에도 저장되지 않아요.`,
+          'ok',
+        );
+        return;
+      }
+
       if (button) button.disabled = true;
-      setStatus('보내는 중입니다…');
+      setStatus('보내는 중이에요…');
       try {
         const response = await fetch(endpoint, {
           method: 'POST',
@@ -81,9 +164,9 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? '';
         });
         if (!response.ok) throw new Error(String(response.status));
         form.reset();
-        setStatus('문의가 접수되었습니다. 감사합니다!');
+        setStatus('문의가 접수됐어요. 담당자가 확인 후 연락드릴게요!', 'ok');
       } catch {
-        setStatus('전송에 실패했습니다. 잠시 후 다시 시도하거나 메일로 문의해 주세요.');
+        setStatus('전송하지 못했어요. 잠시 후 다시 시도해 주세요.', 'error');
       } finally {
         if (button) button.disabled = false;
       }
@@ -92,49 +175,142 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? '';
 </script>
 
 <style>
-  input,
+  .form {
+    display: grid;
+    gap: 22px;
+  }
+  .form__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+  }
+  .field {
+    display: grid;
+    gap: 8px;
+  }
+  .field label,
+  .field legend {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .field legend {
+    margin-bottom: 8px;
+  }
+  .req {
+    color: #d93a3a;
+  }
+  .opt {
+    font-weight: 500;
+    color: var(--muted);
+  }
+  input:not([type='radio'], [type='checkbox']),
   textarea {
-    display: block;
     width: 100%;
-    margin-bottom: 20px;
-    padding: 8px 17px;
-    font-size: 17px;
-    font-weight: 700;
-    line-height: 1.5;
-    color: #fff;
-    background: transparent;
-    border: 1px solid #fff;
-    border-radius: 0;
+    padding: 14px 16px;
+    font-size: 1rem;
+    color: var(--ink);
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius-sm);
+    transition:
+      box-shadow 0.2s,
+      border-color 0.2s;
   }
-  input::placeholder,
-  textarea::placeholder {
-    color: #6c757d;
+  textarea {
+    resize: vertical;
   }
-  input:focus,
-  textarea:focus {
-    outline: 3px solid var(--c-orange);
-    outline-offset: 0;
+  input:not([type='radio'], [type='checkbox']):focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    box-shadow: 4px 4px 0 var(--ink);
   }
-  .send-btn {
+  [aria-invalid] {
+    border-color: #d93a3a !important;
+    background: #fff5f5 !important;
+  }
+  .field__error {
+    min-height: 0;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: #c22d2d;
+  }
+  .field__error:empty {
+    display: none;
+  }
+
+  .topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .topic input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .topic span {
     display: inline-block;
-    padding: 12px 25px;
-    font-size: 17px;
+    padding: 8px 16px;
+    font-size: var(--fs-sm);
     font-weight: 700;
-    line-height: 1.5;
-    color: #fff;
-    border: 2px solid #fff;
-    border-radius: 0.3rem;
-    transition: color 0.15s;
+    color: var(--ink);
+    background: var(--white);
+    border: var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
   }
-  .send-btn:hover {
-    color: #585858;
+  .topic input:checked + span {
+    color: var(--white);
+    background: var(--ink);
   }
-  .send-btn:disabled {
-    opacity: 0.6;
+  .topic input:focus-visible + span {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
   }
-  .form-status {
-    min-height: 1.5em;
-    margin-top: 1rem;
-    color: #fff;
+
+  .agree {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-weight: 500 !important;
+    color: var(--text) !important;
+    cursor: pointer;
+  }
+  .agree input {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 3px;
+    accent-color: var(--ink);
+  }
+
+  .form__foot {
+    display: grid;
+    justify-items: start;
+    gap: 14px;
+  }
+  .form__status:empty {
+    display: none;
+  }
+  .form__status {
+    padding: 14px 18px;
+    font-weight: 600;
+    border: var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .form__status[data-tone='ok'] {
+    background: #e7f7ea;
+  }
+  .form__status[data-tone='error'] {
+    background: #fff0f0;
+  }
+
+  @media (max-width: 559px) {
+    .form__row {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 </style>
