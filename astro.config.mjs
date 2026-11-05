@@ -6,10 +6,15 @@ import { createReadStream, existsSync, statSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// 기본 배포 대상은 GitHub Pages(https://tjsrjs8282.github.io/zini/)입니다.
-// 다른 호스팅(예: Vercel 루트 도메인)에 올릴 때는 SITE_URL / BASE_PATH 환경 변수로 덮어씁니다.
-const site = process.env.SITE_URL ?? 'https://tjsrjs8282.github.io';
-const base = process.env.BASE_PATH ?? '/zini';
+// GitHub Pages는 /zini/ 아래에서, Vercel은 도메인 루트(/)에서 서비스합니다.
+// Vercel 빌드에는 VERCEL=1과 VERCEL_PROJECT_PRODUCTION_URL(스킴 없는 호스트)이 자동으로 들어옵니다.
+// 다른 곳에 올릴 때는 SITE_URL / BASE_PATH 환경 변수로 덮어씁니다(항상 우선).
+const VERCEL = Boolean(process.env.VERCEL);
+const vercelHost = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+const site =
+  process.env.SITE_URL ??
+  (VERCEL && vercelHost ? `https://${vercelHost}` : 'https://tjsrjs8282.github.io');
+const base = process.env.BASE_PATH ?? (VERCEL ? '/' : '/zini');
 
 const LEGACY = fileURLToPath(new URL('./legacy/', import.meta.url));
 

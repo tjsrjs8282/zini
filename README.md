@@ -160,9 +160,11 @@ scripts/             subset-fonts.mjs · shots.mjs
 
 기본은 **데모 모드**예요. 입력을 검증하고 "데모라 실제로 전송되지 않았다"는 안내만 보여 줍니다. `.env`에 `PUBLIC_CONTACT_ENDPOINT`(예: Formspree 주소)를 넣으면 그 주소로 JSON을 보내요. `.env.example`을 참고하세요.
 
-## 배포 (GitHub Pages)
+## 배포
 
-`.github/workflows/deploy.yml`이 `master`에 푸시될 때마다 빌드해서 GitHub Pages에 올립니다(저장소 Settings → Pages → Source: **GitHub Actions**). 다른 곳에 올릴 때는 `SITE_URL`, `BASE_PATH` 환경 변수로 주소를 정해요 — 예: 루트 도메인이면 `BASE_PATH=/`.
+- **GitHub Pages** — `.github/workflows/deploy.yml`이 `master`에 푸시될 때마다 빌드해서 `/zini/` 아래에 올립니다(저장소 Settings → Pages → Source: **GitHub Actions**).
+- **Vercel** — Vercel 빌드에서는 자동으로 도메인 루트(`/`)와 Vercel 주소를 씁니다(`VERCEL` 환경 변수로 감지). PR마다 만들어지는 미리보기도 그대로 열려요.
+- 그 밖의 곳에 올릴 때는 `SITE_URL`, `BASE_PATH` 환경 변수로 주소를 정해요. 이 두 값이 있으면 항상 우선합니다.
 
 ## 참고
 
